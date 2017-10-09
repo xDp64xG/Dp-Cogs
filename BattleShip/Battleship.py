@@ -22,6 +22,8 @@ class Battleship:
         loop = True
         embedPrint = 0
         reply = ""
+        shipM = ""
+        shipP = ""
         board = []
         seperate = []
         author = ctx.message.author
@@ -47,7 +49,7 @@ class Battleship:
             value="You have 9 attempts to hit my 4 ships", 
             inline=True)
         embed.add_field(
-            name="Auther", 
+            name="Author", 
             value="UnseenMagik & Dp", 
             inline=True)
         embed.add_field(
@@ -161,14 +163,6 @@ O O O O O 5 I
         #await self.bot.say(print_board(board))
         while loop != False:
 
-            """embed=discord.Embed(
-                title="The Board",
-                description=" ",)
-                #value="values:\n"+print_board(board))
-            embed.add_field(
-                name="Current Board ",
-                value=print_board(board),
-                inline=True)"""
 
             for turn in range(10):
                 embed=discord.Embed(
@@ -245,7 +239,7 @@ O O O O O 5 I
                     print("All ships sunk.")
                     if total == 4:
 
-                        await self.bot.say("You hit em all captain.")
+                        await self.bot.say("You hit em all captain.\n Game Over.")
                         #await self.bot.say(print_board(board))
                         await self.bot.say(embed=embed)
                         loop = False
@@ -256,7 +250,8 @@ O O O O O 5 I
 
                     board[guess_x][guess_y] = ":large_blue_circle:"
                     print("Sunk a ship.")
-                    await self.bot.say("You sunk a battleship!")
+                    shipM = await self.bot.say("You sunk a battleship!")
+                    await self.bot.edit_message(shipM, new_content=shipP)
                     #await self.bot.say(print_board(board))
                     #await self.bot.say(embed=embed)
                     total += 1
@@ -269,14 +264,16 @@ O O O O O 5 I
                     if num == 0:
 
                         print("Part of ship sunk.")
-                        await self.bot.say("You sunk part of a battleship!")
+                        shipM = await self.bot.say("You sunk part of a battleship!")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
                         num += 1
 
                     else:
                         print("You sunk a battleship.")
-                        await self.bot.say("You sunk a battleship.")
+                        shipM = await self.bot.say("You sunk a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
 
@@ -289,14 +286,16 @@ O O O O O 5 I
                     if num == 0:
 
                         print("You sunk part of a battleship!")
-                        await self.bot.say("You sunk part of a battleship!")
+                        shipM = await self.bot.say("You sunk part of a battleship!")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
                         num += 1
 
                     else:
                         print("You sunk a battleship.")
-                        await self.bot.say("You sunk a battleship.")
+                        shipM = await self.bot.say("You sunk a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
 
@@ -308,14 +307,16 @@ O O O O O 5 I
 
                     if num2 == 0:
 
-                        await self.bot.say("You sunk part of a battleship.")
+                        shipM = await self.bot.say("You sunk part of a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print("You sunk part of a battleship!")
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
                         num2 += 1
 
                     else:
-                        await self.bot.say("You sunk a battleship.")
+                        shipM = await self.bot.say("You sunk a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print("You sunk a battleship.")
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -328,7 +329,8 @@ O O O O O 5 I
 
                     if num2 == 0:
 
-                        await self.bot.say("You sunk part of a battleship.")
+                        shipM = await self.bot.say("You sunk part of a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print("You sunk part of a battleship!")
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -336,7 +338,8 @@ O O O O O 5 I
 
                     else:
 
-                        await self.bot.say("You sunk a battleship.")
+                        shipM = await self.bot.say("You sunk a battleship.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print("You sunk a battleship.")
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -349,18 +352,21 @@ O O O O O 5 I
                 else:
                     if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
 
-                        await self.bot.say("Oops, that's not even in the ocean.")
+                        shipM = await self.bot.say("Oops, that's not even in the ocean.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print ("Oops, that's not even in the ocean.")
                         
                     elif(board[guess_x][guess_y] == ":red_circle:"):
 
-                        await self.bot.say("You guessed that one already.")
+                        shipM = await self.bot.say("You guessed that one already.")
+                        await self.bot.edit_message(shipM, new_content=shipP)
                         print ("You guessed that one already.")
                     else:
 
                         print ("You missed my battleship!")
                         board[guess_x][guess_y] = ":red_circle:"
-                        await self.bot.say("You missed my battleship! ")
+                        shipM = await self.bot.say("You missed my battleship! ")
+                        await self.bot.edit_message(shipM, new_content=shipP)
 
                         if turn == 9:
                             await self.bot.say("Game over.")
@@ -371,11 +377,13 @@ O O O O O 5 I
                             board[ship1a][ship1b] = ":white_circle:"
                             board[ship2a][ship2b] = ":white_circle:"
                             board[ship2a][ship2c] = ":white_circle:"
-                            await self.bot.say(embed=embed)
+                            #await self.bot.say(embed=embed)
                             print(" ")
                             print("Here are all the ships, they're labeled M.")
+                            loop = False
                 #check += 1
                 embedPrint += 1
+                shipP = shipM
                     #await self.bot.say(print_board(board))
                     #await self.bot.say(embed=embed)
 
