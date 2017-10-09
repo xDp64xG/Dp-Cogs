@@ -19,6 +19,9 @@ class Battleship:
         msg2 = ""
         total = 0
         check = 0
+        loop = True
+        embedPrint = 0
+        reply = ""
         board = []
         seperate = []
         author = ctx.message.author
@@ -156,204 +159,229 @@ O O O O O 5 I
         print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
         #await self.bot.say(print_board(board))
+        while loop != False:
 
-
-        for turn in range(10):
-            check += 1
-            print("Turns:"+str(check))
-            embed=discord.Embed(
+            """embed=discord.Embed(
                 title="The Board",
                 description=" ",)
                 #value="values:\n"+print_board(board))
             embed.add_field(
                 name="Current Board ",
                 value=print_board(board),
-            	inline=True)
-            await self.bot.say(embed=embed)
-            guess_x = -1
-            guess_y = -1
+                inline=True)"""
+
+            for turn in range(10):
+                embed=discord.Embed(
+                    title="The Board",
+                    description=" ",)
+                    #value="values:\n"+print_board(board))
+                embed.add_field(
+                    name="Current Board ",
+                    value=print_board(board),
+                    inline=True)
+                reply = embed
+                check += 1
+                print("Turns:"+str(check))
+
+                #Edit the embed here?
+                if embedPrint == 0:
+                    message_Embed = await self.bot.say(embed=reply)
+                    #await self.bot.delete_message(message_Embed)
+                    #await self.bot.say(embed=reply)
+                else:
+                    await self.bot.edit_message(message_Embed, embed=reply)
 
 
-            await self.bot.say("\n"+"Guess X and Y:")
-            
-            msg = await self.bot.wait_for_message(author=author, channel=channel)
+                guess_x = -1
+                guess_y = -1
 
-            if msg.content == "Cancel" or msg.content == "cancel":
-                await self.bot.say("Stopping game.")
-                print("Stopping the game.")
-                break
 
-            try:
-                #check = 0
-                msg2 = msg.content
-                seperate = msg2.split(" ")
+                guessing = await self.bot.say("\n"+"Guess X and Y:")
+                
+                msg = await self.bot.wait_for_message(author=author, channel=channel)
 
-                guess_x = int(seperate[1]) - 1 
-                guess_y = int(seperate[0]) - 1
+                await self.bot.delete_message(guessing)
 
-            except IndexError:
-                await self.bot.say("Error. Invalid response.")
-                print("Invalid Response. IndexError")
-                turn -= 1
-            except ValueError:
-                turn -= 1
-                await self.bot.say("Error. Invalid response.")
-                print("Invalid Response. ValueError")
-            except UnboundLocalError:
-                turn -= 1
-                print("Invalid. UnboundLocalError")
-            
-            #Deletes users answer, like 1 3. Needs proper perms though.   
-            try:
-                await self.bot.delete_message(msg)
-            except discord.errors.Forbidden:
-                print('discord.errors.Forbidden')
-                await self.bot.say('Error. Don\'t have the permissions. Stopping game.')
-                break
-            
-            
+                if msg.content == "Cancel" or msg.content == "cancel":
+                    await self.bot.say("Stopping game.")
+                    print("Stopping the game.")
+                    loop = False
+                    break
 
-            if total == 4:
+                try:
+                    #check = 0
+                    msg2 = msg.content
+                    seperate = msg2.split(" ")
 
-                await self.bot.say("You sunk all the ships!")
-                print("All ships sunk.")
+                    guess_x = int(seperate[1]) - 1 
+                    guess_y = int(seperate[0]) - 1
+
+                except IndexError:
+                    await self.bot.say("Error. Invalid response.")
+                    print("Invalid Response. IndexError")
+                    turn -= 1
+                except ValueError:
+                    turn -= 1
+                    await self.bot.say("Error. Invalid response.")
+                    print("Invalid Response. ValueError")
+                except UnboundLocalError:
+                    turn -= 1
+                    print("Invalid. UnboundLocalError")
+                
+                #Deletes users answer, like 1 3. Needs proper perms though.   
+                try:
+                    await self.bot.delete_message(msg)
+                except discord.errors.Forbidden:
+                    print('discord.errors.Forbidden')
+                    await self.bot.say('Error. Don\'t have the permissions. Stopping game.')
+                    loop = False
+                    break
+                
+                
+
                 if total == 4:
 
-                    await self.bot.say("You hit em all captain.")
-                    #await self.bot.say(print_board(board))
-                    await self.bot.say(embed=embed)
+                    await self.bot.say("You sunk all the ships!")
+                    print("All ships sunk.")
+                    if total == 4:
 
-                break
-            
-            elif guess_x == ship_x and guess_y == ship_y:
-
-                board[guess_x][guess_y] = ":large_blue_circle:"
-                print("Sunk a ship.")
-                await self.bot.say("You sunk a battleship!")
-                #await self.bot.say(print_board(board))
-                #await self.bot.say(embed=embed)
-                total += 1
-
-            #-------------------------------------------#    
-            elif guess_x == ship1a and guess_y == ship1b:
-
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num == 0:
-
-                    print("Part of ship sunk.")
-                    await self.bot.say("You sunk part of a battleship!")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-                    num += 1
-
-                else:
-                    print("You sunk a battleship.")
-                    await self.bot.say("You sunk a battleship.")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-
-                total += 1 
-
-            elif guess_x == ship1d and guess_y == ship1b:
-
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num == 0:
-
-                    print("You sunk part of a battleship!")
-                    await self.bot.say("You sunk part of a battleship!")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-                    num += 1
-
-                else:
-                    print("You sunk a battleship.")
-                    await self.bot.say("You sunk a battleship.")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-
-                total += 1
-                #-----------------------------------------------#
-            elif guess_x == ship2a and guess_y == ship2b:
-
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num2 == 0:
-
-                    await self.bot.say("You sunk part of a battleship.")
-                    print("You sunk part of a battleship!")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-                    num2 += 1
-
-                else:
-                    await self.bot.say("You sunk a battleship.")
-                    print("You sunk a battleship.")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-    
-                total += 1
-
-            elif guess_x == ship2a and guess_y == ship2c:
-
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num2 == 0:
-
-                    await self.bot.say("You sunk part of a battleship.")
-                    print("You sunk part of a battleship!")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-                    num2 += 1
-
-                else:
-
-                    await self.bot.say("You sunk a battleship.")
-                    print("You sunk a battleship.")
-                    #await self.bot.say(print_board(board))
-                    #await self.bot.say(embed=embed)
-
-                total += 1
-                #--------------------------------------#
-            
-
-
-            else:
-                if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
-
-                    await self.bot.say("Oops, that's not even in the ocean.")
-                    print ("Oops, that's not even in the ocean.")
-                    
-                elif(board[guess_x][guess_y] == ":red_circle:"):
-
-                    await self.bot.say("You guessed that one already.")
-                    print ("You guessed that one already.")
-                else:
-
-                    print ("You missed my battleship!")
-                    board[guess_x][guess_y] = ":red_circle:"
-                    await self.bot.say("You missed my battleship! ")
-
-                    if turn == 9:
-                        await self.bot.say("Game over.")
-
-                        print ("Game Over")
-                        board[ship_x][ship_y] = ":white_circle:"
-                        board[ship1d][ship1b] = ":white_circle:" 
-                        board[ship1a][ship1b] = ":white_circle:"
-                        board[ship2a][ship2b] = ":white_circle:"
-                        board[ship2a][ship2c] = ":white_circle:"
+                        await self.bot.say("You hit em all captain.")
+                        #await self.bot.say(print_board(board))
                         await self.bot.say(embed=embed)
-                        print(" ")
-                        print("Here are all the ships, they're labeled M.")
-            #check += 1
-                #await self.bot.say(print_board(board))
-                #await self.bot.say(embed=embed)
+                        loop = False
 
-                # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
+                    break
+                
+                elif guess_x == ship_x and guess_y == ship_y:
 
-        #----------------------------------------------------------------#
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+                    print("Sunk a ship.")
+                    await self.bot.say("You sunk a battleship!")
+                    #await self.bot.say(print_board(board))
+                    #await self.bot.say(embed=embed)
+                    total += 1
+
+                #-------------------------------------------#    
+                elif guess_x == ship1a and guess_y == ship1b:
+
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num == 0:
+
+                        print("Part of ship sunk.")
+                        await self.bot.say("You sunk part of a battleship!")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+                        num += 1
+
+                    else:
+                        print("You sunk a battleship.")
+                        await self.bot.say("You sunk a battleship.")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+
+                    total += 1 
+
+                elif guess_x == ship1d and guess_y == ship1b:
+
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num == 0:
+
+                        print("You sunk part of a battleship!")
+                        await self.bot.say("You sunk part of a battleship!")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+                        num += 1
+
+                    else:
+                        print("You sunk a battleship.")
+                        await self.bot.say("You sunk a battleship.")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+
+                    total += 1
+                    #-----------------------------------------------#
+                elif guess_x == ship2a and guess_y == ship2b:
+
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num2 == 0:
+
+                        await self.bot.say("You sunk part of a battleship.")
+                        print("You sunk part of a battleship!")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+                        num2 += 1
+
+                    else:
+                        await self.bot.say("You sunk a battleship.")
+                        print("You sunk a battleship.")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+        
+                    total += 1
+
+                elif guess_x == ship2a and guess_y == ship2c:
+
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num2 == 0:
+
+                        await self.bot.say("You sunk part of a battleship.")
+                        print("You sunk part of a battleship!")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+                        num2 += 1
+
+                    else:
+
+                        await self.bot.say("You sunk a battleship.")
+                        print("You sunk a battleship.")
+                        #await self.bot.say(print_board(board))
+                        #await self.bot.say(embed=embed)
+
+                    total += 1
+                    #--------------------------------------#
+                
+
+
+                else:
+                    if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
+
+                        await self.bot.say("Oops, that's not even in the ocean.")
+                        print ("Oops, that's not even in the ocean.")
+                        
+                    elif(board[guess_x][guess_y] == ":red_circle:"):
+
+                        await self.bot.say("You guessed that one already.")
+                        print ("You guessed that one already.")
+                    else:
+
+                        print ("You missed my battleship!")
+                        board[guess_x][guess_y] = ":red_circle:"
+                        await self.bot.say("You missed my battleship! ")
+
+                        if turn == 9:
+                            await self.bot.say("Game over.")
+
+                            print ("Game Over")
+                            board[ship_x][ship_y] = ":white_circle:"
+                            board[ship1d][ship1b] = ":white_circle:" 
+                            board[ship1a][ship1b] = ":white_circle:"
+                            board[ship2a][ship2b] = ":white_circle:"
+                            board[ship2a][ship2c] = ":white_circle:"
+                            await self.bot.say(embed=embed)
+                            print(" ")
+                            print("Here are all the ships, they're labeled M.")
+                #check += 1
+                embedPrint += 1
+                    #await self.bot.say(print_board(board))
+                    #await self.bot.say(embed=embed)
+
+                    # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
+
+            #----------------------------------------------------------------#
 
 def setup(bot):
     bot.add_cog(Battleship(bot))
