@@ -252,7 +252,8 @@ O O O O O 5 I
 
                         await self.bot.say("You hit em all captain.\n Game Over.")
                         #await self.bot.say(print_board(board))
-                        await self.bot.say(embed=embed)
+                        #await self.bot.say(embed=embed)
+                        await self.bot.edit_message(message_Embed, embed=reply)
                         loop = False
 
                     break
@@ -267,7 +268,7 @@ O O O O O 5 I
                     #await self.bot.edit_message(shipM, new_content=shipM)
 
                     shipM = await self.bot.say("You sunk a battleship!")
-                    await self.bot.edit_message(shipM, new_content=shipP)
+                    #await self.bot.edit_message(shipM, new_content=shipP)
 
                     #await self.bot.say(print_board(board))
                     #await self.bot.say(embed=embed)
@@ -286,8 +287,8 @@ O O O O O 5 I
                         reply2 = hit1
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk part of a battleship!")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk part of a battleship!")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -300,8 +301,8 @@ O O O O O 5 I
                         reply2 = hit2
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -319,8 +320,8 @@ O O O O O 5 I
                         #shipM = await self.bot.say(hit1)
                         reply2 = hit1
                         #await self.bot.edit_message(shipM, new_content=shipM)
-                        shipM = await self.bot.say("You sunk part of a battleship!")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk part of a battleship!")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -333,8 +334,8 @@ O O O O O 5 I
                         reply2 = hit2
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         #await self.bot.say(print_board(board))
                         #await self.bot.say(embed=embed)
@@ -352,8 +353,8 @@ O O O O O 5 I
                         reply2 = hit1
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk part of a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk part of a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print("You sunk part of a battleship!")
                         #await self.bot.say(print_board(board))
@@ -366,8 +367,8 @@ O O O O O 5 I
                         reply2 = hit2
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print("You sunk a battleship.")
                         #await self.bot.say(print_board(board))
@@ -386,8 +387,8 @@ O O O O O 5 I
                         reply2 = hit1
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk part of a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk part of a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print("You sunk part of a battleship!")
                         #await self.bot.say(print_board(board))
@@ -401,8 +402,8 @@ O O O O O 5 I
                         reply2 = hit2
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You sunk a battleship.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You sunk a battleship.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print("You sunk a battleship.")
                         #await self.bot.say(print_board(board))
@@ -421,8 +422,8 @@ O O O O O 5 I
                         reply2 = ocean
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("Oops, that's not even in the ocean.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("Oops, that's not even in the ocean.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print ("Oops, that's not even in the ocean.")
                         
@@ -433,8 +434,8 @@ O O O O O 5 I
                         reply2 = guess
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You guessed that one already.")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You guessed that one already.")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
                         print ("You guessed that one already.")
                     else:
@@ -446,8 +447,8 @@ O O O O O 5 I
                         reply2 = miss
                         #await self.bot.edit_message(shipM, new_content=shipM)
 
-                        shipM = await self.bot.say("You missed my battleship! ")
-                        await self.bot.edit_message(shipM, new_content=shipP)
+                        #shipM = await self.bot.say("You missed my battleship! ")
+                        #await self.bot.edit_message(shipM, new_content=shipP)
 
 
                         if turn == 9:
@@ -460,6 +461,7 @@ O O O O O 5 I
                             board[ship1a][ship1b] = ":white_circle:"
                             board[ship2a][ship2b] = ":white_circle:"
                             board[ship2a][ship2c] = ":white_circle:"
+                            await self.bot.edit_message(message_Embed, embed=reply)
                             #await self.bot.say(embed=embed)
                             print(" ")
                             print("Here are all the ships, they're labeled M.")
@@ -472,7 +474,7 @@ O O O O O 5 I
                 else:
                     await self.bot.edit_message(shipM, reply2)
                 embedPrint += 1
-                shipP = shipM
+                
 
                 #shipM = await self.bot.say(reply2)
 
