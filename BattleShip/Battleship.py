@@ -347,7 +347,7 @@ class Battleship:
             else:
                 await self.bot.edit_message(shipM, reply2)
             embedPrint += 1
-
+            turn -= 1
                 # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
 
             #----------------------------------------------------------------#
