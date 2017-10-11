@@ -21,6 +21,7 @@ class Battleship:
         check = 0
         loop = True
         embedPrint = 0
+        error = "Error. Invalid Response."
 
         miss = "You missed my battleship!"
         hit1 = "You sunk part of a battleship!"
@@ -206,17 +207,18 @@ class Battleship:
                     guess_y = int(seperate[0]) - 1
 
                 except IndexError:
-                    await self.bot.say("Error. Invalid response.")
+                    reply2 = error
                     print("Invalid Response. IndexError")
                     turn -= 1
                     
                 except ValueError:
                     turn -= 1
-                    await self.bot.say("Error. Invalid response.")
+                    reply2 = error
                     print("Invalid Response. ValueError")
                     
                 except UnboundLocalError:
                     turn -= 1
+                    reply2 = error
                     print("Invalid. UnboundLocalError")
                 
                 #Deletes users answer, like 1 3. Needs proper perms though.   
