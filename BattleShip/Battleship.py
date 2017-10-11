@@ -1,5 +1,4 @@
 import discord
-#import repl
 from discord.ext import commands
 from random import randint
 
@@ -18,6 +17,7 @@ class Battleship:
         msg = ""
         msg2 = ""
         total = 0
+        turn = 10
         check = 0
         loop = True
         embedPrint = 0
@@ -164,190 +164,191 @@ class Battleship:
         print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
  
-        while loop != False:
+        while turn != 0:
 
 
-            for turn in range(10):
-                reply2 = ""
-                embed=discord.Embed(
-                    title="The Board",
-                    description=" ",)
-                embed.add_field(
-                    name="Current Board ",
-                    value=print_board(board),
-                    inline=True)
-                reply = embed
-                check += 1
-                print("Turns:"+str(check))
+            #for turn in range(10):
+            reply2 = ""
+            embed=discord.Embed(
+                title="The Board",
+                description=" ",)
+            embed.add_field(
+                name="Current Board ",
+                value=print_board(board),
+                inline=True)
+            reply = embed
+            check += 1
+            print("Turns:"+str(check))
 
-                #Send Embed here, edit later#
-                if embedPrint == 0:
-                    message_Embed = await self.bot.say(embed=reply)
+            #Send Embed here, edit later#
+            if embedPrint == 0:
+                message_Embed = await self.bot.say(embed=reply)
 
-                else:
-                    await self.bot.edit_message(message_Embed, embed=reply)
+            else:
+                await self.bot.edit_message(message_Embed, embed=reply)
 
-                guess_x = -1
-                guess_y = -1
-                guessing = await self.bot.say("\n"+"Guess X and Y:")                
-                msg = await self.bot.wait_for_message(author=author, channel=channel)
-                await self.bot.delete_message(guessing)
+            guess_x = -1
+            guess_y = -1
+            guessing = await self.bot.say("\n"+"Guess X and Y:")                
+            msg = await self.bot.wait_for_message(author=author, channel=channel)
+            await self.bot.delete_message(guessing)
 
-                if msg.content == "Cancel" or msg.content == "cancel":
-                    await self.bot.say("Stopping game.")
-                    print("Stopping the game.")
-                    loop = False
-                    break
-                #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
-                try:
-                    msg2 = msg.content
-                    seperate = msg2.split(" ")
+            if msg.content == "Cancel" or msg.content == "cancel":
+                await self.bot.say("Stopping game.")
+                print("Stopping the game.")
+                #loop = False
+                break
+            #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
+            try:
+                msg2 = msg.content
+                seperate = msg2.split(" ")
 
-                    guess_x = int(seperate[1]) - 1 
-                    guess_y = int(seperate[0]) - 1
+                guess_x = int(seperate[1]) - 1 
+                guess_y = int(seperate[0]) - 1
 
-                except IndexError:
-                    reply2 = error
-                    print("Invalid Response. IndexError")
-                    turn -= 1
+            except IndexError:
+                reply2 = error
+                print("Invalid Response. IndexError")
+                turn += 1
                     
-                except ValueError:
-                    turn -= 1
-                    reply2 = error
-                    print("Invalid Response. ValueError")
+            except ValueError:
+                turn += 1
+                reply2 = error
+                print("Invalid Response. ValueError")
                     
-                except UnboundLocalError:
-                    turn -= 1
-                    reply2 = error
-                    print("Invalid. UnboundLocalError")
+            except UnboundLocalError:
+                turn += 1
+                reply2 = error
+                print("Invalid. UnboundLocalError")
                 
-                #Deletes users answer, like 1 3. Needs proper perms though.   
-                try:
-                    await self.bot.delete_message(msg)
+            #Deletes users answer, like 1 3. Needs proper perms though.   
+            try:
+                await self.bot.delete_message(msg)
                     
-                except discord.errors.Forbidden:
-                    print('discord.errors.Forbidden')
-                    await self.bot.say('Error. Don\'t have the permissions. Stopping game.')
-                    loop = False
-                    break
+            except discord.errors.Forbidden:
+                print('discord.errors.Forbidden')
+                await self.bot.say('Error. Don\'t have the permissions. Stopping game.')
+                #loop = False
+                break
                 
+            if total == 4:
+                await self.bot.say("You sunk all the ships!")
+                print("All ships sunk.")
+                    
                 if total == 4:
-                    await self.bot.say("You sunk all the ships!")
-                    print("All ships sunk.")
-                    
-                    if total == 4:
-                        await self.bot.say("You hit em all captain.\n Game Over.")
-                        await self.bot.edit_message(message_Embed, embed=reply)
-                        loop = False
+                    await self.bot.say("You hit em all captain.\n Game Over.")
+                    await self.bot.edit_message(message_Embed, embed=reply)
+                    #loop = False
                         
-                    break
+                break
                 
-                elif guess_x == ship_x and guess_y == ship_y:
-                    board[guess_x][guess_y] = ":large_blue_circle:"
-                    print("Sunk a ship.")
+            elif guess_x == ship_x and guess_y == ship_y:
+                board[guess_x][guess_y] = ":large_blue_circle:"
+                print("Sunk a ship.")
+                reply2 = hit2
+                total += 1
+
+            #-------------------------------------------#    
+            elif guess_x == ship1a and guess_y == ship1b:
+                board[guess_x][guess_y] = ":large_blue_circle:"
+                if num == 0:
+                    print("Part of ship sunk.")
+                    reply2 = hit1
+                    num += 1
+
+                else:
+                    print("You sunk a battleship.")
                     reply2 = hit2
-                    total += 1
-
-                #-------------------------------------------#    
-                elif guess_x == ship1a and guess_y == ship1b:
-                    board[guess_x][guess_y] = ":large_blue_circle:"
-                    if num == 0:
-                        print("Part of ship sunk.")
-                        reply2 = hit1
-                        num += 1
-
-                    else:
-                        print("You sunk a battleship.")
-                        reply2 = hit2
                         
-                    total += 1 
+                total += 1 
 
-                elif guess_x == ship1d and guess_y == ship1b:
+            elif guess_x == ship1d and guess_y == ship1b:
 
-                    board[guess_x][guess_y] = ":large_blue_circle:"
+                board[guess_x][guess_y] = ":large_blue_circle:"
 
-                    if num == 0:
-                        print("You sunk part of a battleship!")
-                        reply2 = hit1
-                        num += 1
+                if num == 0:
+                    print("You sunk part of a battleship!")
+                    reply2 = hit1
+                    num += 1
 
-                    else:
-                        print("You sunk a battleship.")
-                        reply2 = hit2
+                else:
+                    print("You sunk a battleship.")
+                    reply2 = hit2
                         
-                    total += 1
-                    #-----------------------------------------------#
-                elif guess_x == ship2a and guess_y == ship2b:
+                total += 1
+                #-----------------------------------------------#
+            elif guess_x == ship2a and guess_y == ship2b:
 
-                    board[guess_x][guess_y] = ":large_blue_circle:"
+                board[guess_x][guess_y] = ":large_blue_circle:"
 
-                    if num2 == 0:
-                        reply2 = hit1
-                        print("You sunk part of a battleship!")
-                        num2 += 1
+                if num2 == 0:
+                    reply2 = hit1
+                    print("You sunk part of a battleship!")
+                    num2 += 1
 
-                    else:
-                        reply2 = hit2
-                        print("You sunk a battleship.")
+                else:
+                    reply2 = hit2
+                    print("You sunk a battleship.")
         
-                    total += 1
+                total += 1
 
-                elif guess_x == ship2a and guess_y == ship2c:
+            elif guess_x == ship2a and guess_y == ship2c:
 
-                    board[guess_x][guess_y] = ":large_blue_circle:"
+                board[guess_x][guess_y] = ":large_blue_circle:"
 
-                    if num2 == 0:
-                        reply2 = hit1
-                        print("You sunk part of a battleship!")
-                        num2 += 1
+                if num2 == 0:
+                    reply2 = hit1
+                    print("You sunk part of a battleship!")
+                    num2 += 1
 
-                    else:
-                        reply2 = hit2
-                        print("You sunk a battleship.")
+                else:
+                    reply2 = hit2
+                    print("You sunk a battleship.")
 
-                    total += 1
-                    #--------------------------------------#
+                total += 1
+                #--------------------------------------#
                 
 
 
-                else:
-                    if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
-                        reply2 = ocean
-                        print ("Oops, that's not even in the ocean.")
+            else:
+                if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
+                    reply2 = ocean
+                    print ("Oops, that's not even in the ocean.")
                         
-                    elif(board[guess_x][guess_y] == ":red_circle:"):
-                        reply2 = guess
-                        print ("You guessed that one already.")
+                elif(board[guess_x][guess_y] == ":red_circle:"):
+                    reply2 = guess
+                    print ("You guessed that one already.")
                         
-                    else:
-                        print ("You missed my battleship!")
-                        board[guess_x][guess_y] = ":red_circle:"
-                        reply2 = miss
-
-                        if turn == 9:
-                            reply2 = over
-                            print ("Game Over")
-                            
-                            board[ship_x][ship_y] = ":white_circle:"
-                            board[ship1d][ship1b] = ":white_circle:" 
-                            board[ship1a][ship1b] = ":white_circle:"
-                            board[ship2a][ship2b] = ":white_circle:"
-                            board[ship2a][ship2c] = ":white_circle:"
-                            
-                            await self.bot.edit_message(message_Embed, embed=reply)
-                            print(" ")
-                            print("Here are all the ships, they're labeled M.")
-                            loop = False
-
-                if embedPrint == 0:
-                    shipM = await self.bot.say(reply2)
-                elif embedPrint > 9:
-                    await self.bot.delete_message(shipM)
                 else:
-                    await self.bot.edit_message(shipM, reply2)
-                embedPrint += 1
+                    print ("You missed my battleship!")
+                    board[guess_x][guess_y] = ":red_circle:"
+                    reply2 = miss
 
-                    # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
+                    if turn <= 0:
+                        reply2 = over
+                        print ("Game Over")
+                            
+                        board[ship_x][ship_y] = ":white_circle:"
+                        board[ship1d][ship1b] = ":white_circle:" 
+                        board[ship1a][ship1b] = ":white_circle:"
+                        board[ship2a][ship2b] = ":white_circle:"
+                        board[ship2a][ship2c] = ":white_circle:"
+                            
+                        await self.bot.edit_message(message_Embed, embed=reply)
+                        print(" ")
+                        print("Here are all the ships, they're labeled M.")
+                        break
+                        #loop = False
+
+            if embedPrint == 0:
+                shipM = await self.bot.say(reply2)
+            elif embedPrint > 9:
+                await self.bot.delete_message(shipM)
+            else:
+                await self.bot.edit_message(shipM, reply2)
+            embedPrint += 1
+
+                # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
 
             #----------------------------------------------------------------#
 
