@@ -163,12 +163,8 @@ class Battleship:
         print("Ship 1: ", ship_x+1, ship_y+1)
         print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
- 
-        while turn != 0:
 
-
-            #for turn in range(10):
-            reply2 = ""
+        def embed_board():
             embed=discord.Embed(
                 title="The Board",
                 description=" ",)
@@ -177,8 +173,24 @@ class Battleship:
                 value=print_board(board),
                 inline=True)
             reply = embed
+            return embed
+ 
+        while turn != 0:
+
+
+            #for turn in range(10):
+            reply2 = ""
+            """embed=discord.Embed(
+                title="The Board",
+                description=" ",)
+            embed.add_field(
+                name="Current Board ",
+                value=print_board(board),
+                inline=True)"""
+            #reply = embed
+            reply = embed_board()
             check += 1
-            print("Turns:"+str(check))
+            print("Turns:"+str(turn))
 
             #Send Embed here, edit later#
             if embedPrint == 0:
@@ -317,6 +329,7 @@ class Battleship:
                         
                 elif(board[guess_x][guess_y] == ":red_circle:"):
                     reply2 = guess
+                    turn += 1
                     print ("You guessed that one already.")
                         
                 else:
@@ -324,7 +337,7 @@ class Battleship:
                     board[guess_x][guess_y] = ":red_circle:"
                     reply2 = miss
 
-                    if turn <= 0:
+                    """if turn <= 0:
                         reply2 = over
                         print ("Game Over")
                             
@@ -338,7 +351,7 @@ class Battleship:
                         print(" ")
                         print("Here are all the ships, they're labeled M.")
                         break
-                        #loop = False
+                        #loop = False"""         
 
             if embedPrint == 0:
                 shipM = await self.bot.say(reply2)
@@ -348,7 +361,21 @@ class Battleship:
                 await self.bot.edit_message(shipM, reply2)
             embedPrint += 1
             turn -= 1
-                # (this can be used to return all messaged in embed and delete old) await repl.interactive_results(list_of_embeds)
+
+        #reply2 = over
+        print ("Game Over")
+                            
+        board[ship_x][ship_y] = ":white_circle:"
+        board[ship1d][ship1b] = ":white_circle:" 
+        board[ship1a][ship1b] = ":white_circle:"
+        board[ship2a][ship2b] = ":white_circle:"
+        board[ship2a][ship2c] = ":white_circle:"
+        reply = embed_board()                    
+        await self.bot.edit_message(message_Embed, embed=reply)
+        await self.bot.say(over)
+        print(" ")
+        print("Here are all the ships, they're labeled M.")
+
 
             #----------------------------------------------------------------#
 
