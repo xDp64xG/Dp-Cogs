@@ -18,6 +18,7 @@ class Battleship:
         msg2 = ""
         total = 0
         turn = 10
+        turn2 = 0
         check = 0
         loop = True
         embedPrint = 0
@@ -165,12 +166,12 @@ class Battleship:
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
 
-        def embed_board():
+        def embed_board(turn2):
             embed=discord.Embed(
                 title="The Board",
                 description=" ",)
             embed.add_field(
-                name="Current Board ",
+                name="Turn "+turn2,
                 value=print_board(board),
                 inline=True)
             reply = embed
@@ -189,7 +190,7 @@ class Battleship:
                 value=print_board(board),
                 inline=True)"""
             #reply = embed
-            reply = embed_board()
+            reply = embed_board(turn2)
             check += 1
             print("Turns:"+str(turn))
 
@@ -362,6 +363,7 @@ class Battleship:
                 await self.bot.edit_message(shipM, reply2)
             embedPrint += 1
             turn -= 1
+            turn2 += 1
 
         #reply2 = over
         print ("Game Over")
