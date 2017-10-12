@@ -15,4 +15,10 @@ Versions:
 		Added function of editing the embed instead of reposting
 		Now deletes the asking of X and Y coords.
 		Now able to prevent most cases of the bot malafunction with a improper message, able to catch the error
+	1.2:
+		Now able to edit the embed
+		Added a timeout of 30 seconds
+		(Beta) Able to send "is typing" message
+		Edited embed( Turns)
+		
 
