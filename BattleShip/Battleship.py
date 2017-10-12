@@ -357,8 +357,6 @@ class Battleship:
 
             if embedPrint == 0:
                 shipM = await self.bot.say(reply2)
-            elif embedPrint > 9:
-                await self.bot.delete_message(shipM)
             else:
                 await self.bot.edit_message(shipM, reply2)
             embedPrint += 1
