@@ -224,14 +224,17 @@ class Battleship:
                 reply2 = error
                 print("Invalid Response. IndexError")
                 turn += 1
+                turn2 -= 1
                     
             except ValueError:
                 turn += 1
+                turn2 -= 1
                 reply2 = error
                 print("Invalid Response. ValueError")
                     
             except UnboundLocalError:
                 turn += 1
+                turn -= 1
                 reply2 = error
                 print("Invalid. UnboundLocalError")
                 
@@ -371,7 +374,7 @@ class Battleship:
         board[ship1a][ship1b] = ":white_circle:"
         board[ship2a][ship2b] = ":white_circle:"
         board[ship2a][ship2c] = ":white_circle:"
-        reply = embed_board()                    
+        reply = embed_board(turn2)                    
         await self.bot.edit_message(message_Embed, embed=reply)
         await self.bot.say(over)
         print(" ")
