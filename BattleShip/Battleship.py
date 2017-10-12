@@ -171,7 +171,7 @@ class Battleship:
                 title="The Board",
                 description=" ",)
             embed.add_field(
-                name="Turn "+turn2,
+                name="Turn "+str(turn2),
                 value=print_board(board),
                 inline=True)
             reply = embed
