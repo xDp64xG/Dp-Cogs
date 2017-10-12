@@ -18,6 +18,7 @@ class Battleship:
         msg2 = ""
         total = 0
         turn = 10
+        turn2 = 0
         check = 0
         loop = True
         embedPrint = 0
@@ -165,12 +166,12 @@ class Battleship:
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
 
-        def embed_board():
+        def embed_board(turn2):
             embed=discord.Embed(
                 title="The Board",
                 description=" ",)
             embed.add_field(
-                name="Current Board ",
+                name="Turn "+str(turn2),
                 value=print_board(board),
                 inline=True)
             reply = embed
@@ -189,7 +190,7 @@ class Battleship:
                 value=print_board(board),
                 inline=True)"""
             #reply = embed
-            reply = embed_board()
+            reply = embed_board(turn2)
             check += 1
             print("Turns:"+str(turn))
 
@@ -202,8 +203,9 @@ class Battleship:
 
             guess_x = -1
             guess_y = -1
+            await self.bot.send_typing(channel)
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
-            msg = await self.bot.wait_for_message(author=author, channel=channel)
+            msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
             await self.bot.delete_message(guessing)
 
             if msg.content == "Cancel" or msg.content == "cancel":
@@ -223,14 +225,17 @@ class Battleship:
                 reply2 = error
                 print("Invalid Response. IndexError")
                 turn += 1
+                turn2 -= 1
                     
             except ValueError:
                 turn += 1
+                turn2 -= 1
                 reply2 = error
                 print("Invalid Response. ValueError")
                     
             except UnboundLocalError:
                 turn += 1
+                turn2 -= 1
                 reply2 = error
                 print("Invalid. UnboundLocalError")
                 
@@ -356,12 +361,11 @@ class Battleship:
 
             if embedPrint == 0:
                 shipM = await self.bot.say(reply2)
-            elif embedPrint > 9:
-                await self.bot.delete_message(shipM)
             else:
                 await self.bot.edit_message(shipM, reply2)
             embedPrint += 1
             turn -= 1
+            turn2 += 1
 
         #reply2 = over
         print ("Game Over")
@@ -371,7 +375,7 @@ class Battleship:
         board[ship1a][ship1b] = ":white_circle:"
         board[ship2a][ship2b] = ":white_circle:"
         board[ship2a][ship2c] = ":white_circle:"
-        reply = embed_board()                    
+        reply = embed_board(turn2)                    
         await self.bot.edit_message(message_Embed, embed=reply)
         await self.bot.say(over)
         print(" ")
