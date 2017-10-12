@@ -234,7 +234,7 @@ class Battleship:
                     
             except UnboundLocalError:
                 turn += 1
-                turn -= 1
+                turn2 -= 1
                 reply2 = error
                 print("Invalid. UnboundLocalError")
                 
