@@ -203,8 +203,9 @@ class Battleship:
 
             guess_x = -1
             guess_y = -1
+            await self.bot.send_typing(channel)
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
-            msg = await self.bot.wait_for_message(author=author, channel=channel)
+            msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
             await self.bot.delete_message(guessing)
 
             if msg.content == "Cancel" or msg.content == "cancel":
