@@ -13,17 +13,15 @@ class Battleship:
         #----------------------------------------------------------------# 
         num = 0
         num2 = 0
-        num3 = 0
         msg = ""
         msg2 = ""
         total = 0
         turn = 10
         turn2 = 0
         check = 0
-        loop = True
         embedPrint = 0
+        
         error = "Error. Invalid Response."
-
         miss = "You missed my battleship!"
         hit1 = "You sunk part of a battleship!"
         hit2 = "You sunk a battleship!"
@@ -34,7 +32,7 @@ class Battleship:
         reply2 = ""
         reply = ""
         shipM = ""
-        shipP = ""
+
         board = []
         seperate = []
         author = ctx.message.author
@@ -179,17 +177,8 @@ class Battleship:
  
         while turn != 0:
 
-
-            #for turn in range(10):
             reply2 = ""
-            """embed=discord.Embed(
-                title="The Board",
-                description=" ",)
-            embed.add_field(
-                name="Current Board ",
-                value=print_board(board),
-                inline=True)"""
-            #reply = embed
+
             reply = embed_board(turn2)
             check += 1
             print("Turns:"+str(turn))
@@ -238,6 +227,9 @@ class Battleship:
                 turn2 -= 1
                 reply2 = error
                 print("Invalid. UnboundLocalError")
+            except NoneType:
+                reply2 = error
+                print("NoneType Error.")
                 
             #Deletes users answer, like 1 3. Needs proper perms though.   
             try:
