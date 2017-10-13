@@ -13,17 +13,15 @@ class Battleship:
         #----------------------------------------------------------------# 
         num = 0
         num2 = 0
-        num3 = 0
         msg = ""
         msg2 = ""
         total = 0
         turn = 10
         turn2 = 0
         check = 0
-        loop = True
         embedPrint = 0
+        
         error = "Error. Invalid Response."
-
         miss = "You missed my battleship!"
         hit1 = "You sunk part of a battleship!"
         hit2 = "You sunk a battleship!"
@@ -34,7 +32,7 @@ class Battleship:
         reply2 = ""
         reply = ""
         shipM = ""
-        shipP = ""
+
         board = []
         seperate = []
         author = ctx.message.author
@@ -179,17 +177,8 @@ class Battleship:
  
         while turn != 0:
 
-
-            #for turn in range(10):
             reply2 = ""
-            """embed=discord.Embed(
-                title="The Board",
-                description=" ",)
-            embed.add_field(
-                name="Current Board ",
-                value=print_board(board),
-                inline=True)"""
-            #reply = embed
+
             reply = embed_board(turn2)
             check += 1
             print("Turns:"+str(turn))
@@ -207,12 +196,17 @@ class Battleship:
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
             msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
             await self.bot.delete_message(guessing)
+            #Gets the no message, when times out. Working?
+            try:
 
-            if msg.content == "Cancel" or msg.content == "cancel":
-                await self.bot.say("Stopping game.")
-                print("Stopping the game.")
-                #loop = False
-                break
+                if msg.content == "Cancel" or msg.content == "cancel":
+                    await self.bot.say("Stopping game.")
+                    print("Stopping the game.")
+                    #loop = False
+                    break
+            except NoneType:
+                reply2 = error
+                print("NoneType Error.")
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
                 msg2 = msg.content
