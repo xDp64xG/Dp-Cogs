@@ -196,12 +196,17 @@ class Battleship:
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
             msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
             await self.bot.delete_message(guessing)
+            #Gets the no message, when times out. Working?
+            try:
 
-            if msg.content == "Cancel" or msg.content == "cancel":
-                await self.bot.say("Stopping game.")
-                print("Stopping the game.")
-                #loop = False
-                break
+                if msg.content == "Cancel" or msg.content == "cancel":
+                    await self.bot.say("Stopping game.")
+                    print("Stopping the game.")
+                    #loop = False
+                    break
+            except NoneType:
+                reply2 = error
+                print("NoneType Error.")
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
                 msg2 = msg.content
@@ -227,9 +232,6 @@ class Battleship:
                 turn2 -= 1
                 reply2 = error
                 print("Invalid. UnboundLocalError")
-            except NoneType:
-                reply2 = error
-                print("NoneType Error.")
                 
             #Deletes users answer, like 1 3. Needs proper perms though.   
             try:
