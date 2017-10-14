@@ -20,6 +20,8 @@ class Battleship:
         turn2 = 0
         check = 0
         embedPrint = 0
+        var = 0
+        stop = 0
         
         error = "Error. Invalid Response."
         miss = "You missed my battleship!"
@@ -197,15 +199,17 @@ class Battleship:
             msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
 
             if not msg:
+                var += 1
                 break
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
             
 
             if msg.content == "Cancel" or msg.content == "cancel":
-                    await self.bot.say("Stopping game.")
+                    #await self.bot.say("Stopping game.")
                     print("Stopping the game.")
                     #loop = False
+                    stop += 1
                     break
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
@@ -364,19 +368,29 @@ class Battleship:
                 await self.bot.delete_message(shipM)
 
         #reply2 = over
-        print ("Game Over")
+        if turn == 0:
+            
+            print ("Game Over")
                             
-        board[ship_x][ship_y] = ":white_circle:"
-        board[ship1d][ship1b] = ":white_circle:" 
-        board[ship1a][ship1b] = ":white_circle:"
-        board[ship2a][ship2b] = ":white_circle:"
-        board[ship2a][ship2c] = ":white_circle:"
-        reply = embed_board(turn2)
-        #await self.bot.delete_message(guessing)
-        await self.bot.edit_message(message_Embed, embed=reply)
-        await self.bot.say(over)
-        print(" ")
-        print("Here are all the ships, they're labeled M.")
+            board[ship_x][ship_y] = ":white_circle:"
+            board[ship1d][ship1b] = ":white_circle:" 
+            board[ship1a][ship1b] = ":white_circle:"
+            board[ship2a][ship2b] = ":white_circle:"
+            board[ship2a][ship2c] = ":white_circle:"
+            reply = embed_board(turn2)
+            #await self.bot.delete_message(guessing)
+            await self.bot.edit_message(message_Embed, embed=reply)
+            #await self.bot.say(over)
+            reply2 = over
+            print(" ")
+            print("Here are all the ships, they're labeled M.")
+        else:
+            if var == 1:
+                reply2 = "Error. No input, stopping game."
+            elif stop == 1:
+                reply2 = "Stopping Game"
+        await self.bot.say(reply2)
+           
 
 
             #----------------------------------------------------------------#
