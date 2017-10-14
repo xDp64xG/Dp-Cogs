@@ -195,12 +195,12 @@ class Battleship:
             await self.bot.send_typing(channel)
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
             msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
-            print(timeout)
+
+            if not msg:
+                break
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
-            """if timeout == 30:
-                print("I got no input within the time limit. Stopping game.")
-                break"""
+            
 
             if msg.content == "Cancel" or msg.content == "cancel":
                     await self.bot.say("Stopping game.")
