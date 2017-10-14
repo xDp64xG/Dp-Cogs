@@ -204,9 +204,9 @@ class Battleship:
                     print("Stopping the game.")
                     #loop = False
                     break
-            except NoneType:
+            except NameError:
                 reply2 = error
-                print("NoneType Error.")
+                print("NameError.")
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
                 msg2 = msg.content
