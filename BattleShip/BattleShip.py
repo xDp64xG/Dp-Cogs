@@ -195,18 +195,18 @@ class Battleship:
             await self.bot.send_typing(channel)
             guessing = await self.bot.say("\n"+"Guess X and Y:")                
             msg = await self.bot.wait_for_message(timeout=30,author=author, channel=channel)
+            print(timeout)
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
-            try:
+            if timeout == 30:
+                print("I got no input within the time limit. Stopping game.")
+                break
 
-                if msg.content == "Cancel" or msg.content == "cancel":
+            if msg.content == "Cancel" or msg.content == "cancel":
                     await self.bot.say("Stopping game.")
                     print("Stopping the game.")
                     #loop = False
-                    break           
-            except AttributeError:
-                reply2 = error+" or no input."
-                print("NameError.")
+                    break
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
                 msg2 = msg.content
@@ -369,7 +369,8 @@ class Battleship:
         board[ship1a][ship1b] = ":white_circle:"
         board[ship2a][ship2b] = ":white_circle:"
         board[ship2a][ship2c] = ":white_circle:"
-        reply = embed_board(turn2)                    
+        reply = embed_board(turn2)
+        await self.bot.delete_message(guessing)
         await self.bot.edit_message(message_Embed, embed=reply)
         await self.bot.say(over)
         print(" ")
