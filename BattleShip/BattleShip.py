@@ -360,6 +360,8 @@ class Battleship:
             embedPrint += 1
             turn -= 1
             turn2 += 1
+            if turn == 0:
+                await self.bot.delete_message(ShipM)
 
         #reply2 = over
         print ("Game Over")
@@ -372,7 +374,7 @@ class Battleship:
         reply = embed_board(turn2)
         #await self.bot.delete_message(guessing)
         await self.bot.edit_message(message_Embed, embed=reply)
-        await self.bot.edit_message(ShipM, over)
+        await self.bot.say(over)
         print(" ")
         print("Here are all the ships, they're labeled M.")
 
