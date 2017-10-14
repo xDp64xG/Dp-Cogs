@@ -360,8 +360,8 @@ class Battleship:
             embedPrint += 1
             turn -= 1
             turn2 += 1
-            if turn == 0:
-                await self.bot.delete_message(ShipM)
+            if turn2 == 10:
+                await self.bot.delete_message(shipM)
 
         #reply2 = over
         print ("Game Over")
