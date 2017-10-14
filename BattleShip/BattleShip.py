@@ -204,6 +204,10 @@ class Battleship:
                     print("Stopping the game.")
                     #loop = False
                     break
+                elif msg.content == "NoneType":
+                    await self.bot.say("You waited too long. Ending game.")
+                    reply2 = "No input."
+                    break             
             except NameError:
                 reply2 = error
                 print("NameError.")
