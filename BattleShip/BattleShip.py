@@ -370,9 +370,9 @@ class Battleship:
         board[ship2a][ship2b] = ":white_circle:"
         board[ship2a][ship2c] = ":white_circle:"
         reply = embed_board(turn2)
-        await self.bot.delete_message(guessing)
+        #await self.bot.delete_message(guessing)
         await self.bot.edit_message(message_Embed, embed=reply)
-        await self.bot.say(over)
+        await self.bot.edit_message(ShipM, over)
         print(" ")
         print("Here are all the ships, they're labeled M.")
 
