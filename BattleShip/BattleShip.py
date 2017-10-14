@@ -198,9 +198,9 @@ class Battleship:
             print(timeout)
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
-            if timeout == 30:
+            """if timeout == 30:
                 print("I got no input within the time limit. Stopping game.")
-                break
+                break"""
 
             if msg.content == "Cancel" or msg.content == "cancel":
                     await self.bot.say("Stopping game.")
