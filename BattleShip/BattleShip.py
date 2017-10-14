@@ -198,18 +198,14 @@ class Battleship:
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
             try:
-                if msg == "NoneType":
-                    await self.bot.say("You waited too long. Ending game.")
-                    reply2 = "No input."
-                    break 
 
-                elif msg.content == "Cancel" or msg.content == "cancel":
+                if msg.content == "Cancel" or msg.content == "cancel":
                     await self.bot.say("Stopping game.")
                     print("Stopping the game.")
                     #loop = False
                     break           
-            except NameError:
-                reply2 = error
+            except AttributeError:
+                reply2 = error+" or no input."
                 print("NameError.")
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
             try:
