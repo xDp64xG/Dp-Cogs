@@ -303,10 +303,14 @@ class Battleship:
                 #Check if answers were integers, otherwise move on
                 #isinstance(guess_x, int)
                 #isinstance(guess_y, int)
-                if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
-                    reply2 = ocean
-                    turn += 1
-                    turn2 -= 1
+                if not == 0:
+                    
+                    if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
+                        reply2 = ocean
+                        turn += 1
+                        turn2 -= 1
+                    else:
+                        reply2 = "Error. Invalid Format."
                         
                 elif(board[guess_x][guess_y] == ":red_circle:"):
                     reply2 = guess
