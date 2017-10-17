@@ -330,10 +330,13 @@ class Battleship:
                 if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
                     reply2 = ocean
                     print ("Oops, that's not even in the ocean.")
+                    turn += 1
+                    turn2 -= 1
                         
                 elif(board[guess_x][guess_y] == ":red_circle:"):
                     reply2 = guess
                     turn += 1
+                    turn2 -= 1
                     print ("You guessed that one already.")
                         
                 else:
