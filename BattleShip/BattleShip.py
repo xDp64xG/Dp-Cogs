@@ -40,7 +40,7 @@ class Battleship:
         author = ctx.message.author
         channel = ctx.message.channel
 
-
+        #Put this into a function like the board#
 
         embed=discord.Embed(
             title="About Battleship", 
@@ -78,24 +78,6 @@ class Battleship:
         await self.bot.say(embed=embed) 
         
 
-
-
-
-        """
-            10 9 8 7 6 5 4 3 2 1
-        Y    O O O O O O O O O O  10
-             O O O O O O O O O O  9
-        A    O O O O O O O O O O  8
-        X    O O O O O O O O O O  7
-        I    O O O O O O O O O O  6
-        s    O O O O O O O O O O  5
-             O O O O O O O O O O  4
-             O O O O O O O O O O  3
-             O O O O O O O O O O  2
-             O O O O O O O O O O  1
-            X Axis
-        """
-
         for x in range(5): #Size of the board
             board.append([":black_circle:"] * 5)
 
@@ -103,13 +85,9 @@ class Battleship:
             i = "\n"
             for x in board:
                 i = i + " ".join(x)+"\n"
-                #print(len(x))
+
             i += ""
             return i
-        
-        
-
-
 
         print ("Let's play Battleship!")
         print (" ")
@@ -206,9 +184,7 @@ class Battleship:
             
 
             if msg.content == "Cancel" or msg.content == "cancel":
-                    #await self.bot.say("Stopping game.")
                     print("Stopping the game.")
-                    #loop = False
                     stop += 1
                     break
             #Catches any errors, such as bad input. Not numbers, not 2 answers, etc.
@@ -244,7 +220,6 @@ class Battleship:
             except discord.errors.Forbidden:
                 print('discord.errors.Forbidden')
                 await self.bot.say('Error. Don\'t have the permissions. Stopping game.')
-                #loop = False
                 break
                 
             if total == 4:
@@ -254,7 +229,6 @@ class Battleship:
                 if total == 4:
                     await self.bot.say("You hit em all captain.\n Game Over.")
                     await self.bot.edit_message(message_Embed, embed=reply)
-                    #loop = False
                         
                 break
                 
@@ -268,27 +242,22 @@ class Battleship:
             elif guess_x == ship1a and guess_y == ship1b:
                 board[guess_x][guess_y] = ":large_blue_circle:"
                 if num == 0:
-                    print("Part of ship sunk.")
                     reply2 = hit1
                     num += 1
 
                 else:
-                    print("You sunk a battleship.")
                     reply2 = hit2
                         
                 total += 1 
 
             elif guess_x == ship1d and guess_y == ship1b:
-
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num == 0:
-                    print("You sunk part of a battleship!")
                     reply2 = hit1
                     num += 1
 
                 else:
-                    print("You sunk a battleship.")
                     reply2 = hit2
                         
                 total += 1
@@ -299,12 +268,12 @@ class Battleship:
 
                 if num2 == 0:
                     reply2 = hit1
-                    print("You sunk part of a battleship!")
+
                     num2 += 1
 
                 else:
                     reply2 = hit2
-                    print("You sunk a battleship.")
+
         
                 total += 1
 
@@ -314,12 +283,12 @@ class Battleship:
 
                 if num2 == 0:
                     reply2 = hit1
-                    print("You sunk part of a battleship!")
+
                     num2 += 1
 
                 else:
                     reply2 = hit2
-                    print("You sunk a battleship.")
+
 
                 total += 1
                 #--------------------------------------#
@@ -329,7 +298,7 @@ class Battleship:
             else:
                 if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
                     reply2 = ocean
-                    print ("Oops, that's not even in the ocean.")
+
                     turn += 1
                     turn2 -= 1
                         
@@ -337,28 +306,12 @@ class Battleship:
                     reply2 = guess
                     turn += 1
                     turn2 -= 1
-                    print ("You guessed that one already.")
+
                         
                 else:
-                    print ("You missed my battleship!")
-                    board[guess_x][guess_y] = ":red_circle:"
-                    reply2 = miss
 
-                    """if turn <= 0:
-                        reply2 = over
-                        print ("Game Over")
-                            
-                        board[ship_x][ship_y] = ":white_circle:"
-                        board[ship1d][ship1b] = ":white_circle:" 
-                        board[ship1a][ship1b] = ":white_circle:"
-                        board[ship2a][ship2b] = ":white_circle:"
-                        board[ship2a][ship2c] = ":white_circle:"
-                            
-                        await self.bot.edit_message(message_Embed, embed=reply)
-                        print(" ")
-                        print("Here are all the ships, they're labeled M.")
-                        break
-                        #loop = False"""         
+                    board[guess_x][guess_y] = ":red_circle:"
+                    reply2 = miss        
 
             if embedPrint == 0:
                 shipM = await self.bot.say(reply2)
@@ -373,7 +326,7 @@ class Battleship:
         #reply2 = over
         if turn == 0:
             
-            print ("Game Over")
+
                             
             board[ship_x][ship_y] = ":white_circle:"
             board[ship1d][ship1b] = ":white_circle:" 
@@ -381,12 +334,11 @@ class Battleship:
             board[ship2a][ship2b] = ":white_circle:"
             board[ship2a][ship2c] = ":white_circle:"
             reply = embed_board(turn2)
-            #await self.bot.delete_message(guessing)
+            print("Shows ships. Games over.")
             await self.bot.edit_message(message_Embed, embed=reply)
-            #await self.bot.say(over)
+
             reply2 = over
-            print(" ")
-            print("Here are all the ships, they're labeled M.")
+
         else:
             if var == 1:
                 reply2 = "Error. No input, stopping game."
