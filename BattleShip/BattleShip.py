@@ -303,10 +303,10 @@ class Battleship:
                 #Check if answers were integers, otherwise move on
                 #isinstance(guess_x, int)
                 #isinstance(guess_y, int)
-                if not2 == 1:
+                if not2 >= 1:
                     reply2 = "Error. Invalid Format."
                     
-                else:
+                elif not2 == 0:
                     if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
                         reply2 = ocean
                         turn += 1
