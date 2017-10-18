@@ -22,7 +22,7 @@ class Battleship:
         embedPrint = 0
         var = 0
         stop = 0
-        not = 0
+        not2 = 0
         
         error = "Error. Invalid Response."
         miss = "You missed my battleship!"
@@ -157,7 +157,7 @@ class Battleship:
             return embed
  
         while turn != 0:
-            not = 0
+            not2 = 0
             reply2 = ""
 
             reply = embed_board(turn2)
@@ -199,7 +199,7 @@ class Battleship:
             except IndexError:
                 reply2 = error
                 print("Invalid Response. IndexError")
-                not += 1
+                not2 += 1
                 turn += 1
                 turn2 -= 1
                     
@@ -207,14 +207,14 @@ class Battleship:
                 turn += 1
                 turn2 -= 1
                 reply2 = error
-                not += 1
+                not2 += 1
                 print("Invalid Response. ValueError")
                     
             except UnboundLocalError:
                 turn += 1
                 turn2 -= 1
                 reply2 = error
-                not += 1
+                not2 += 1
                 print("Invalid. UnboundLocalError")
                 
             #Deletes users answer, like 1 3. Needs proper perms though.   
@@ -303,7 +303,7 @@ class Battleship:
                 #Check if answers were integers, otherwise move on
                 #isinstance(guess_x, int)
                 #isinstance(guess_y, int)
-                if not == 0:
+                if not2 == 0:
                     
                     if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
                         reply2 = ocean
