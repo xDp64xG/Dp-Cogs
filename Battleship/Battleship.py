@@ -163,7 +163,7 @@ class Battleship:
             not2 = 0
             reply2 = ""
             colour = "010000"
-            reply = embed_board(turn2)
+            reply = embed_board(turn2, colour)
             check += 1
             print("Turns:"+str(turn))
 
