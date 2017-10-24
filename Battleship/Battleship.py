@@ -311,10 +311,10 @@ class Battleship:
                         turn += 1
                         turn2 -= 1
                         
-                else:
+                    else:
 
-                    board[guess_x][guess_y] = ":red_circle:"
-                    reply2 = miss        
+                        board[guess_x][guess_y] = ":red_circle:"
+                        reply2 = miss        
 
             if embedPrint == 0:
                 shipM = await self.bot.say(reply2)
