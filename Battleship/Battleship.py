@@ -180,6 +180,7 @@ class Battleship:
             if not msg:
                 var += 1
                 break
+                
             await self.bot.delete_message(guessing)
             #Gets the no message, when times out. Working?
             
@@ -272,12 +273,10 @@ class Battleship:
 
                 if num2 == 0:
                     reply2 = hit1
-
                     num2 += 1
 
                 else:
                     reply2 = hit2
-
         
                 total += 1
 
@@ -287,18 +286,13 @@ class Battleship:
 
                 if num2 == 0:
                     reply2 = hit1
-
                     num2 += 1
 
                 else:
                     reply2 = hit2
 
-
                 total += 1
-                #--------------------------------------#
-                
-
-
+                #--------------------------------------#                
             else:
                 #Check if answers were integers, otherwise move on
                 #isinstance(guess_x, int)
@@ -312,11 +306,10 @@ class Battleship:
                         turn += 1
                         turn2 -= 1
                         
-                elif(board[guess_x][guess_y] == ":red_circle:"):
-                    reply2 = guess
-                    turn += 1
-                    turn2 -= 1
-
+                    elif(board[guess_x][guess_y] == ":red_circle:"):
+                        reply2 = guess
+                        turn += 1
+                        turn2 -= 1
                         
                 else:
 
@@ -330,6 +323,7 @@ class Battleship:
             embedPrint += 1
             turn -= 1
             turn2 += 1
+            
             if turn2 == 10:
                 await self.bot.delete_message(shipM)
 
