@@ -58,7 +58,7 @@ class Battleship:
             inline=True)
         embed.add_field(
             name="How many turns", 
-            value="You have 9 attempts to hit my 4 ships", 
+            value="You have 10 attempts to hit my 3 ships(2 ships that are 2 by 1, 1 ship that is 1 by 1)", 
             inline=True)
         embed.add_field(
             name="Author", 
@@ -148,7 +148,8 @@ class Battleship:
         def embed_board(turn2):
             embed=discord.Embed(
                 title="The Board",
-                description=" ",)
+                description=" ",
+                color=ff0000)
             embed.add_field(
                 name="Turn "+str(turn2),
                 value=print_board(board),
