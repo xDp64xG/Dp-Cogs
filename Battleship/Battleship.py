@@ -93,7 +93,7 @@ class Battleship:
 
         print ("Let's play Battleship!")
         print (" ")
-        await self.bot.say("Let's play Battleship!"+ "\n")
+        play = await self.bot.say("Let's play Battleship!"+ "\n")
  
         
 
@@ -241,7 +241,7 @@ class Battleship:
                 break
                 
             elif guess_x == ship_x and guess_y == ship_y:
-                colour = 0x0000FF
+                colour = 0x55acee
                 board[guess_x][guess_y] = ":large_blue_circle:"
                 print("Sunk a ship.")
                 reply2 = hit2
@@ -249,7 +249,7 @@ class Battleship:
 
             #-------------------------------------------#    
             elif guess_x == ship1a and guess_y == ship1b:
-                colour = 0x0000FF
+                colour = 0x55acee
                 board[guess_x][guess_y] = ":large_blue_circle:"
                 if num == 0:
                     reply2 = hit1
@@ -261,7 +261,7 @@ class Battleship:
                 total += 1 
 
             elif guess_x == ship1d and guess_y == ship1b:
-                colour = 0x0000FF
+                colour = 0x55acee
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num == 0:
@@ -274,7 +274,7 @@ class Battleship:
                 total += 1
                 #-----------------------------------------------#
             elif guess_x == ship2a and guess_y == ship2b:
-                colour = 0x0000FF
+                colour = 0x55acee
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num2 == 0:
@@ -287,7 +287,7 @@ class Battleship:
                 total += 1
 
             elif guess_x == ship2a and guess_y == ship2c:
-                colour = 0x0000FF
+                colour = 0x55acee
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num2 == 0:
@@ -354,9 +354,13 @@ class Battleship:
 
         else:
             if var == 1:
-                reply2 = "Game Cancelled - I received no response from you."
+                await bot.delete_message(play)
+                await bot.delete_message(message_Embed)
+                reply2 = "I got no response from you :cry: . Stopping game. "
             elif stop == 1:
-                reply2 = "Stopping Game"
+                await bot.delete_message(play)
+                await bot.delete_message(message_Embed)
+                reply2 = "The game has been cancelled."
         await self.bot.say(reply2)
            
 
