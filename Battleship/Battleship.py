@@ -23,6 +23,7 @@ class Battleship:
         var = 0
         stop = 0
         not2 = 0
+        colour = 0FFF00
         
         error = "Error. Invalid Response."
         miss = "You missed my battleship!"
@@ -161,7 +162,7 @@ class Battleship:
             not2 = 0
             reply2 = ""
 
-            reply = embed_board(turn2)
+            reply = embed_board(turn2, colour)
             check += 1
             print("Turns:"+str(turn))
 
@@ -233,12 +234,14 @@ class Battleship:
                 print("All ships sunk.")
                     
                 if total == 4:
+                    colour = CF9C00
                     await self.bot.say("You hit em all captain.\n Game Over.")
                     await self.bot.edit_message(message_Embed, embed=reply)
                         
                 break
                 
             elif guess_x == ship_x and guess_y == ship_y:
+                colour = 0000FF
                 board[guess_x][guess_y] = ":large_blue_circle:"
                 print("Sunk a ship.")
                 reply2 = hit2
@@ -246,6 +249,7 @@ class Battleship:
 
             #-------------------------------------------#    
             elif guess_x == ship1a and guess_y == ship1b:
+                colour = 0000FF
                 board[guess_x][guess_y] = ":large_blue_circle:"
                 if num == 0:
                     reply2 = hit1
@@ -257,6 +261,7 @@ class Battleship:
                 total += 1 
 
             elif guess_x == ship1d and guess_y == ship1b:
+                colour = 0000FF
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num == 0:
@@ -269,7 +274,7 @@ class Battleship:
                 total += 1
                 #-----------------------------------------------#
             elif guess_x == ship2a and guess_y == ship2b:
-
+                colour = 0000FF
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num2 == 0:
@@ -282,7 +287,7 @@ class Battleship:
                 total += 1
 
             elif guess_x == ship2a and guess_y == ship2c:
-
+                colour = 0000FF
                 board[guess_x][guess_y] = ":large_blue_circle:"
 
                 if num2 == 0:
@@ -299,21 +304,24 @@ class Battleship:
                 #isinstance(guess_x, int)
                 #isinstance(guess_y, int)
                 if not2 >= 1:
+                    colour = 010000
                     reply2 = "Error. Invalid Format."
                     
                 elif not2 == 0:
                     if (guess_x < 0 or guess_x > l-1) or (guess_y < 0 or guess_y > l-1):
+                        colour = 010000
                         reply2 = ocean
                         turn += 1
                         turn2 -= 1
                         
                     elif(board[guess_x][guess_y] == ":red_circle:"):
+                        colour = 010000
                         reply2 = guess
                         turn += 1
                         turn2 -= 1
                         
                     else:
-
+                        colour = FF0000
                         board[guess_x][guess_y] = ":red_circle:"
                         reply2 = miss        
 
@@ -329,6 +337,7 @@ class Battleship:
                 await self.bot.delete_message(shipM)
 
         if turn == 0:
+            colour = FFFFFF
             
 
                             
@@ -337,7 +346,7 @@ class Battleship:
             board[ship1a][ship1b] = ":white_circle:"
             board[ship2a][ship2b] = ":white_circle:"
             board[ship2a][ship2c] = ":white_circle:"
-            reply = embed_board(turn2)
+            reply = embed_board(turn2, colour)
             print("Shows ships. Games over.")
             await self.bot.edit_message(message_Embed, embed=reply)
 
