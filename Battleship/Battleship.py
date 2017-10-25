@@ -146,7 +146,7 @@ class Battleship:
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
 
-        def embed_board(turn2):
+        def embed_board(turn2, colour):
             embed=discord.Embed(
                 title="The Board",
                 description=" ",
