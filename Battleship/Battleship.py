@@ -235,69 +235,95 @@ class Battleship:
                     
                 if total == 4:
                     colour = 0xCF9C00
-                    await self.bot.say("You hit em all captain.\n Game Over.")
+                    reply2 = "You hit em all captain.\n Game Over."
                     await self.bot.edit_message(message_Embed, embed=reply)
                         
                 break
                 
             elif guess_x == ship_x and guess_y == ship_y:
-                colour = 0x55acee
-                board[guess_x][guess_y] = ":large_blue_circle:"
-                print("Sunk a ship.")
-                reply2 = hit2
-                total += 1
+                #Experimental
+                if board[guess_x][guess_y] == ";large_blue_circle":
+                    turn += 1
+                    turn2 -= 1
+                    pass
+                else:
+                    colour = 0x55acee
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+                    print("Sunk a ship.")
+                    reply2 = hit2
+                    total += 1
 
             #-------------------------------------------#    
             elif guess_x == ship1a and guess_y == ship1b:
-                colour = 0x55acee
-                board[guess_x][guess_y] = ":large_blue_circle:"
-                if num == 0:
-                    reply2 = hit1
-                    num += 1
-
+                if board[guess_x][guess_y] == ";large_blue_circle":
+                    turn += 1
+                    turn2 -= 1
+                    pass
                 else:
-                    reply2 = hit2
+                    colour = 0x55acee
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+                    if num == 0:
+                        reply2 = hit1
+                        num += 1
+
+                    else:
+                        reply2 = hit2
                         
-                total += 1 
+                    total += 1 
 
             elif guess_x == ship1d and guess_y == ship1b:
-                colour = 0x55acee
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num == 0:
-                    reply2 = hit1
-                    num += 1
-
+                if board[guess_x][guess_y] == ";large_blue_circle":
+                    turn += 1
+                    turn2 -= 1
+                    pass
                 else:
-                    reply2 = hit2
+                    colour = 0x55acee
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num == 0:
+                        reply2 = hit1
+                        num += 1
+
+                    else:
+                        reply2 = hit2
                         
-                total += 1
+                    total += 1
                 #-----------------------------------------------#
             elif guess_x == ship2a and guess_y == ship2b:
-                colour = 0x55acee
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num2 == 0:
-                    reply2 = hit1
-                    num2 += 1
-
+                if board[guess_x][guess_y] == ";large_blue_circle":
+                    turn += 1
+                    turn2 -= 1
+                    pass
                 else:
-                    reply2 = hit2
+                    colour = 0x55acee
+                    board[guess_x][guess_y] = ":large_blue_circle:"
+
+                    if num2 == 0:
+                        reply2 = hit1
+                        num2 += 1
+
+                    else:
+                        reply2 = hit2
         
-                total += 1
+                    total += 1
 
             elif guess_x == ship2a and guess_y == ship2c:
-                colour = 0x55acee
-                board[guess_x][guess_y] = ":large_blue_circle:"
-
-                if num2 == 0:
-                    reply2 = hit1
-                    num2 += 1
-
+                if board[guess_x][guess_y] == ";large_blue_circle":
+                    turn += 1
+                    turn2 -= 1
+                    pass
                 else:
-                    reply2 = hit2
+                    colour = 0x55acee
+                    board[guess_x][guess_y] = ":large_blue_circle:"
 
-                total += 1
+                    if num2 == 0:
+                        reply2 = hit1
+                        num2 += 1
+
+                    else:
+                        reply2 = hit2
+
+                    total += 1
                 #--------------------------------------#                
             else:
                 #Check if answers were integers, otherwise move on
