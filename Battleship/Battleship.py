@@ -234,7 +234,7 @@ class Battleship:
                 print("All ships sunk.")
                     
                 if total == 4:
-                    colour = CF9C00
+                    colour = 0xCF9C00
                     await self.bot.say("You hit em all captain.\n Game Over.")
                     await self.bot.edit_message(message_Embed, embed=reply)
                         
@@ -361,6 +361,7 @@ class Battleship:
             elif stop == 1:
                 await self.bot.delete_message(play)
                 await self.bot.delete_message(message_Embed)
+                await self.bot.delete_message(msg)
                 reply2 = "The game has been cancelled."
         await self.bot.say(reply2)
            
