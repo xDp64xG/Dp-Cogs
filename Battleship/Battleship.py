@@ -354,7 +354,7 @@ class Battleship:
 
         else:
             if var == 1:
-                reply2 = "Error. No input, stopping game."
+                reply2 = "Game Cancelled - I received no response from you."
             elif stop == 1:
                 reply2 = "Stopping Game"
         await self.bot.say(reply2)
