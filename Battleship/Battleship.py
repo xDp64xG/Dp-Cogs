@@ -242,7 +242,7 @@ class Battleship:
                 
             elif guess_x == ship_x and guess_y == ship_y:
                 #Experimental
-                if board[guess_x][guess_y] == ":large_blue_circle":
+                if board[guess_x][guess_y] == ":large_blue_circle:":
                     await self.bot.say("Turns shouldn't increase here")
                     turn += 1
                     turn2 -= 1
@@ -255,7 +255,7 @@ class Battleship:
 
             #-------------------------------------------#    
             elif guess_x == ship1a and guess_y == ship1b:
-                if board[guess_x][guess_y] == ":large_blue_circle":
+                if board[guess_x][guess_y] == ":large_blue_circle:":
                     await self.bot.say("Turns shouldn't increase here(2)")
                     turn += 1
                     turn2 -= 1
@@ -272,7 +272,7 @@ class Battleship:
                     total += 1 
 
             elif guess_x == ship1d and guess_y == ship1b:
-                if board[guess_x][guess_y] == ":large_blue_circle":
+                if board[guess_x][guess_y] == ":large_blue_circle:":
                     await self.bot.say("Turns shouldn't increase here(3)")
                     turn += 1
                     turn2 -= 1
@@ -290,7 +290,7 @@ class Battleship:
                     total += 1
                 #-----------------------------------------------#
             elif guess_x == ship2a and guess_y == ship2b:
-                if board[guess_x][guess_y] == ":large_blue_circle":
+                if board[guess_x][guess_y] == ":large_blue_circle:":
                     await self.bot.say("Turns shouldn't increase here(4)")
                     turn += 1
                     turn2 -= 1
@@ -308,7 +308,7 @@ class Battleship:
                     total += 1
 
             elif guess_x == ship2a and guess_y == ship2c:
-                if board[guess_x][guess_y] == ":large_blue_circle":
+                if board[guess_x][guess_y] == ":large_blue_circle:":
                     await self.bot.say("Turns shouldn't increase here(5)")
                     turn += 1
                     turn2 -= 1
