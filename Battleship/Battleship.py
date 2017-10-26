@@ -390,7 +390,8 @@ class Battleship:
             elif fin == 1:
                 turn2 = 10
                 colour = 0xCF9C00
-                await self.bot.say(embed_board(turn2, colour))
+                reply = embed_board(turn2, colour)
+                await self.bot.say(embed=reply)
         await self.bot.say(reply2)
            
 
