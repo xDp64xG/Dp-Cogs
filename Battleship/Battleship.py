@@ -24,6 +24,7 @@ class Battleship:
         stop = 0
         not2 = 0
         colour = 0x0FFF00
+        fin = 0
         
         error = "Error. Invalid Response."
         miss = "You missed my battleship!"
@@ -236,7 +237,9 @@ class Battleship:
                 if total == 4:
                     colour = 0xCF9C00
                     reply2 = "You hit em all captain.\n Game Over."
-                    await self.bot.edit_message(message_Embed, embed=reply)
+                    await self.bot.delete_message(message_Embed)
+                    fin += 1
+                    
                         
                 break
                 
@@ -384,6 +387,10 @@ class Battleship:
                 await self.bot.delete_message(message_Embed)
                 await self.bot.delete_message(msg)
                 reply2 = "The game has been cancelled."
+            elif fin == 1:
+                turn2 = 10
+                colour = 0xCF9C00
+                await self.bot.say(embed_board(turn2, colour))
         await self.bot.say(reply2)
            
 
