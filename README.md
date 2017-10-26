@@ -29,5 +29,9 @@ Versions:
 		Output 2 - Wait for 30 seconds and no input, says "Error. No input, stopping game."
 		Output 3 - When you don't sink all ships, you get the board where the ships were and "Game Over"
 		Output 4(still working on for the end) - Basically congrats on hitting all the ships.
+	1.4:
+		New embed colours depending on the game status
+		Fixing Guide
+		Fixed some bug fixes for stopping the game
 		
 
