@@ -69,12 +69,12 @@ class Battleship:
         embed.add_field(
             name="Battleship Board Layout",
             value=(""":regional_indicator_y: :one: :zero: :zero: :zero: :zero: :zero:
-:gap: :two: :zero: :zero: :zero: :zero: :zero:
+<:gap:373109551009890304> :two: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_a: :three: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_x: :four: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_i: :five: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_s: :zero: :one: :two: :three: :four: :five:
-:gap: :regional_indicator_x: :gap: :regional_indicator_a: :regional_indicator_x: :regional_indicator_i: :regional_indicator_s:"""), inline=True)
+<:gap:373109551009890304> :regional_indicator_x: <:gap:373109551009890304> :regional_indicator_a: :regional_indicator_x: :regional_indicator_i: :regional_indicator_s:"""), inline=True)
         embed.set_footer(
             text="Magik Bot - Providing Discord support since September 2017")
         
