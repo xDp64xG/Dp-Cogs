@@ -74,7 +74,7 @@ class Battleship:
 :regional_indicator_x: :four: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_i: :five: :zero: :zero: :zero: :zero: :zero:
 :regional_indicator_s: :zero: :one: :two: :three: :four: :five:
-:gap: :regional_indicator_x: :gap: :regional_indicator_a: :regional_indicator_x: :regional_indicator_i: :regional_indicator_s:" 00FFFF""), inline=True)
+:gap: :regional_indicator_x: :gap: :regional_indicator_a: :regional_indicator_x: :regional_indicator_i: :regional_indicator_s:"""), inline=True)
         embed.set_footer(
             text="Magik Bot - Providing Discord support since September 2017")
         
