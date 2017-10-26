@@ -235,6 +235,7 @@ class Battleship:
                 print("All ships sunk.")
                     
                 if total == 4:
+                    board[guess_x][guess_y] = ":large_blue_circle:"
                     colour = 0xCF9C00
                     reply2 = "You hit em all captain.\n Game Over."
                     await self.bot.delete_message(message_Embed)
