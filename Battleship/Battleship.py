@@ -245,7 +245,6 @@ class Battleship:
                 if board[guess_x][guess_y] == ":large_blue_circle":
                     turn += 1
                     turn2 -= 1
-                    pass
                 else:
                     colour = 0x55acee
                     board[guess_x][guess_y] = ":large_blue_circle:"
@@ -258,7 +257,6 @@ class Battleship:
                 if board[guess_x][guess_y] == ":large_blue_circle":
                     turn += 1
                     turn2 -= 1
-                    pass
                 else:
                     colour = 0x55acee
                     board[guess_x][guess_y] = ":large_blue_circle:"
@@ -275,7 +273,6 @@ class Battleship:
                 if board[guess_x][guess_y] == ":large_blue_circle":
                     turn += 1
                     turn2 -= 1
-                    pass
                 else:
                     colour = 0x55acee
                     board[guess_x][guess_y] = ":large_blue_circle:"
@@ -293,7 +290,6 @@ class Battleship:
                 if board[guess_x][guess_y] == ":large_blue_circle":
                     turn += 1
                     turn2 -= 1
-                    pass
                 else:
                     colour = 0x55acee
                     board[guess_x][guess_y] = ":large_blue_circle:"
@@ -311,7 +307,6 @@ class Battleship:
                 if board[guess_x][guess_y] == ":large_blue_circle":
                     turn += 1
                     turn2 -= 1
-                    pass
                 else:
                     colour = 0x55acee
                     board[guess_x][guess_y] = ":large_blue_circle:"
