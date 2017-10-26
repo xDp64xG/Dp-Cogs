@@ -46,7 +46,7 @@ class Battleship:
 
         embed=discord.Embed(
             title="About Battleship", 
-            description="~ A simple game of Battle Ships built into Magik Bot.\n:black_circle: - Open Target\n:red_circle: - Missed Target\n:large_blue_circle: = Target Hit\n⚪ = Location of ships (at the end of the game)", 
+            description="~ A simple game of Battle Ships built into Magik Bot.\n:black_circle: = Open Target\n:red_circle: = Missed Target\n:large_blue_circle: = Target Hit\n⚪ = Location of ships (at the end of the game)", 
             color=0x207cee)
         embed.set_author(
             name="Magik bot", url='http://www.magikbot.co.uk', 
