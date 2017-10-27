@@ -25,7 +25,6 @@ class Battleship:
         not2 = 0
         colour = 0x0FFF00
         fin = 0
-        gap = '<:gap:373109551009890304>'
         
         error = "Error. Invalid Response."
         miss = "You missed my battleship!"
@@ -95,7 +94,7 @@ class Battleship:
 
         print ("Let's play Battleship!")
         print (" ")
-        play = await self.bot.say("Let's play Battleship!"+ "\n")
+        #play = await self.bot.say("Let's play Battleship!"+ "\n")
  
         
 
@@ -150,7 +149,7 @@ class Battleship:
 
         def embed_board(turn2, colour):
             embed=discord.Embed(
-                title="The Board",
+                title=author+"'s Board",
                 description=" ",
                 color=colour)
             embed.add_field(
@@ -164,7 +163,7 @@ class Battleship:
             not2 = 0
             reply2 = ""
 
-            reply = embed_board(turn2, colour)
+            reply = embed_board(turn2, colour, author)
             check += 1
             print("Turns:"+str(turn))
 
@@ -372,7 +371,7 @@ class Battleship:
             board[ship1a][ship1b] = ":white_circle:"
             board[ship2a][ship2b] = ":white_circle:"
             board[ship2a][ship2c] = ":white_circle:"
-            reply = embed_board(turn2, colour)
+            reply = embed_board(turn2, colour, author)
             print("Shows ships. Games over.")
             await self.bot.edit_message(message_Embed, embed=reply)
 
@@ -380,12 +379,12 @@ class Battleship:
 
         else:
             if var == 1:
-                await self.bot.delete_message(play)
+                #await self.bot.delete_message(play)
                 await self.bot.delete_message(guessing)
                 await self.bot.delete_message(message_Embed)
                 reply2 = "I got no response from you :cry: . Stopping game. "
             elif stop == 1:
-                await self.bot.delete_message(play)
+                #await self.bot.delete_message(play)
                 await self.bot.delete_message(message_Embed)
                 await self.bot.delete_message(msg)
                 reply2 = "The game has been cancelled."
