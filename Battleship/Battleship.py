@@ -161,7 +161,7 @@ class Battleship:
  
         while turn != 0:
             #author = ctx.message.author
-            await self.bot.say(author)
+            #await self.bot.say(author)
             not2 = 0
             reply2 = ""
 
