@@ -147,9 +147,9 @@ class Battleship:
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
         #Re add author again
-        def embed_board(turn2, colour):
+        def embed_board(turn2, colour, author2):
             embed=discord.Embed(
-                title="The Board",
+                title=author2,"s Board",
                 description=" ",
                 color=colour)
             embed.add_field(
@@ -160,12 +160,12 @@ class Battleship:
             return embed
  
         while turn != 0:
-            #author = ctx.message.author
+            author2 = ctx.message.author
             await self.bot.say(author)
             not2 = 0
             reply2 = ""
 
-            reply = embed_board(turn2, colour)
+            reply = embed_board(turn2, colour, author2)
             check += 1
             print("Turns:"+str(turn))
 
@@ -373,7 +373,7 @@ class Battleship:
             board[ship1a][ship1b] = ":white_circle:"
             board[ship2a][ship2b] = ":white_circle:"
             board[ship2a][ship2c] = ":white_circle:"
-            reply = embed_board(turn2, colour)
+            reply = embed_board(turn2, colour, author)
             print("Shows ships. Games over.")
             await self.bot.edit_message(message_Embed, embed=reply)
 
