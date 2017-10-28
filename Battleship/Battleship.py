@@ -146,7 +146,7 @@ class Battleship:
         print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
         print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
-
+        #Re add author again
         def embed_board(turn2, colour, author):
             embed=discord.Embed(
                 title=author+"'s Board",
@@ -160,6 +160,7 @@ class Battleship:
             return embed
  
         while turn != 0:
+            author = ctx.message.author
             not2 = 0
             reply2 = ""
 
