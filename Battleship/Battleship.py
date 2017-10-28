@@ -149,7 +149,7 @@ class Battleship:
         #Re add author again
         def embed_board(turn2, colour, author):
             embed=discord.Embed(
-                title=author+"'s Board",
+                title=author,"'s Board",
                 description=" ",
                 color=colour)
             embed.add_field(
@@ -160,7 +160,7 @@ class Battleship:
             return embed
  
         while turn != 0:
-            author = ctx.message.author
+            #author = ctx.message.author
             not2 = 0
             reply2 = ""
 
