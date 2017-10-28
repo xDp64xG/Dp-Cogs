@@ -160,7 +160,7 @@ class Battleship:
             return embed
  
         while turn != 0:
-            #author = ctx.message.author
+            author = ctx.message.author
             not2 = 0
             reply2 = ""
 
