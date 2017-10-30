@@ -1,7 +1,7 @@
 {
     "AUTHOR" : "xDp64xG",
     "INSTALL_MSG" : "Thanks for installing my cog.",
-    "NAME" : "Taillog",
+    "NAME" : "Tailcog",
     "SHORT" : "Cog for checking error logs",
     "DESCRIPTION" : "Find an error for Red Logs",
     "TAGS": ["system"]
