@@ -154,7 +154,7 @@ class Battleship:
                 color=colour)
             embed.add_field(
                 name="Owner:",
-                value="{}'s Board".format(str(ctx.message.author)),
+                value="{}'s Board\n{}".format(ctx.message.author.mention, str(ctx.message.author)),
                 inline=True)
             embed.add_field(
                 name="Turn "+str(turn2),
@@ -165,7 +165,6 @@ class Battleship:
  
         while turn != 0:
             author2 = ctx.message.author
-            await self.bot.say(author)
             not2 = 0
             reply2 = ""
 
