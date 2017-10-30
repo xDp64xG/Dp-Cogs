@@ -154,7 +154,7 @@ class Battleship:
                 color=colour)
             embed.add_field(
                 name="Owner:",
-                value="{}'s Board\n{}".format(ctx.message.author.mention, str(ctx.message.author)),
+                value="{}'s Board".format(ctx.message.author.mention),
                 inline=True)
             embed.add_field(
                 name="Turn "+str(turn2),
