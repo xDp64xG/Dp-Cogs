@@ -149,10 +149,13 @@ class Battleship:
         #Re add author again
         def embed_board(turn2, colour, author2):
             embed=discord.Embed(
-                title="Board Owner",
-                value="{}'s Board".format(str(author2)),
+                title="The Board",
                 description=" ",
                 color=colour)
+            embed.add_field(
+                name="Owner:",
+                value="{}'s Board".format(str(author2))
+                inline=True)
             embed.add_field(
                 name="Turn "+str(turn2),
                 value=print_board(board),
