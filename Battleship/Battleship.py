@@ -246,7 +246,7 @@ class Battleship:
                     await self.bot.delete_message(message_Embed)
                     fin += 1
                     
-                        
+                await self.bot.delete_message(ShipM)        
                 break
                 
             elif guess_x == ship_x and guess_y == ship_y:
