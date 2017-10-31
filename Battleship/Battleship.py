@@ -387,19 +387,20 @@ class Battleship:
                 #await self.bot.delete_message(play)
                 await self.bot.delete_message(guessing)
                 await self.bot.delete_message(message_Embed)
-                await self.bot.delete_message(instructions)
+                
                 reply2 = "I got no response from you :cry: . Stopping game. "
             elif stop == 1:
                 #await self.bot.delete_message(play)
                 await self.bot.delete_message(message_Embed)
                 await self.bot.delete_message(msg)
-                await self.bot.delete_message(instructions)
+                
                 reply2 = "The game has been cancelled."
             elif fin == 1:
                 turn2 = 10
                 colour = 0xCF9C00
                 reply = embed_board(turn2, colour, author2)
                 await self.bot.say(embed=reply)
+        await self.bot.delete_message(instructions)
         await self.bot.say(reply2)
            
 
