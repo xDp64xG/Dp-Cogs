@@ -18,7 +18,7 @@ Versions:
 	1.2:
 		Now able to edit the embed
 		Added a timeout of 30 seconds
-		(Beta) Able to send "is typing" message
+		Able to send "is typing" message
 		Edited embed( Turns)
 	1.3:
 		Timeout now works!
@@ -33,5 +33,10 @@ Versions:
 		New embed colours depending on the game status
 		Fixing Guide
 		Fixed some bug fixes for stopping the game
+	1.5:
+		Added authors name onto the board to clarify who is playing
+		When the game is canceled or get no response, everything deletes.
+		At the end of the game, only the board is left and the final message
+		Changed the instructions to the board(used emojies to show the board places)
 		
 
