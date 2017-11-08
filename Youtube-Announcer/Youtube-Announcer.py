@@ -24,6 +24,8 @@ class YTAnnouncer:
 		try:
 			print('Try')
 			for link in soup.find_all('a'):
+				for title in soup,find_all('title'):
+					print('Title ',title.get("")
     				print(link.get('href'))
 			#for link in soupObject.find_all(id='details'):
 				#Get =Get + link.get('title')
