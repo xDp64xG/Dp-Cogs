@@ -15,7 +15,18 @@ class YTAnnouncer:
 
 	@commands.command()
 	async def update(self):
+		Get = []
 		"""This does stuff!"""
+		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
+		async with aiohttp.get(url) as response:
+			soupObject = BeautifulSoup(await response.text(), "html.parser")
+		try:
+			for link in soupObject:
+				Get = link.get('title')
+        		#online = soupObject.find(id='contents').find_all('title').get_text()
+        		await self.bot.say(Get[1])
+    		except:
+        		await self.bot.say("Error.")
 
 		#Your code will go here
 		await self.bot.say("I can do stuff!")
