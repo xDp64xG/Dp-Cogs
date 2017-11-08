@@ -15,11 +15,11 @@ class YTAnnouncer:
 
 	@commands.command()
 	async def update(self):
-	"""This does stuff!"""
+		"""This does stuff!"""
 
-	#Your code will go here
-	await self.bot.say("I can do stuff!")
-	await self.bot.say(soupAvailable)
+		#Your code will go here
+		await self.bot.say("I can do stuff!")
+		await self.bot.say(soupAvailable)
 
 def setup(bot):
 	bot.add_cog(YTAnnouncer(bot))
