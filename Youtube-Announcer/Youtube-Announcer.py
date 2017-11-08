@@ -25,8 +25,8 @@ class YTAnnouncer:
 				Get = link.get('title')
         		#online = soupObject.find(id='contents').find_all('title').get_text()
 			await self.bot.say(Get[1])
-    		except:
-        		await self.bot.say("Error.")
+		except:
+			await self.bot.say("Error.")
 
 		#Your code will go here
 		await self.bot.say("I can do stuff!")
