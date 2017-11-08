@@ -7,14 +7,14 @@ try: # check if BeautifulSoup4 is installed
 except:
 	soupAvailable = False
 
-class Mycog:
+class YTAnnouncer:
     """My custom cog that does stuff!"""
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def YTAnnouncer(self):
+    async def update(self):
         """This does stuff!"""
 
         #Your code will go here
