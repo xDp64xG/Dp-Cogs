@@ -4,7 +4,7 @@ from discord.ext import commands
 
 #!/usr/bin/python
 
-import httplib2
+"""import httplib2
 import os
 import sys
 
@@ -58,7 +58,7 @@ https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
 #def GetAndPrintUserUploads(username):
   #yt_service = gdata.youtube.service.YouTubeService()
   #uri = 'http://gdata.youtube.com/feeds/api/users/%s/uploads' % username
-  #PrintVideoFeed(yt_service.GetYouTubeVideoFeed(uri))
+  #PrintVideoFeed(yt_service.GetYouTubeVideoFeed(uri))"""
 
 
 class Youtube_Announcer: #Here
@@ -66,7 +66,7 @@ class Youtube_Announcer: #Here
 
     def __init__(self, bot):
         self.bot = bot
-    def youtube(username):
+    """def youtube(username):
       # This OAuth 2.0 access scope allows for read-only access to the authenticated
       # user's account, but not other types of account access.
       YOUTUBE_READONLY_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
@@ -121,7 +121,7 @@ class Youtube_Announcer: #Here
             playlistitems_list_request, playlistitems_list_response)
 
       print
-      #pass
+      #pass"""
       
     @commands.command()
     async def update(self):
