@@ -6,6 +6,7 @@ try: # check if BeautifulSoup4 is installed
 	soupAvailable = True
 except:
 	soupAvailable = False
+import aiohttp
 
 class YTAnnouncer:
 	"""My custom cog that does stuff!"""
