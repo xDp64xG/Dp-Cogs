@@ -1,6 +1,12 @@
 import discord
 from discord.ext import commands
 
+try: # check if BeautifulSoup4 is installed
+	from bs4 import BeautifulSoup
+	soupAvailable = True
+except:
+	soupAvailable = False
+
 class Mycog:
     """My custom cog that does stuff!"""
 
@@ -9,11 +15,6 @@ class Mycog:
 
     @commands.command()
     async def mycom(self):
-		try: # check if BeautifulSoup4 is installed
-			from bs4 import BeautifulSoup
-			soupAvailable = True
-		except:
-			soupAvailable = False
         """This does stuff!"""
 
         #Your code will go here
