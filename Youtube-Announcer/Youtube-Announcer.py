@@ -8,16 +8,16 @@ except:
 	soupAvailable = False
 
 class YTAnnouncer:
-    """My custom cog that does stuff!"""
+	"""My custom cog that does stuff!"""
 
-    def __init__(self, bot):
-        self.bot = bot
+	def __init__(self, bot):
+	self.bot = bot
 
-    @commands.command()
-    async def update(self):
-        """This does stuff!"""
+	@commands.command()
+	async def update(self):
+	"""This does stuff!"""
 
-        #Your code will go here
+	#Your code will go here
 	await self.bot.say("I can do stuff!")
 	await self.bot.say(soupAvailable)
 
