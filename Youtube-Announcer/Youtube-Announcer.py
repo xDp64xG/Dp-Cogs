@@ -21,8 +21,5 @@ class Mycog:
         await self.bot.say("I can do stuff!")
 
 def setup(bot):
-    if soupAvailable:
-		bot.add_cog(Mycog(bot))
-	else:
-		raise RuntimeError("You need to run `pip3 install beautifulsoup4`")
+	bot.add_cog(Youtube-Announcer(bot))
 
