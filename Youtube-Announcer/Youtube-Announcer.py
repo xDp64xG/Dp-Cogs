@@ -20,12 +20,16 @@ class YTAnnouncer:
 		"""This does stuff!"""
 		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
 		async with aiohttp.get(url) as response:
-			soupObject = BeautifulSoup(await response.text(), "html.parser")
+			soup = BeautifulSoup(await response.text(), "html.parser")
 		try:
-			for link in soupObject.find_all(id='details'):
-				Get =Get + link.get('title')
+			print('Try')
+			for link in soup.find_all('a'):
+    				print(link.get('href'))
+			#for link in soupObject.find_all(id='details'):
+				#Get =Get + link.get('title')
         		#online = soupObject.find(id='contents').find_all('title').get_text()
 			await self.bot.say(Get[1])
+			print('Good')
 		except:
 			await self.bot.say("Error.")
 
