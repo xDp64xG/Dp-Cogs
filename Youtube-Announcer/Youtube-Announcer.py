@@ -11,7 +11,7 @@ class YTAnnouncer:
 	"""My custom cog that does stuff!"""
 
 	def __init__(self, bot):
-	self.bot = bot
+		self.bot = bot
 
 	@commands.command()
 	async def update(self):
