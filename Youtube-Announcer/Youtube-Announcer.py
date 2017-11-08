@@ -24,7 +24,7 @@ class YTAnnouncer:
 			for link in soupObject:
 				Get = link.get('title')
         		#online = soupObject.find(id='contents').find_all('title').get_text()
-        		await self.bot.say(Get[1])
+			await self.bot.say(Get[1])
     		except:
         		await self.bot.say("Error.")
 
