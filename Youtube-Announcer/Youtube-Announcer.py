@@ -11,17 +11,18 @@ class Youtube_Announcer: #Here
       
     @commands.command()
     async def update(self):
+		#Start
         """This does stuff!"""
-      try:
-         from bs4 import BeautifulSoup
-	      soupAvailable = True
-      except:
-	      soupAvailable = False
+      		try:
+         		from bs4 import BeautifulSoup
+	      		soupAvailable = True
+      		except:
+	      		soupAvailable = False
 
-        #Your code will go here
-        username = 'GrimBOMB'
-        await self.bot.say(str(soupAvailable))
-        #await self.bot.say("I can do stuff!")
+        	#Your code will go here
+        	username = 'GrimBOMB'
+       		await self.bot.say(str(soupAvailable))
+        	#await self.bot.say("I can do stuff!")
 
 def setup(bot):
     bot.add_cog(Youtube_Announcer(bot)) 
