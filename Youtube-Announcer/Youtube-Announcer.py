@@ -14,12 +14,12 @@ class Mycog:
         self.bot = bot
 
     @commands.command()
-    async def mycom(self):
+    async def YTAnnouncer(self):
         """This does stuff!"""
 
         #Your code will go here
         await self.bot.say("I can do stuff!")
 
 def setup(bot):
-	bot.add_cog(Youtube-Announcer(bot))
+	bot.add_cog(YTAnnouncer(bot))
 
