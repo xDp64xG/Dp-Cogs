@@ -19,6 +19,7 @@ class YTAnnouncer:
 
         #Your code will go here
         await self.bot.say("I can do stuff!")
+	await self.bot.say(soupAvailable)
 
 def setup(bot):
 	bot.add_cog(YTAnnouncer(bot))
