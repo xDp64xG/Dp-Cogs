@@ -19,14 +19,14 @@ from discord.ext import commands
   #PrintVideoFeed(yt_service.GetYouTubeVideoFeed(uri))
 
 #Change Mycog to something easier to use the command?#
-class Mycog: #Here
+class Youtube_Announcer: #Here
     """My custom cog that does stuff!"""
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def mycom(self):
+    async def update(self):
         """This does stuff!"""
 
         #Your code will go here
@@ -37,4 +37,4 @@ class Mycog: #Here
         #await self.bot.say("I can do stuff!")
 
 def setup(bot):
-    bot.add_cog(Mycog(bot)) #Here
+    bot.add_cog(Youtube_Announcer(bot)) #Here
