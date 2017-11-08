@@ -22,8 +22,8 @@ class YTAnnouncer:
 		async with aiohttp.get(url) as response:
 			soupObject = BeautifulSoup(await response.text(), "html.parser")
 		try:
-			for link in soupObject:
-				Get = link.get('title')
+			for link in soupObject.find_all(id='details'):
+				Get =Get + link.get('title')
         		#online = soupObject.find(id='contents').find_all('title').get_text()
 			await self.bot.say(Get[1])
 		except:
