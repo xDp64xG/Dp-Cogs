@@ -25,7 +25,7 @@ class TailLog:
 
     @checks.is_owner()
     @commands.command(name="taillog", pass_context=True)
-    async def get_last_log(self, ctx, lines: int=20):
+    async def get_last_log(self, ctx, lines: int=40):
         """gets the last n lines of red.log, default 20"""
         for page in pagify(self.get_last_n_from_log(lines)):
             await self.bot.whisper(box(page))
