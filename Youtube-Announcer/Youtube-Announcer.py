@@ -1,11 +1,7 @@
 import discord
 from discord.ext import commands
 
-try: # check if BeautifulSoup4 is installed
-	from bs4 import BeautifulSoup
-	soupAvailable = True
-except:
-	soupAvailable = False
+import bs4 import BeautifulSoup
 import aiohttp
 
 class YTAnnouncer:
@@ -13,16 +9,26 @@ class YTAnnouncer:
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.url = ""
 
 	@commands.command()
 	async def update(self):
+		url = self.url
+		if url == "":
+			await self.bot.say("There is nothing in the URL variable, why not set one now?")
+			var = await self.wait_for_message(timeout=10, author = ctx.message.author, channel = ctx.message.channel)
+			if not var:
+				await self.bot.say("No input was given. Stopping command.")
+			else:
+				url = var
+				self.url = url
 		List = []
 		Link = ""
 		#await self.bot.say("Get ready")
 		i = 0
 		print('Act')
 		"""This does stuff!"""
-		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
+		#url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
 		async with aiohttp.get(url) as response:
 			soup = BeautifulSoup(await response.text(), "html.parser")
 		#try:
@@ -46,12 +52,7 @@ class YTAnnouncer:
 					Video = ""
 
 				Dict2.append(Link)
-				#Link = str(var)
-				#print(Link)
-				"""if var != None or var != "":
-					for var2 in Lists.find(id="video_title"):
-						var2.get("video")
-						print(Link)"""
+				
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
