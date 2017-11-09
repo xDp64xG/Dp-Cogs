@@ -88,7 +88,7 @@ class YTAnnouncer:
  -				name=Vid, 
  -				value=Lin, 
  -				inline=True)
- -			return Dict3
+ -			return embed
 			#await self.bot.say(Vid, Lin)
 		
 		
