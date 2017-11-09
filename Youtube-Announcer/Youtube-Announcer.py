@@ -27,6 +27,7 @@ class YTAnnouncer:
 		#await self.bot.say("Get ready")
 		i = 0
 		print('Act')
+		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
 		"""This does stuff!"""
 		#url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
 		async with aiohttp.get(url) as response:
