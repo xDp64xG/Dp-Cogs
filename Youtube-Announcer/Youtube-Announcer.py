@@ -56,7 +56,7 @@ class YTAnnouncer:
 
 				Dict2.append(Link)
 				
-				for Vari in Lists.find_all("img):
+				for Vari in Lists.find_all("img"):
 					img = str(Vari.get("src"))
 				Dict3.append(img)					   
 										   
