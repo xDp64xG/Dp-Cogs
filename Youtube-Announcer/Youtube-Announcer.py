@@ -61,7 +61,7 @@ class YTAnnouncer:
 				#await self.bot.say(img)
 			Dict3.append(img)
 		
-		def Make_List2(Lists):
+		async def Make_List2(Lists):
 			Link = ""
 			Video = ""
 			img = ""
