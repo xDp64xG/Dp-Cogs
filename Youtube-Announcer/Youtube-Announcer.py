@@ -22,6 +22,7 @@ class YTAnnouncer:
 		#	else:
 		#		url = var
 		#		self.url = url"""
+		await self.bot.say("Update confirmed.")
 		List = []
 		Link = ""
 		#await self.bot.say("Get ready")
