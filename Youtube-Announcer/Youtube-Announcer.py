@@ -24,17 +24,12 @@ class YTAnnouncer:
 		#		self.url = url"""
 		List = []
 		Link = ""
-		#await self.bot.say("Get ready")
-		i = 0
-		print('Act')
+		print('Command Update.')
 		"""This does stuff!"""
 		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
 		async with aiohttp.get(url) as response:
 			soup = BeautifulSoup(await response.text(), "html.parser")
-		#try:
-		print('Try')
-		print("Links")
-		#32
+
 		def Make_List(Lists):
 			Link = ""
 			Video = ""
@@ -56,51 +51,42 @@ class YTAnnouncer:
 
 				for Vari in Lists.find_all("img"):
 					img = str(Vari.get("src"))
-					#print(img)
-					#await self.bot.say(img)
-
 					Dict3.append(img)
 
 			#The numbers set here picks the first video.
-				Image = Dict3[12]
+			Image = Dict3[12]
+			Image = Image[:48]
+
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
 			LatestLink = Main + LatestLink
-			#print(LatestVideo)
-			#print("Videos \n",Dict[32:33])
-			#print("Links \n", Dict2[32:33])
 			Vid = ("Video: " + LatestVideo)
-			Lin = ("Link: " + LatestLink)
-			print("Video: ", LatestVideo)
-			print("Link: ", LatestLink)
-			Final = Vid, Lin
-			#await self.bot.say(Vid, Lin)
-			
-		
+			Lin = (LatestLink)
+			print("Video: "+ LatestVideo)
+			print("Link: "+ LatestLink)
+			print("Image: "+Image)
 
 			embed=discord.Embed(
-				title="Latest Upload!", 
+				title="Latest Upload!",
+				url=Lin, 
 				description="Here it is:", 
-				color=0x207cee)
+				color=0x00ff00)
 			embed.set_author(
-				name="Dp Bot", 
-				icon_url='https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png')
+				name="Dp Bot",
+				icon_url="https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png")
 			embed.set_thumbnail(
 				url=Image)
 			embed.add_field(
 				name=Vid,
-				#url = Lin, 
-				value=Lin, 
+				value="Click on the link!",
 				inline=True)
+			embed.set_footer(
+				text="Brought to you by: xDp64x")
 			return embed
 
-		Print = Make_List(soup)
-		#print(Print[0])
-		#print(Print[1])
-		#await self.bot.say(Print[0])
-		#await self.bot.say(Print[1])
-		await self.bot.say(embed=Print)
+		embed = Make_List(soup)
+		await self.bot.say(embed=embed)
 
 def setup(bot):
 	bot.add_cog(YTAnnouncer(bot))
