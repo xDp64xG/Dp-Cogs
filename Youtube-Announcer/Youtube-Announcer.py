@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-import bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 import aiohttp
 
 class YTAnnouncer:
