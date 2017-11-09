@@ -75,6 +75,20 @@ class YTAnnouncer:
 			print("Video: ", LatestVideo)
 			print("Link: ", LatestLink)
 			Final = Vid, Lin
+			embed=discord.Embed(
+ -				title="Latest Upload!", 
+ -				description="Here it is:", 
+ -				color=0x207cee)
+ -			embed.set_author(
+ -				name="Dp Bot", 
+ -				icon_url='https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png')
+ -			embed.set_thumbnail(
+ -				url=Image)
+ -			embed.add_field(
+ -				name=Vid, 
+ -				value=Lin, 
+ -				inline=True)
+ -			return Dict3
 			#await self.bot.say(Vid, Lin)
 		
 		
