@@ -95,8 +95,6 @@ class YTAnnouncer:
 		
 
 		Print = Make_List(soup)
-		a = Make_List2(soup)
-		await self.bot.say(a)
 		#print(Print[0])
 		#print(Print[1])
 		#await self.bot.say(Print[0])
