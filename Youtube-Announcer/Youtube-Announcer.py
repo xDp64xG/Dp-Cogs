@@ -38,8 +38,10 @@ class YTAnnouncer:
 		def Make_List(Lists):
 			Link = ""
 			Video = ""
+			img = ""
 			Dict = []
 			Dict2 = []
+			Dict3 = []
 			for var in Lists.find_all("a"):
 				Video = str(var.get("title"))
 				if Video == None or Video == "None" or Video == "":
@@ -53,6 +55,12 @@ class YTAnnouncer:
 
 				Dict2.append(Link)
 				
+				for Vari in Lists.find_all("img):
+					img = str(Vari.get("src"))
+				Dict3.append(img)					   
+										   
+						  
+			Image = Dict[0]	
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
@@ -77,7 +85,7 @@ class YTAnnouncer:
 				name="Dp Bot", 
 				icon_url='https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png')
 			embed.set_thumbnail(
-				url='https://cdn.discordapp.com/attachments/365496580490395649/378066486620585997/youtube-icon.png')
+				url=Image)
 			embed.add_field(
 				name=Vid, 
 				value=Lin, 
