@@ -58,12 +58,12 @@ class YTAnnouncer:
 				
 			for Vari in Lists.find_all("img"):
 				img = str(Vari.get("src"))
-				#await self.bot.say(img)
+				await self.bot.say(img)
 			Dict3.append(img)					   
 										   
 						  
 			Image = Dict3[0]
-			await self.bot.say(Dict3)
+			#await self.bot.say(Dict3)
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
