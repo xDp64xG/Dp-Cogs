@@ -61,7 +61,7 @@ class YTAnnouncer:
 				Dict3.append(img)					   
 										   
 						  
-			Image = Dict[0]	
+			Image = Dict3[0]	
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
