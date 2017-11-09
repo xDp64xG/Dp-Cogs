@@ -36,7 +36,32 @@ class YTAnnouncer:
 		print('Try')
 		print("Links")
 		#32
-		async def Make_List(Lists):
+		def Make_List(Lists):
+			Link = ""
+			Video = ""
+			img = ""
+			Dict = []
+			Dict2 = []
+			Dict3 = []
+			for var in Lists.find_all("a"):
+				Video = str(var.get("title"))
+				if Video == None or Video == "None" or Video == "":
+					Video = ""
+					#22
+					#32
+				Dict.append(Video)
+				Link = str(var.get("href"))
+				if Link == None or Link == "None" or Link == "":
+					Video = ""
+
+				Dict2.append(Link)
+				
+			for Vari in Lists.find_all("img"):
+				img = str(Vari.get("src"))
+				#await self.bot.say(img)
+			Dict3.append(img)
+		
+		def Make_List2(Lists):
 			Link = ""
 			Video = ""
 			img = ""
@@ -59,7 +84,7 @@ class YTAnnouncer:
 			for Vari in Lists.find_all("img"):
 				img = str(Vari.get("src"))
 				await self.bot.say(img)
-			Dict3.append(img)					   
+			Dict3.append(img)
 										   
 						  
 			Image = Dict3[0]
@@ -93,9 +118,10 @@ class YTAnnouncer:
 				name=Vid, 
 				value=Lin, 
 				inline=True)
-			return embed
+			return Dict3
 
 		Print = Make_List(soup)
+		await self.bot.say(Make_List2(soup))
 		#print(Print[0])
 		#print(Print[1])
 		#await self.bot.say(Print[0])
