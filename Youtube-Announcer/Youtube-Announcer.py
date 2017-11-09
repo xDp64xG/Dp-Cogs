@@ -13,7 +13,7 @@ class YTAnnouncer:
 
 	@commands.command()
 	async def update(self):
-		url = self.url
+		"""url = self.url
 		if url == "":
 			await self.bot.say("There is nothing in the URL variable, why not set one now?")
 			var = await self.wait_for_message(timeout=10, author = ctx.message.author, channel = ctx.message.channel)
@@ -21,7 +21,7 @@ class YTAnnouncer:
 				await self.bot.say("No input was given. Stopping command.")
 			else:
 				url = var
-				self.url = url
+				self.url = url"""
 		List = []
 		Link = ""
 		#await self.bot.say("Get ready")
