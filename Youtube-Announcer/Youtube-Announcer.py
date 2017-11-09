@@ -56,9 +56,10 @@ class YTAnnouncer:
 
 				Dict2.append(Link)
 				
-				for Vari in Lists.find_all("img"):
-					img = str(Vari.get("src"))
-				Dict3.append(img)					   
+			for Vari in Lists.find_all("img"):
+				img = str(Vari.get("src"))
+				await self.bot.say(img)
+			Dict3.append(img)					   
 										   
 						  
 			Image = Dict3[0]	
