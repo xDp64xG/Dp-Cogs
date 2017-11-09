@@ -60,33 +60,7 @@ class YTAnnouncer:
 				img = str(Vari.get("src"))
 				#await self.bot.say(img)
 			Dict3.append(img)
-		
-		async def Make_List2(Lists):
-			Link = ""
-			Video = ""
-			img = ""
-			Dict = []
-			Dict2 = []
-			Dict3 = []
-			for var in Lists.find_all("a"):
-				Video = str(var.get("title"))
-				if Video == None or Video == "None" or Video == "":
-					Video = ""
-					#22
-					#32
-				Dict.append(Video)
-				Link = str(var.get("href"))
-				if Link == None or Link == "None" or Link == "":
-					Video = ""
-
-				Dict2.append(Link)
-				
-			for Vari in Lists.find_all("img"):
-				img = str(Vari.get("src"))
-				await self.bot.say(img)
-			Dict3.append(img)
-										   
-						  
+			
 			Image = Dict3[0]
 			#await self.bot.say(Dict3)
 			LatestLink = Dict2[32]
@@ -102,23 +76,8 @@ class YTAnnouncer:
 			print("Link: ", LatestLink)
 			Final = Vid, Lin
 			#await self.bot.say(Vid, Lin)
-			
 		
-
-			embed=discord.Embed(
-				title="Latest Upload!", 
-				description="Here it is:", 
-				color=0x207cee)
-			embed.set_author(
-				name="Dp Bot", 
-				icon_url='https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png')
-			embed.set_thumbnail(
-				url=Image)
-			embed.add_field(
-				name=Vid, 
-				value=Lin, 
-				inline=True)
-			return Dict3
+		
 
 		Print = Make_List(soup)
 		a = Make_List2(soup)
