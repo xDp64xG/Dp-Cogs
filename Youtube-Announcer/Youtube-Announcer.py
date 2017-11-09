@@ -121,7 +121,8 @@ class YTAnnouncer:
 			return Dict3
 
 		Print = Make_List(soup)
-		await self.bot.say(Make_List2(soup))
+		a = Make_List2(soup)
+		await self.bot.say(a)
 		#print(Print[0])
 		#print(Print[1])
 		#await self.bot.say(Print[0])
