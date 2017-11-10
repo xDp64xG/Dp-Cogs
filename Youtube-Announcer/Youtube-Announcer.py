@@ -68,7 +68,7 @@ class YTAnnouncer:
 			print("Image: "+Image)
 
 			embed=discord.Embed(
-				title="Latest Upload!",
+				title="Latest Upload!(click here for video)",
 				#url=Lin, 
 				description=Vid, 
 				url=Lin,
