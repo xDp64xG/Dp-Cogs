@@ -70,7 +70,7 @@ class YTAnnouncer:
 			embed=discord.Embed(
 				title="Latest Upload!",
 				#url=Lin, 
-				description=Vid,"\n", Lin, 
+				description=Vid, 
 				url=Lin,
 				color=0x00ff00)
 			embed.set_author(
