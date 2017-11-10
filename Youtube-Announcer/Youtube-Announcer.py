@@ -61,7 +61,7 @@ class YTAnnouncer:
 			LatestVideo = Dict[32]
 			Main = 'https://www.youtube.com'
 			LatestLink = Main + LatestLink
-			Vid = ("Video: " + LatestVideo)
+			Vid = (" " + LatestVideo)
 			Lin = (LatestLink)
 			print("Video: "+ LatestVideo)
 			print("Link: "+ LatestLink)
