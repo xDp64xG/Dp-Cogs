@@ -69,18 +69,19 @@ class YTAnnouncer:
 
 			embed=discord.Embed(
 				title="Latest Upload!",
-				url=Lin, 
-				description="Here it is:", 
+				#url=Lin, 
+				description=Vid"\n", 
+				url=Lin,
 				color=0x00ff00)
 			embed.set_author(
 				name="Dp Bot",
 				icon_url="https://cdn.discordapp.com/attachments/365496580490395649/378066120420098048/dp_bot.png")
 			embed.set_thumbnail(
 				url=Image)
-			embed.add_field(
-				name=Vid,
-				value="Click on the link!",
-				inline=True)
+			#embed.add_field(
+			#	name=Vid,
+			#	value="Click on the link!",
+			#	inline=True)
 			embed.set_footer(
 				text="Brought to you by: xDp64x")
 			return embed
