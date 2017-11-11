@@ -56,5 +56,5 @@ Versions:
 		
 # Ideas
 
-	If you got ideas, why not share them with me <discord server> or have problems, I'll be there.
+	If you got ideas, why not share them with me htpps://discord.me/dp-cogs or have problems, I'll be there.
 		
