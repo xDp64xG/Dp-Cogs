@@ -40,3 +40,21 @@ Versions:
 		Changed the instructions to the board(used emojies to show the board places)
 		
 
+# Tail Cog
+
+	1.0:
+		This is to see parts of the command line if you aren't running your bot Locally, and find why your cog won't load, ones you create/install
+		I did not create this Cog, but made this so I can add it to my bot easily. <Author>
+		
+		
+		
+# Youtube Announcer
+
+	1.0:
+		Want to check the latest upload or want to let everyone know there is a upload? Use this. Only works for hardcoded URL at the time, will be setting that up and a how to. Keep an eye out for that.
+		
+		
+# Ideas
+
+	If you got ideas, why not share them with me <discord server> or have problems, I'll be there.
+		
