@@ -9,26 +9,27 @@ class YTAnnouncer:
 
 	def __init__(self, bot):
 		self.bot = bot
-		self.url = ""
+		self.url = "Set"
 
-	@commands.command()
-	async def update(self):
-		#"""url = self.url
-		#if url == "":
-		#	await self.bot.say("There is nothing in the URL variable, why not set one now?")
-		#	var = await self.wait_for_message(timeout=10, author = ctx.message.author, channel = ctx.message.channel)
-		#	if not var:
-		#		await self.bot.say("No input was given. Stopping command.")
-		#	else:
-		#		url = var
-		#		self.url = url"""
-		List = []
-		Link = ""
-		print('Command Update.')
-		"""This does stuff!"""
-		url = 'https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos'
-		async with aiohttp.get(url) as response:
-			soup = BeautifulSoup(await response.text(), "html.parser")
+	@commands.command(pass_context=True)
+	async def latest(self, ctx):
+		soup = ""
+		url = ""
+		num = 0
+		url = self.url
+		if url == "Set":
+			await self.bot.say("No URL is set. Why not set one with ``[p]Set_URL``.")
+		else:
+			num += 1
+			#url = "https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos"
+			#soup = BS4(url)
+			#embed = Make_List(soup)
+			#await self.bot.say(embed=embed)
+
+		async def BS4(url):
+			async with aiohttp.get(url) as response:
+				soup = BeautifulSoup(await response.text(), "html.parser")
+			return soup
 
 		def Make_List(Lists):
 			Link = ""
@@ -52,13 +53,20 @@ class YTAnnouncer:
 				for Vari in Lists.find_all("img"):
 					img = str(Vari.get("src"))
 					Dict3.append(img)
-
-			#The numbers set here picks the first video.
+			#This is useful for debugging
+			
+			#print("Dict 1: ", Dict)
+			#print("Dict 2: ", Dict2)
+			#print("Dict 3: ", Dict3)
+			
+			#The numbers set here picks the first video. 
+			#Only useful for hardcoded link at the moment.
+			
 			Image = Dict3[12]
 			Image = Image[:48]
-
 			LatestLink = Dict2[32]
 			LatestVideo = Dict[32]
+			
 			Main = 'https://www.youtube.com'
 			LatestLink = Main + LatestLink
 			Vid = (" " + LatestVideo)
@@ -85,11 +93,30 @@ class YTAnnouncer:
 			embed.set_footer(
 				text="Brought to you by: xDp64x")
 			return embed
+		if num > 0:
+			#url = "https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos"
+			soup = BS4(url)
+			embed = Make_List(soup)
+			await self.bot.say(embed=embed)
 
-		embed = Make_List(soup)
-		await self.bot.say(embed=embed)
+
+	@commands.command(pass_context = True)
+	async def Set_URL(self, ctx):
+		url = "Set"
+		await self.bot.say("Give me a youtube URL. Example: ``https://www.youtube.com/channel/UCJqiR6dpN3PqoNetKt-RB5w/videos``")
+
+		var = await self.bot.wait_for_message(timeout=20, author = ctx.message.author, channel = ctx.message.channel)
+		if not var:
+			self.url = url
+			await self.bot.say("No Link given.")
+			return self.url
+		else:
+			await self.bot.say("Link set.")
+			self.url = var.contents
+			return self.url
+		
+		
+		
 
 def setup(bot):
 	bot.add_cog(YTAnnouncer(bot))
-
-
