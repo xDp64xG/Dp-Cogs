@@ -50,8 +50,8 @@ class Battleship:
             description="~ A simple game of Battle Ships built into Magik Bot.\n:black_circle: = Open Target\n:red_circle: = Missed Target\n:large_blue_circle: = Target Hit\n⚪ = Location of ships (at the end of the game)", 
             color=0x207cee)
         embed.set_author(
-            name="Magik bot", url='http://www.magikbot.co.uk', 
-            icon_url='https://cdn.discordapp.com/attachments/355249562719617024/357107055691169797/MB_Icon.png')
+            name="Made by xDp64x",
+            icon_url='https://cdn.discordapp.com/attachments/342761826322481152/342892790935584769/dp_logo.png')
         embed.set_thumbnail(
             url='https://cdn.discordapp.com/attachments/355249562719617024/365100412874784768/Battleship-ubicom-VIDEO-launch_trailer_2016_08_02-712x712_Desktop_261122.png')
         embed.add_field(
@@ -63,10 +63,6 @@ class Battleship:
             value="You have 10 attempts to hit my 3 ships(2 ships that are 2 by 1, 1 ship that is 1 by 1)", 
             inline=True)
         embed.add_field(
-            name="Author", 
-            value="UnseenMagik & Dp", 
-            inline=True)
-        embed.add_field(
             name="Battleship Board Layout",
             value=(""":regional_indicator_y: :one: :zero: :zero: :zero: :zero: :zero:
 <:gap:367578219316248577> :two: :zero: :zero: :zero: :zero: :zero:
@@ -76,7 +72,7 @@ class Battleship:
 :regional_indicator_s: :zero: :one: :two: :three: :four: :five:
 <:gap:367578219316248577> :regional_indicator_x: <:gap:367578219316248577> :regional_indicator_a: :regional_indicator_x: :regional_indicator_i: :regional_indicator_s:"""), inline=True)
         embed.set_footer(
-            text="Magik Bot - Providing Discord support since September 2017")
+            text="Possible by - xDp64x")
         
         instructions = await self.bot.say(embed=embed) 
         
@@ -90,13 +86,7 @@ class Battleship:
                 i = i + " ".join(x)+"\n"
 
             i += ""
-            return i
-
-        print ("Let's play Battleship!")
-        print (" ")
-        #play = await self.bot.say("Let's play Battleship!"+ "\n")
- 
-        
+            return i        
 
         def random_x(board):
             return randint(0, len(board) - 1)
@@ -142,11 +132,10 @@ class Battleship:
         l = len(board)
         
         #For debugging purposes
-        print("Ship 1: ", ship_x+1, ship_y+1)
-        print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
-        print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
+        #print("Ship 1: ", ship_x+1, ship_y+1)
+        #print("Ship 2: ", ship1a+1, ship1b, " ", ship1d+1, ship1b)
+        #print("Ship 3: ", ship2a+1, ship2b, " ", ship2a+1, ship2c)
 
-        #Re add author again
         def embed_board(turn2, colour, author2):
             embed=discord.Embed(
                 title="The Board",
@@ -172,7 +161,7 @@ class Battleship:
             check += 1
             print("Turns:"+str(turn))
 
-            #Send Embed here, edit later#
+            #Send Embed here, edit later
             if embedPrint == 0:
                 message_Embed = await self.bot.say(embed=reply)
 
@@ -330,9 +319,6 @@ class Battleship:
                     total += 1
                 #--------------------------------------#                
             else:
-                #Check if answers were integers, otherwise move on
-                #isinstance(guess_x, int)
-                #isinstance(guess_y, int)
                 if not2 >= 1:
                     colour = 0x010000
                     reply2 = "Error. Invalid Format."
