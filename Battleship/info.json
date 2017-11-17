@@ -4,5 +4,5 @@
     "NAME" : "Battleship",
     "SHORT" : "Cog for playing Battleship",
     "DESCRIPTION" : "Play a game of Battleship",
-    "TAGS": ["game"]
+    "TAGS": ["games", "fun"]
 }
