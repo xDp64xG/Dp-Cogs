@@ -50,7 +50,7 @@ class Battleship:
             description="~ A simple game of Battle Ships built into Magik Bot.\n:black_circle: = Open Target\n:red_circle: = Missed Target\n:large_blue_circle: = Target Hit\n⚪ = Location of ships (at the end of the game)", 
             color=0x207cee)
         embed.set_author(
-            name="Made by xDp64x",
+            name="Made by xDp64x and UnseenMagik",
             icon_url='https://cdn.discordapp.com/attachments/342761826322481152/342892790935584769/dp_logo.png')
         embed.set_thumbnail(
             url='https://cdn.discordapp.com/attachments/355249562719617024/365100412874784768/Battleship-ubicom-VIDEO-launch_trailer_2016_08_02-712x712_Desktop_261122.png')
