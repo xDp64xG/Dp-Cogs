@@ -4,5 +4,5 @@
     "NAME" : "Tailcog",
     "SHORT" : "Cog for checking error logs",
     "DESCRIPTION" : "Find an error for Red Logs",
-    "TAGS": ["system"]
+    "TAGS": ["tools", "utility"]
 }
