@@ -55,9 +55,13 @@ Versions:
 
 	1.0:
 		Want to check the latest upload or want to let everyone know there is a upload? Use this. Only works for hardcoded URL at the time, will be setting that up and a how to. Keep an eye out for that.
+	1.1:
+		Added in where you can set the URL. Does not mean its currently working.
+ 	# Requirements:
+		Beautiful Soup
 		
 		
 # Ideas
 
-	If you got ideas, why not share them with me htpps://discord.me/dp-cogs or have problems, I'll be there.
+	If you got ideas, why not share them with me htpps://discord.me/dp-cogs or https://discord.gg/N6Dk5Ng or have problems, I'll be there.
 		

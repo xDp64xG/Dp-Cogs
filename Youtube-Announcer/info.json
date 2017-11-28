@@ -2,7 +2,7 @@
     "AUTHOR" : "xDp64xG",
     "INSTALL_MSG" : "Thanks for installing my cog.",
     "NAME" : "Youtube-Announcer",
-    "SHORT" : "(fill)",
-    "DESCRIPTION" : "(fill)",
+    "SHORT" : "Get a latest upload from a url provided.",
+    "DESCRIPTION" : "Get a latest upload from a url provided.",
     "TAGS": ["gaming", "tools"]
 }
