@@ -3,6 +3,6 @@
     "INSTALL_MSG" : "Thanks for installing my cog.",
     "NAME" : "Tailcog",
     "SHORT" : "Cog for checking error logs",
-    "DESCRIPTION" : "Find an error for Red Logs",
-    "TAGS": ["tools", "utility"]
+    "DESCRIPTION" : "Find an error for Red Logs, used for hosted bots.",
+    "TAGS": ["system", "utility", "tools"]
 }

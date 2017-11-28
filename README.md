@@ -1,3 +1,6 @@
+# Requirements
+	1 - Beautiful Soup
+
 # Battleship
 
 
