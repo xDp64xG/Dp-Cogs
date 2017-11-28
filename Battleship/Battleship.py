@@ -8,7 +8,6 @@ class Battleship:
         self.bot = bot
     @commands.command()
     async def battlehelp(self):
-        #Put this into a function like the board#
 
         embed=discord.Embed(
             title="About Battleship", 
