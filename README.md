@@ -41,6 +41,11 @@ Versions:
 		When the game is canceled or get no response, everything deletes.
 		At the end of the game, only the board is left and the final message
 		Changed the instructions to the board(used emojies to show the board places)
+	2.0:
+		Now isn't linked to a singular bot
+		Seperate commands to just play the game, one to see how to play(may change the wording([p]battlehelp)
+	To-Do:
+		Add where I can have a currency and give it to you based on the ships you have sunk, economy api?
 		
 
 # Tail Cog
