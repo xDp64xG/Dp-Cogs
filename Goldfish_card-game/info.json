@@ -1,1 +1,8 @@
-Temp json
+{
+    "AUTHOR" : "xDp64xG",
+    "INSTALL_MSG" : "Thanks for installing my cog.",
+    "NAME" : "Goldfish_card-game",
+    "SHORT" : "Play a game of goldfish",
+    "DESCRIPTION" : "This is for playing a game of goldfish with 2 people.",
+    "TAGS": ["game"]
+}
