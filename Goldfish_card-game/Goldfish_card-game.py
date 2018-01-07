@@ -125,7 +125,7 @@ class G_Card_Game:
     #print(IDs)
 
 
-    if len(Players) == 2:
+    if len(Players) <= 2:
       
       #gplay(self, ctx)
       #print(Players[0])
