@@ -110,7 +110,7 @@ class G_Card_Game:
       #var += "|" + str(user.id)
       #self.players = people
       #var = author.content
-      IDs += " " + str(member_object)
+      IDs += "|" + str(member_object)
       self.players = IDs
       MSG = "Here is your cards "+str(author.name)+":\n"+str(Player2Cards)
       User2 = await self.bot.send_message(author, MSG)
@@ -119,7 +119,7 @@ class G_Card_Game:
     await self.bot.say("People: "+str(IDs))
     IDs = self.players
     #print(len(people))
-    Players = IDs.split(' ')
+    Players = IDs.split('|')
     #print(Players)
     #IDs = var.split("|")
     #print(IDs)
