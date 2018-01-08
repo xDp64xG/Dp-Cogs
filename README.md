@@ -65,6 +65,17 @@ Versions:
  	# Requirements:
 		Beautiful Soup
 		
+# Goldfish Card Game
+	1.0:
+		Added a functioning card game between 2 players. There are many issues still, but much less than there has been
+	1.1:
+		Fixed a small error for getting a user. Should seperate by a barrier, not empty space
+	
+	Bugs:
+		Player one is able to get matches, Player 2 can't. 
+		Very annoying messages, working on having edited messages(not a bug, but still should be here I guess).
+		The cards Jack, Queen, and King are not functioning properly, as there are no matches.
+		You shouldn't be able to ask for cards you don't have, will implement where the game doesn't crash.
 		
 # Ideas
 
