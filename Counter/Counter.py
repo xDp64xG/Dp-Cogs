@@ -76,7 +76,9 @@ class Counter:
         c.execute('INSERT INTO Count (ID, Counter) VALUES (?,?)', (ID, counter))
         db.commit()
         c.execute('SELECT * FROM Count')
-        content = [(row) for row in c.fetchall()]
+        for row in c.fetchall():
+            content = '{}\n'.format(row)
+        #content = [(row) for row in c.fetchall()]
         await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
