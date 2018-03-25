@@ -72,12 +72,13 @@ class Counter:
         '''seen <@username>'''
         print("Command")
         ID = "Total"
+        content = ""
         counter = self.count
         c.execute('INSERT INTO Count (ID, Counter) VALUES (?,?)', (ID, counter))
         db.commit()
         c.execute('SELECT * FROM Count')
         for row in c.fetchall():
-            content = '{}\n'.format(row)
+            content = content + '{}\n'.format(row)
         #content = [(row) for row in c.fetchall()]
         await context.send(str(content))
         channel = context.message.channel
