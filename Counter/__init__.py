@@ -9,16 +9,16 @@ dir = os.getcwd()
 config_dir = Path(dir)
 config_dir.mkdir(parents=True, exist_ok=True)
 g = config_dir / 'data/counter/count.json'
-f = config_dir / 'data/counter/count.txt'
-
-def check_folder():
-    if not os.path.exists('data/counter'):
-        print('Creating data/counter folder...')
-        os.makedirs('data/counter')
+f = config_dir / 'data/counter/count.db'
+print(f)
+#def check_folder():
+    #if not os.path.exists('data/counter'):
+        #print('Creating data/counter folder...')
+        #os.makedirs('data/counter')
 
 
 def check_file():
-    if not g.exists():
+    if not f.exists():
         #print('Test1')
         #print('{}')
         return {
