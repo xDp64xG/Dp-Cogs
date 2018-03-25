@@ -99,7 +99,7 @@ class Counter:
         
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
-        sql = 'DELETE FROM tasks'
+        sql = 'DELETE FROM Count'
         print("Performing deletion of database")
         c.execute(sql)
         #Change this from new update of discord py
