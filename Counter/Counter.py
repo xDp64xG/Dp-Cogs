@@ -102,11 +102,6 @@ class Counter:
         sql = 'DELETE FROM Count'
         print("Performing deletion of database")
         c.execute(sql)
-        #Change this from new update of discord py
-        author = message.author
-        data = {}
-        data['Author'] = author
-        self.message = author
         channel = message.channel
-        await channel.send("Message recorded")
+        await channel.send("Purging the database!")
 
