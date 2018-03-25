@@ -9,7 +9,7 @@ dir = os.getcwd()
 config_dir = Path(dir)
 config_dir.mkdir(parents=True, exist_ok=True)
 g = config_dir / 'data/counter/count.json'
-f = config_dir / 'data/counter/count.db'
+f = config_dir / 'count.db'
 print(f)
 #def check_folder():
     #if not os.path.exists('data/counter'):
@@ -35,7 +35,7 @@ def load_file():
     JsonIO(g)._load_json()
     print('Loaded')
 def setup(bot):
-    check_folder()
+    #check_folder()
     save_file()
     load_file()
     n = Counter(bot)
