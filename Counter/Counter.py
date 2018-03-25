@@ -21,33 +21,10 @@ class Counter:
     '''Check when someone was last seen.'''
     def __init__(self, bot):
         self.bot = bot
+        self.count = 0
 
         db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL)")
-        """self.data = {
-            "Author": 'Ping',
-            "Counter": 0
-        }
-        self.messages = {
-            "Author": 'Ping',
-            "Counter": 0
-        }#JsonIO(g)._load_json()
-        print(self.messages)"""
-        #self.seen = dataIO.load_json('data/seen/seen.json')
-        self.new_data = False
 
-
-
-    async def data_writer(self):
-        print('ping')
-        while self == self.bot.get_cog('Counter'):
-            if self.new_data:
-                #print(self.seen)
-
-                dataIO.save_json('data/Counter/count.json', self.seen)
-                self.new_data = False
-                await asyncio.sleep(60)
-            else:
-                await asyncio.sleep(30)
     async def listener(self, message):
         #print("Listener")
         ID = str(message.author.id)
@@ -86,6 +63,7 @@ class Counter:
             #if ID in data:
             c.execute("INSERT INTO Count (ID, Counter) VALUES (?, ?)", (ID, counter))
             db.commit()
+        self.count += 1
 
 
     @commands.command(pass_context=True, no_pm=True, name='msg')
@@ -93,6 +71,13 @@ class Counter:
     #async def _seen(self, context, username: discord.Member):
         '''seen <@username>'''
         print("Command")
+        ID = "Total"
+        counter = self.count
+        c.execute('INSERT INTO Count (ID, Counter) VALUES (?,?)', (ID, counter))
+        db.commit()
+        c.execute('SELECT * FROM Count')
+        content = [(row) for row in c.fetchall()]
+        await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
             await context.send(file=discord.File(q))
