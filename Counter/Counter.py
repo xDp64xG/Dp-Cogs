@@ -12,7 +12,8 @@ dir = os.getcwd()
 config_dir = Path(dir)
 config_dir.mkdir(parents=True, exist_ok=True)
 g = config_dir / 'data/counter/count.json'
-f = config_dir /'data/counter/count.db'
+f = config_dir /'count.db'
+print(f)
 db = sqlite3.connect(str(f))
 c = db.cursor()
 
