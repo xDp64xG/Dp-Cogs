@@ -97,14 +97,16 @@ class Counter:
         with open(str(f), "rb") as q:
             await context.send(file=discord.File(q))
         
-
-    """async def on_msg(self, message):
-        print("On message")
+    @commands.command(pass_context=True, name="del")
+    async def on_msg(self, message):
+        sql = 'DELETE FROM tasks'
+        print("Performing deletion of database")
+        c.execute(sql)
         #Change this from new update of discord py
         author = message.author
         data = {}
         data['Author'] = author
         self.message = author
         channel = message.channel
-        await channel.send("Message recorded")"""
+        await channel.send("Message recorded")
 
