@@ -77,7 +77,7 @@ class Counter:
         ID = "Total"
         content = ""
         counter = self.count
-        c.execute('INSERT INTO Count (ID, Counter, Name) VALUES (?,?)', (ID, counter, name))
+        c.execute('INSERT INTO Count (ID, Counter, Name) VALUES (?,?, ?)', (ID, counter, name))
         db.commit()
         c.execute('SELECT * FROM Count')
         for row in c.fetchall():
