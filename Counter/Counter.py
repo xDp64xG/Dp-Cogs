@@ -22,9 +22,9 @@ class Counter:
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
-        db.execute("DROP TABLE Count")
+        #db.execute("DROP TABLE Count")
         #db.execute("CREATE TABLE Count(ID TEXT, Counter REAL, Name TEXT)")
-        #db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
+        db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
         #print("Listener")
@@ -95,4 +95,11 @@ class Counter:
         c.execute(sql)
         channel = message.channel
         await channel.send("Purging the database!")
+    
+    @commands.command(pass_context=True, name="purge")
+    async def on_message(self, message):
+        sql = 'DROP TABLE Count'
+        db.execute(sql)
+        channel = message.channel
+        await channel.send("Table successfully deleted. Please reload Cog.")
 
