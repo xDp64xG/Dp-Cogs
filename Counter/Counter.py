@@ -22,12 +22,13 @@ class Counter:
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
-
-        db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL)")
+        db.execute("CREATE TABLE Count(ID TEXT, Counter REAL, Name TEXT)")
+        #db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
         #print("Listener")
         ID = str(message.author.id)
+        name = message.author
         counter = 1
         selector = 'Counter'
         data = c.execute('SELECT * FROM Count')
@@ -61,7 +62,7 @@ class Counter:
             #print(data)
 
             #if ID in data:
-            c.execute("INSERT INTO Count (ID, Counter) VALUES (?, ?)", (ID, counter))
+            c.execute("INSERT INTO Count (ID, Counter, Name) VALUES (?, ?, ?)", (ID, counter, name))
             db.commit()
         self.count += 1
 
@@ -71,10 +72,11 @@ class Counter:
     #async def _seen(self, context, username: discord.Member):
         '''seen <@username>'''
         print("Command")
+        name = "Total"
         ID = "Total"
         content = ""
         counter = self.count
-        c.execute('INSERT INTO Count (ID, Counter) VALUES (?,?)', (ID, counter))
+        c.execute('INSERT INTO Count (ID, Counter, Name) VALUES (?,?)', (ID, counter, name))
         db.commit()
         c.execute('SELECT * FROM Count')
         for row in c.fetchall():
