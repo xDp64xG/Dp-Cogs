@@ -22,7 +22,8 @@ class Counter:
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
-        db.execute("CREATE TABLE Count(ID TEXT, Counter REAL, Name TEXT)")
+        db.execute("DROP TABLE Count")
+        #db.execute("CREATE TABLE Count(ID TEXT, Counter REAL, Name TEXT)")
         #db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
