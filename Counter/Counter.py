@@ -29,7 +29,7 @@ class Counter:
     async def listener(self, message):
         #print("Listener")
         ID = str(message.author.id)
-        name = message.author
+        name = message.author.display_name
         counter = 1
         selector = 'Counter'
         data = c.execute('SELECT * FROM Count')
