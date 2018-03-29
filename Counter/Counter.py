@@ -21,7 +21,7 @@ class Counter:
         self.bot = bot
         self.count = 0
         #Should change this where table is created, and change name
-        db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter REAL, Name TEXT)")
+        db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT)")
 
     async def listener(self, message):
         ID = str(message.author.id)
@@ -38,12 +38,12 @@ class Counter:
             counter2 = c.fetchall()
             count = str(counter2[0])
             count = count.replace(",", "")
-            count = count.replace(".0", "")
+            #count = count.replace(".0", "")
             count = count.replace("(", "")
             count = count.replace(")", "")
             count = int(count)
             counter3 = count + 1
-            c.execute('UPDATE Count SET MessageCounter = {} WHERE ID ={}'.format(counter3, ID))
+            c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID ={}'.format(counter3, ID))
             db.commit()
 
         else:
