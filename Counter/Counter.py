@@ -4,7 +4,7 @@ import os
 from redbot.core import checks
 from pathlib import Path
 import sqlite3
-
+import asyncio
 
 dir = os.getcwd()
 config_dir = Path(dir)
@@ -16,7 +16,6 @@ db = sqlite3.connect(str(f))
 c = db.cursor()
 
 class Counter:
-    '''Check when someone was last seen.'''
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
@@ -92,8 +91,9 @@ class Counter:
     @checks.admin_or_permissions(administrator=True)    
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
+        await asyncio.sleep(5)
         sql = 'DELETE FROM MessageCounter'
-        self.counter = 0
+        self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
         channel = message.channel
