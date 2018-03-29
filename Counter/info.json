@@ -1,7 +1,7 @@
 {
-    "AUTHOR" : "Paddolicious#8880",
-    "NAME" : "Seen",
-    "SHORT" : "Check when the user was last active on a server.",
-    "DESCRIPTION" : "Check when the user was last active on a server.",
-    "TAGS": ["Seen", "member", "tools"]
+    "AUTHOR" : "xDp64x#9133",
+    "NAME" : "Counter",
+    "SHORT" : "Check how many messages were sent in a server, how many messages by per person.",
+    "DESCRIPTION" : "Check how many messages were sent in a server, who sent the most, the least, etc.",
+    "TAGS": ["counter", "member", "tools"]
 }
