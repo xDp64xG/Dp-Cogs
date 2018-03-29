@@ -22,24 +22,20 @@ class Counter:
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
-        #db.execute("DROP TABLE Count")
-        #db.execute("CREATE TABLE Count(ID TEXT, Counter REAL, Name TEXT)")
+        #Should change this where table is created
         db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
-        #print("Listener")
         ID = str(message.author.id)
         name = message.author.display_name
         counter = 1
         selector = 'Counter'
         data = c.execute('SELECT * FROM Count')
-        #[print(row) for row in c.fetchall()]
         c.execute('SELECT ID FROM Count ')
         IDs = c.fetchall()
-        #print(IDs)
-        #print(ID)
         if str(ID) in str(IDs):
             print("Same ID")
+            #Need to better select the number, remove the "replace"
             c.execute('SELECT {1} FROM Count WHERE ID={0}'.format(ID, selector))
             counter2 = c.fetchall()
             count = str(counter2[0])
@@ -48,29 +44,20 @@ class Counter:
             count = count.replace("(", "")
             count = count.replace(")", "")
             count = int(count)
-            #print(count)
-            #count = int(count)
             counter3 = count + 1
-            #print(counter3)
-            #counter = counter + 1
             c.execute('UPDATE Count SET Counter = {} WHERE ID ={}'.format(counter3, ID))
             db.commit()
-            #sql = 'SELECT Counter FROM Count WHERE ID=?'
-            #result = c.execute(sql, ID)
-            #print(result)
+
         else:
             print("New ID")
-            #print(data)
-
-            #if ID in data:
             c.execute("INSERT INTO Count (ID, Counter, Name) VALUES (?, ?, ?)", (ID, counter, name))
             db.commit()
+            
         self.count += 1
 
 
     @commands.command(pass_context=True, no_pm=True, name='msg')
-    async def _seen(self, context):
-    #async def _seen(self, context, username: discord.Member):
+    async def _counter(self, context):
         '''seen <@username>'''
         print("Command")
         name = "Total"
@@ -97,7 +84,7 @@ class Counter:
         await channel.send("Purging the database!")
     
     @commands.command(pass_context=True, name="purge")
-    async def on_message(self, message):
+    async def _drop_table(self, message):
         sql = 'DROP TABLE Count'
         db.execute(sql)
         channel = message.channel
