@@ -93,6 +93,7 @@ class Counter:
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
         sql = 'DELETE FROM MessageCounter'
+        self.counter = 0
         print("Performing deletion of database")
         c.execute(sql)
         channel = message.channel
