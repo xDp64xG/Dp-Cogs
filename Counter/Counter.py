@@ -74,7 +74,7 @@ class Counter:
             print(string)
             num3 = num2 + int(self.count)
             print(str(num3))
-            c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3)
+            c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3))
             db.commit()
         else:
             c.execute('INSERT INTO MessageCounter (ID, Counter, Name) VALUES (?,?, ?)', (ID, counter, name))
