@@ -8,6 +8,7 @@ from redbot.core.json_io import JsonIO
 from pathlib import Path
 import sqlite3
 
+
 dir = os.getcwd()
 config_dir = Path(dir)
 config_dir.mkdir(parents=True, exist_ok=True)
@@ -22,7 +23,7 @@ class Counter:
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
-        #Should change this where table is created
+        #Should change this where table is created, and change name
         db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
@@ -59,7 +60,6 @@ class Counter:
     @commands.command(pass_context=True, no_pm=True, name='msg')
     async def _counter(self, context):
         '''seen <@username>'''
-        print("Command")
         name = "Total"
         ID = "Total"
         content = ""
