@@ -21,20 +21,20 @@ class Counter:
         self.bot = bot
         self.count = 0
         #Should change this where table is created, and change name
-        db.execute("CREATE TABLE IF NOT EXISTS Count(ID TEXT, Counter REAL, Name TEXT)")
+        db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter REAL, Name TEXT)")
 
     async def listener(self, message):
         ID = str(message.author.id)
         name = message.author.display_name
         counter = 1
         selector = 'Counter'
-        data = c.execute('SELECT * FROM Count')
+        data = c.execute('SELECT * FROM MessageCounter')
         c.execute('SELECT ID FROM Count ')
         IDs = c.fetchall()
         if str(ID) in str(IDs):
             print("Same ID")
             #Need to better select the number, remove the "replace"
-            c.execute('SELECT {1} FROM Count WHERE ID={0}'.format(ID, selector))
+            c.execute('SELECT {1} FROM MessageCounter WHERE ID={0}'.format(ID, selector))
             counter2 = c.fetchall()
             count = str(counter2[0])
             count = count.replace(",", "")
@@ -43,12 +43,12 @@ class Counter:
             count = count.replace(")", "")
             count = int(count)
             counter3 = count + 1
-            c.execute('UPDATE Count SET Counter = {} WHERE ID ={}'.format(counter3, ID))
+            c.execute('UPDATE Count SET MessageCounter = {} WHERE ID ={}'.format(counter3, ID))
             db.commit()
 
         else:
             print("New ID")
-            c.execute("INSERT INTO Count (ID, Counter, Name) VALUES (?, ?, ?)", (ID, counter, name))
+            c.execute("INSERT INTO MessageCounter (ID, Counter, Name) VALUES (?, ?, ?)", (ID, counter, name))
             db.commit()
             
         self.count += 1
@@ -61,9 +61,23 @@ class Counter:
         ID = "Total"
         content = ""
         counter = self.count
-        c.execute('INSERT INTO Count (ID, Counter, Name) VALUES (?,?, ?)', (ID, counter, name))
-        db.commit()
-        c.execute('SELECT * FROM Count')
+        data = c.execute("SELECT Count FROM MessageCounter WHERE Name='Total'")
+        if data:
+            num2 = str(num[0])
+            num2 = num2.replace("(", "")
+            num2 = num2.replace(",", "")
+            num2 = num2.replace(")", "")
+            num2 = int(num2)
+            string = "Number 1: {}\nNumber 2: {}".format(int(self.count), num2)
+            print(string)
+            num3 = num2 + int(self.count)
+            print(str(num3))
+            c.execute("UPDATE MessageCounter SET Counter WHERE ID='Total'")
+            db.commit()
+        else:
+            c.execute('INSERT INTO MessageCounter (ID, Counter, Name) VALUES (?,?, ?)', (ID, counter, name))
+            db.commit()
+        c.execute('SELECT * FROM MessageCounter')
         for row in c.fetchall():
             content = content + '{}\n'.format(row)
         #content = [(row) for row in c.fetchall()]
@@ -76,7 +90,7 @@ class Counter:
     @checks.admin_or_permissions(administrator=True)    
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
-        sql = 'DELETE FROM Count'
+        sql = 'DELETE FROM MessageCounter'
         print("Performing deletion of database")
         c.execute(sql)
         channel = message.channel
