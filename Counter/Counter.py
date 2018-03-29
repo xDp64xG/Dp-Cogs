@@ -63,7 +63,7 @@ class Counter:
         counter = self.count
         data = c.execute("SELECT Counter FROM MessageCounter WHERE Name='Total'")
         if data:
-            num2 = str(num[0])
+            num2 = str(data[0])
             num2 = num2.replace("(", "")
             num2 = num2.replace(",", "")
             num2 = num2.replace(")", "")
