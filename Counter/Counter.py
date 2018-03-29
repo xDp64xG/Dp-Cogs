@@ -99,7 +99,7 @@ class Counter:
     @checks.is_owner()
     @commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
-        sql = 'DROP TABLE Count'
+        sql = 'DROP TABLE MessageCounter'
         db.execute(sql)
         channel = message.channel
         await channel.send("Table successfully deleted. Please reload Cog.")
