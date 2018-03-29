@@ -61,7 +61,8 @@ class Counter:
         ID = "Total"
         content = ""
         counter = self.count
-        data = c.execute("SELECT Counter FROM MessageCounter WHERE Name='Total'")
+        c.execute("SELECT Counter FROM MessageCounter WHERE Name='Total'")
+        data = c.fetchall()
         print(str(data))
         if data:
             num2 = str(data[0])
