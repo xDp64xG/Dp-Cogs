@@ -29,7 +29,7 @@ class Counter:
         counter = 1
         selector = 'Counter'
         data = c.execute('SELECT * FROM MessageCounter')
-        c.execute('SELECT ID FROM Count ')
+        c.execute('SELECT ID FROM MessageCounter')
         IDs = c.fetchall()
         if str(ID) in str(IDs):
             print("Same ID")
