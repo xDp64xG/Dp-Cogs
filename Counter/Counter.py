@@ -87,7 +87,7 @@ class Counter:
         #await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
-            await self.bot.send(file=discord.File(q))
+            await self.bot.say(file=discord.File(q))
             #await context.send(file=discord.File(q))
             
     #Should combine this with above, but in case if something happens...we would have the data still
