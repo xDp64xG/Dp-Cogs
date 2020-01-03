@@ -193,3 +193,10 @@ class Counter:
         channel = message.channel
         await channel.send("Purging the database!")
         #Change this from new update of discord py
+
+ 
+
+def setup(bot):
+    n = Counter(bot)
+    bot.add_listener(n.listener, 'on_message')
+    bot.add_cog(n)
