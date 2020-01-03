@@ -56,7 +56,7 @@ class Counter:
     #@checks.admin_or_permissions(administrator=True)
     @commands.command(pass_context=True, no_pm=True, name='msg')
     async def _counter(self, context):
-        '''seen <@username>'''
+        '''Get a copy of the Database or compare the data.'''
         name = "Total"
         ID = "Total"
         content = ""
@@ -83,10 +83,12 @@ class Counter:
         for row in c.fetchall():
             content = content + '{}\n'.format(row)
         #content = [(row) for row in c.fetchall()]
-        await context.send(str(content))
+        await self.bot.say(str(content))
+        #await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
-            await context.send(file=discord.File(q))
+            await self.bot.send(file=discord.File(q))
+            #await context.send(file=discord.File(q))
             
     #Should combine this with above, but in case if something happens...we would have the data still
     #@checks.admin_or_permissions(administrator=True)    
@@ -97,16 +99,18 @@ class Counter:
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
-        channel = message.channel
-        await channel.send("Purging the database!")
+        self.bot.say("Purging the database!")
+        #channel = message.channel
+        #await channel.send("Purging the database!")
         
     #@checks.is_owner()
     @commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
         sql = 'DROP TABLE MessageCounter'
         db.execute(sql)
-        channel = message.channel
-        await channel.send("Table successfully deleted. Please reload Cog.")
+        #channel = message.channel
+        await self.bot.say("Table successfully deleted. Please reload Cog.")
+        #await channel.send("Table successfully deleted. Please reload Cog.")
 
 def setup(bot):
     n = Counter(bot)
