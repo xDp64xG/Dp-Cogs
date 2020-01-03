@@ -1,7 +1,8 @@
 from discord.ext import commands
 import discord
 import os
-from redbot.core import checks
+#from discord.ext import checks #Testing
+#from redbot.core import checks #Not working...?
 from pathlib import Path
 import sqlite3
 import asyncio
@@ -52,7 +53,7 @@ class Counter:
             
         self.count += 1
 
-    @checks.admin_or_permissions(administrator=True)
+    #@checks.admin_or_permissions(administrator=True)
     @commands.command(pass_context=True, no_pm=True, name='msg')
     async def _counter(self, context):
         '''seen <@username>'''
@@ -88,7 +89,7 @@ class Counter:
             await context.send(file=discord.File(q))
             
     #Should combine this with above, but in case if something happens...we would have the data still
-    @checks.admin_or_permissions(administrator=True)    
+    #@checks.admin_or_permissions(administrator=True)    
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
         await asyncio.sleep(5)
@@ -99,7 +100,7 @@ class Counter:
         channel = message.channel
         await channel.send("Purging the database!")
         
-    @checks.is_owner()
+    #@checks.is_owner()
     @commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
         sql = 'DROP TABLE MessageCounter'
