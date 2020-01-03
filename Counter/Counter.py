@@ -87,7 +87,7 @@ class Counter:
         #await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
-            await self.bot.send_file(file=discord.File(q))
+            await self.bot.send_file(file=(q))
             #await self.bot.send_file(fp='open', filename=q)
             #await channel.send_file(q)
             #await self.bot.send_file(q, channel)
