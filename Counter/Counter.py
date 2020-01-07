@@ -1,7 +1,8 @@
-from discord.ext import commands
+from redbot.core import commands
+#from discord.ext import commands
 import discord
 import os
-from discord.ext import checks #Testing
+#from discord.ext import checks #Testing
 from redbot.core import checks #Not working...?
 from pathlib import Path
 import sqlite3
@@ -16,7 +17,7 @@ print(f)
 db = sqlite3.connect(str(f))
 c = db.cursor()
 
-class Counter:
+class Counter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
@@ -53,8 +54,8 @@ class Counter:
             
         self.count += 1
 
-    @checks.admin_or_permissions(administrator=True)
-    @commands.command(pass_context=True, no_pm=True, name='msg')
+    #@checks.admin_or_permissions(administrator=True)
+    @commands.command(pass_context=True, name='msg')
     async def _counter(self, context):
         '''Get a copy of the Database or compare the data.'''
         name = "Total"
@@ -82,14 +83,18 @@ class Counter:
         c.execute('SELECT * FROM MessageCounter')
         for row in c.fetchall():
             content = content + '{}\n'.format(row)
-        #content = [(row) for row in c.fetchall()]
         await context.send(str(content))
         channel = context.message.channel
         with open(str(f), "rb") as q:
+            #await self.bot.send(file=(q))
+            #await self.bot.send_file(fp='open', filename=q)
+            #await channel.send_file(q)
+            #await self.bot.send_file(q, channel)
+            #await self.bot.say(file=discord.File(q))
             await context.send(file=discord.File(q))
             
     #Should combine this with above, but in case if something happens...we would have the data still
-    @checks.admin_or_permissions(administrator=True)    
+    #@checks.admin_or_permissions(administrator=True)    
     @commands.command(pass_context=True, name="del")
     async def on_msg(self, message):
         await asyncio.sleep(5)
@@ -97,6 +102,7 @@ class Counter:
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
+        #self.bot.say("Purging the database!")
         channel = message.channel
         await channel.send("Purging the database!")
         
@@ -106,6 +112,7 @@ class Counter:
         sql = 'DROP TABLE MessageCounter'
         db.execute(sql)
         channel = message.channel
+        #await self.bot.say("Table successfully deleted. Please reload Cog.")
         await channel.send("Table successfully deleted. Please reload Cog.")
 
 def setup(bot):
