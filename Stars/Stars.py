@@ -34,6 +34,12 @@ class Stars(commands.Cog):
         #db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT, Stars TEXT)")
 
     def adjust_stars(arg3):
+        txt1 = ':star:'
+        txt2 = ':star2:'
+        txt3 = ':dizzy:'
+        txt4 = ":sparkles:"
+        txt5 = ":eight_pointed_black_star:"
+
         if arg3 >= 420:
             c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
         elif arg3 >= 50:
@@ -224,11 +230,7 @@ class Stars(commands.Cog):
         count3 = 0
         arg3 = 0
         count = 0
-        txt1 = ':star:'
-        txt2 = ':star2:'
-        txt3 = ':dizzy:'
-        txt4 = ":sparkles:"
-        txt5 = ":eight_pointed_black_star:"
+
         member = context.author.id
         author = context.author
         mem = "<@!" + str(member) + ">"
