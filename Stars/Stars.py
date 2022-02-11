@@ -156,7 +156,7 @@ class Stars(commands.Cog):
 
             c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID ="{}"'.format(arg3, str(ID)))
 
-            def adjust_stars(arg3):
+            """def adjust_stars(arg3):
                 if arg3 >= 420:
                     c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
                 elif arg3 >= 50:
@@ -173,6 +173,7 @@ class Stars(commands.Cog):
 
                 c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
                 db.commit()
+                """
             """
             #Different Star Types
             if arg3 >= 420:
@@ -190,7 +191,7 @@ class Stars(commands.Cog):
             elif arg3 < 5:
                 c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, ID))
             """
-            adjust_stars(arg3)
+            Stars.adjust_stars(arg3)
             db.commit()
 
         else:
@@ -267,7 +268,7 @@ class Stars(commands.Cog):
                     arg3 = arg3 + 1
                     print("Arg3: {}".format(arg3))
 
-                    def adjust_stars(arg3):
+                    """def adjust_stars(arg3):
                         if arg3 >= 420:
                             c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
                         elif arg3 >= 50:
@@ -283,9 +284,9 @@ class Stars(commands.Cog):
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
 
                         c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
-                        db.commit()
+                        db.commit()"""
 
-                    adjust_stars(arg3)
+                    Stars.adjust_stars(arg3)
                     await context.send("You have earned another star {}".format(mem))
 
 
