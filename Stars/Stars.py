@@ -209,9 +209,10 @@ class Stars(commands.Cog):
                 db.commit()
 
             else:
-                print("Var: {}\nVar[0]: \nTime2: {}".format(var,var[0], time2))
+                print("Var: {}\nVar[0]: \nTime2: {}".format(var, var[0], time2))
                 if str(time2) in str(var):
-                    await context.send("You have already gotten your free star today. Try again tomorrow {}.".format(mem))
+                    await context.send(
+                        "You have already gotten your free star today. Try again tomorrow {}.".format(mem))
                     db.commit()
 
                 else:
@@ -226,32 +227,42 @@ class Stars(commands.Cog):
                     count = int(count)
                     arg3 = count
                     arg3 = arg3 + 1
+                    print("Arg3: {}".format(arg3))
 
-                    if arg3 >= 420:
-                        c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
-                    elif arg3 >= 50:
-                        c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
+                    def adjust_stars(arg3):
+                        if arg3 >= 420:
+                            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
+                        elif arg3 >= 50:
+                            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
 
-                    elif arg3 >= 25:
-                        c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
+                        elif arg3 >= 25:
+                            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
 
-                    elif arg3 < 5:
-                        c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
+                        elif arg3 < 5:
+                            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
 
-                    c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
-                    db.commit()
+                        c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
+                        db.commit()
+
+                    adjust_stars(arg3)
                     await context.send("You have earned another star {}".format(mem))
+
+
 
         else:
             count3 = count3 + 1
             print("ID: {}\n\nName: {}\n\nCounter: {}\n\n".format(str(member), str(author), count))
-            #author2 = "<@!" + str(author) + ">"
-            c.execute("INSERT INTO MessageCounter (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)",(member, mem, count3, txt1))
+            # author2 = "<@!" + str(author) + ">"
+            c.execute("INSERT INTO MessageCounter (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)",
+                      (member, mem, count3, txt1))
             c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
             db.commit()
-            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``-daily`` each day.".format(mem))
+            await context.send(
+                "Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``-daily`` each day.".format(
+                    mem))
 
-    @commands.command(pass_context=True, name="purge")
+
+@commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
         """Purge the data table, requires restart"""
         sql = 'DROP TABLE MessageCounter'
