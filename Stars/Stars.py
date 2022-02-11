@@ -142,6 +142,7 @@ class Stars(commands.Cog):
         data = c.execute('SELECT * FROM MessageCounter')
         c.execute('SELECT ID FROM MessageCounter')
         IDs = c.fetchall()
+        db.commit()
         if str(ID) in str(IDs):
             print("Same ID")
             # Need to better select the number, remove the "replace"
@@ -161,7 +162,7 @@ class Stars(commands.Cog):
                 arg3 = count + num
 
             c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID ="{}"'.format(arg3, str(ID)))
-
+            db.commit()
             """def adjust_stars(arg3):
                 if arg3 >= 420:
                     c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
@@ -237,6 +238,7 @@ class Stars(commands.Cog):
         print(mem)
         c.execute('SELECT ID FROM MessageCounter')
         IDs = c.fetchall()
+        db.commit()
         if str(member) in str(IDs):
             c.execute('SELECT Date FROM Daily WHERE ID = "{}"'.format(member))
             var = c.fetchall()
