@@ -257,12 +257,10 @@ class Stars(commands.Cog):
                       (member, mem, count3, txt1))
             c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
             db.commit()
-            await context.send(
-                "Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``-daily`` each day.".format(
-                    mem))
+            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``-daily`` each day.".format(mem))
 
 
-@commands.command(pass_context=True, name="purge")
+    @commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
         """Purge the data table, requires restart"""
         sql = 'DROP TABLE MessageCounter'
