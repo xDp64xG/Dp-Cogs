@@ -19,9 +19,10 @@ f = config_dir /'stars.db'
 print(f)
 #print(f)
 db = sqlite3.connect(str(f))
+c = db.cursor()
 db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)")
 db.execute("CREATE TABLE IF NOT EXISTS Daily(ID TEXT, Date TEXT)")
-c = db.cursor()
+db.commit()
 class Stars(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
