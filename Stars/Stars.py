@@ -239,10 +239,10 @@ class Stars(commands.Cog):
                         elif arg3 >= 25:
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
 
-                        elif arg3 >= 15:
+                        elif arg3 >= 10:
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID = "{}"'.format(txt2, member))
 
-                        elif arg3 < 5:
+                        elif arg3 < 10:
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
 
                         c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
