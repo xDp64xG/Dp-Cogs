@@ -33,7 +33,7 @@ class Stars(commands.Cog):
         #Should change this where table is created, and change name
         #db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT, Stars TEXT)")
 
-    def adjust_stars(arg3):
+    def adjust_stars(arg3, member):
         txt1 = ':star:'
         txt2 = ':star2:'
         txt3 = ':dizzy:'
@@ -198,7 +198,7 @@ class Stars(commands.Cog):
             elif arg3 < 5:
                 c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, ID))
             """
-            Stars.adjust_stars(arg3)
+            Stars.adjust_stars(arg3, member)
             db.commit()
 
         else:
@@ -290,7 +290,7 @@ class Stars(commands.Cog):
                         c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
                         db.commit()"""
 
-                    Stars.adjust_stars(arg3)
+                    Stars.adjust_stars(arg3, member)
                     await context.send("You have earned another star {}".format(mem))
 
 
