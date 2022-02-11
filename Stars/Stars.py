@@ -16,6 +16,7 @@ config_dir = Path(dir)
 config_dir.mkdir(parents=True, exist_ok=True)
 g = config_dir / 'data/stars/stars.json'
 f = config_dir /'stars.db'
+print(f)
 #print(f)
 db = sqlite3.connect(str(f))
 db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)")
