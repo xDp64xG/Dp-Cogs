@@ -33,6 +33,24 @@ class Stars(commands.Cog):
         #Should change this where table is created, and change name
         #db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT, Stars TEXT)")
 
+    def adjust_stars(arg3):
+        if arg3 >= 420:
+            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
+        elif arg3 >= 50:
+            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
+
+        elif arg3 >= 25:
+            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
+
+        elif arg3 >= 10:
+            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID = "{}"'.format(txt2, member))
+
+        elif arg3 < 10:
+            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
+
+        c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
+        db.commit()
+
     @commands.command(name='msg')#DisplayStar
     async def _begin(self, context, channel: discord.TextChannel):
         """After adding stars to people, use this to display them!"""
@@ -138,6 +156,24 @@ class Stars(commands.Cog):
 
             c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID ="{}"'.format(arg3, str(ID)))
 
+            def adjust_stars(arg3):
+                if arg3 >= 420:
+                    c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
+                elif arg3 >= 50:
+                    c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
+
+                elif arg3 >= 25:
+                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
+
+                elif arg3 >= 10:
+                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID = "{}"'.format(txt2, member))
+
+                elif arg3 < 10:
+                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
+
+                c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
+                db.commit()
+            """
             #Different Star Types
             if arg3 >= 420:
                 c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5 ,ID))
@@ -153,7 +189,8 @@ class Stars(commands.Cog):
 
             elif arg3 < 5:
                 c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, ID))
-
+            """
+            adjust_stars(arg3)
             db.commit()
 
         else:
