@@ -18,9 +18,9 @@ g = config_dir / 'data/stars/stars.json'
 f = config_dir /'stars.db'
 #print(f)
 db = sqlite3.connect(str(f))
-c = db.cursor()
 db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)")
 db.execute("CREATE TABLE IF NOT EXISTS Daily(ID TEXT, Date TEXT)")
+c = db.cursor()
 class Stars(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -63,7 +63,7 @@ class Stars(commands.Cog):
         print("Com being ran")
         c.execute('SELECT * FROM MessageCounter')
         content = ""
-        ID = 941584589682536458
+        ID = 941770958795059241
         #ID  =666316287273861132
         var = ""
         var2 = ""
@@ -135,25 +135,24 @@ class Stars(commands.Cog):
                 arg3 = count + num
 
             c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID ="{}"'.format(arg3, str(ID)))
-            def adjust_star(arg3):
-                #Different Star Types
-                if arg3 >= 420:
-                    c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5 ,ID))
 
-                elif arg3 >= 50:
-                    c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, ID))
+            #Different Star Types
+            if arg3 >= 420:
+                c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5 ,ID))
 
-                elif arg3 >= 25:
-                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, ID))
+            elif arg3 >= 50:
+                c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, ID))
 
-                elif arg3 >= 10:
-                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt2, ID))
+            elif arg3 >= 25:
+                c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, ID))
 
-                elif arg3 < 5:
-                    c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, ID))
+            elif arg3 >= 10:
+                c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt2, ID))
 
-                db.commit()
-            adjust_star(arg3)
+            elif arg3 < 5:
+                c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, ID))
+
+            db.commit()
 
         else:
             print("New ID")
@@ -225,24 +224,21 @@ class Stars(commands.Cog):
                     count = int(count)
                     arg3 = count
                     arg3 = arg3 + 1
-                    def adjust_stars(arg3):
-                        if arg3 >= 420:
-                            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
-                        elif arg3 >= 50:
-                            c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
 
-                        elif arg3 >= 25:
-                            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
+                    if arg3 >= 420:
+                        c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt5, member))
+                    elif arg3 >= 50:
+                        c.execute("UPDATE MessageCounter SET Stars = '{}' WHERE ID = '{}'".format(txt4, member))
 
-                        elif arg3 < 5:
-                            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
+                    elif arg3 >= 25:
+                        c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
 
-                        c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
-                        db.commit()
+                    elif arg3 < 5:
+                        c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
 
-                    adjust_stars(arg3)
+                    c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
+                    db.commit()
                     await context.send("You have earned another star {}".format(mem))
-
 
         else:
             count3 = count3 + 1
