@@ -206,6 +206,7 @@ class Stars(commands.Cog):
             if len(var) == 0:
                 print("Var is equal to 0")
                 c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
+                #c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID = {}'.format(member))
                 db.commit()
 
             else:
@@ -237,6 +238,9 @@ class Stars(commands.Cog):
 
                         elif arg3 >= 25:
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ="{}"'.format(txt3, member))
+
+                        elif arg3 >= 15:
+                            c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID = "{}"'.format(txt2, member))
 
                         elif arg3 < 5:
                             c.execute('UPDATE MessageCounter SET Stars = "{}" WHERE ID ={}'.format(txt1, member))
