@@ -1,4 +1,4 @@
-from redbot.core import commands
+from redbot.core import commands, checks
 import discord
 from pathlib import Path
 import sqlite3
@@ -115,6 +115,7 @@ class Stars(commands.Cog):
         Msg = self.msg
 
     @commands.command(pass_context=True, name='star')
+    @checks.guildowner_or_permissions(administrator=True)
     async def _star(self, context, member: discord.Member):
         """Add stars to other people!
                 Use [p]com [user] [+ OR -] [stars]"""
