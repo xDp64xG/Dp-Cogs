@@ -115,7 +115,8 @@ class Stars(commands.Cog):
         Msg = self.msg
 
     @commands.command(pass_context=True, name='star')
-    @checks.mod_or_permissions(manage_messages=True)
+    @checks.admin_or_permissions(manage_roles=True)
+    #@checks.mod_or_permissions(manage_messages=True)
     #@checks.guildowner_or_permissions(administrator=True)
     async def _star(self, context, member: discord.Member):
         """Add stars to other people!
