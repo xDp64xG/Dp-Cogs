@@ -80,20 +80,6 @@ class Counter(commands.Cog):
 
         print(str(content))
 
-        #content2 = content.split('#')
-
-        #content.sort(key=sortSecond())
-
-        #content3 = content2.sort(key=sortSecond)
-        #content3 = content2.sort()
-        #content2 = list(content).sort()
-        #for row in list(content2):
-            #var = var + "{}\n".format(row)
-        #print("Content: {}\nContent2: {}\nContent 3: {}\n".format(content, content2, content3))
-
-        """c.execute('SELECT ID FROM MessageCounter')
-        for row in c.fetchall():
-            content2 = content + '{}\n'.format(row)"""
         channel = context.message.channel
         var = ""
         for i in content:
@@ -101,30 +87,6 @@ class Counter(commands.Cog):
         await channel.send("Sorted list of messages: {}".format(var))
         #print(data2)
 
-    """
-        @commands.command(pass_context=True, name='calc')
-        async def _user(self, context):
-            '''Just a new COM'''
-            member = context.author.id
-            c.execute('SELECT Counter FROM MessageCounter WHERE ID={}'.format(member))
-            var = c.fetchall()
-            var2 = []
-            var2 = list(var)
-
-            var4 = str(var2)
-            var4 = var4.replace("[", "")
-            var4 = var4.replace("(", "")
-            var4 = var4.replace(")", "")
-            var4 = var4.replace("]", "")
-            var4 = var4.replace(",", "")
-
-            print(var4)
-            member = context.author.id
-            mem = "<@!" + str(member) + ">"
-            channel = context.channel
-            await channel.send("You have {} messages {}!".format(str(var4), mem))
-            #print("Var 1: {}\nVar 2: {}\n").format(var)
-    """
     @commands.command(pass_context=True, name='reset')
     async def _reset(self, context, member: discord.Member):
         member = member.id
@@ -167,6 +129,7 @@ class Counter(commands.Cog):
             num2 = int(num2)
             string = "Number 1: {}\nNumber 2: {}".format(int(self.count), num2)
             print(string)
+            await context.send("Debug: \n{}".format(string))
             num3 = num2 + int(self.count)
             print(str(num3))
             c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3))
