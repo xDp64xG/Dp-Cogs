@@ -131,7 +131,7 @@ class Counter(commands.Cog):
             print(string)
             #await context.send("Debug: \n{}".format(string))
             num3 = num2 + int(self.count)
-            self.count = num3
+            #self.count = num3
             print(str(num3))
             c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3))
             db.commit()
