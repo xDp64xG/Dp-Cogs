@@ -129,8 +129,9 @@ class Counter(commands.Cog):
             num2 = int(num2)
             string = "Number 1: {}\nNumber 2: {}".format(int(self.count), num2)
             print(string)
-            await context.send("Debug: \n{}".format(string))
+            #await context.send("Debug: \n{}".format(string))
             num3 = num2 + int(self.count)
+            self.count = num3
             print(str(num3))
             c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3))
             db.commit()
