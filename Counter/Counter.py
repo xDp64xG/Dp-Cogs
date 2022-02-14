@@ -26,15 +26,20 @@ class Counter(commands.Cog):
     def _check_guild_id(self, guild_name, guild_id):
         #Terrible coding
         ID = str(guild_id)
+        var = "-"
+        try:
 
-        c.execute('SELECT ID FROM OptsOut')
-        checks = c.fetchall()
-        #print(checks)
+            c.execute('SELECT ID FROM OptsOut')
+            checks = c.fetchall()
 
-        for i in checks:
+            for i in checks:
 
-            if ID in i:
-                return 'NoCount'
+                if ID in i:
+                    var = "NoCount"
+
+        except:
+            print("No OptsOut set up")
+        return var
 
         print(ID)
 
