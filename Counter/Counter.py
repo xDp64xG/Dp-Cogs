@@ -241,8 +241,8 @@ class Counter(commands.Cog):
         '''Delete the database and start over!'''
         await asyncio.sleep(5)
         guild_id = message.message.guild.id
-        c.execute(("DROP TABLE MessageCounter"))
-        #sql = 'DELETE FROM MessageCounter{}'.format(guild_id)
+        #c.execute(("DROP TABLE MessageCounter"))
+        sql = 'DELETE FROM MessageCounter{}'.format(guild_id)
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
