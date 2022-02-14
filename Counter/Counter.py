@@ -1,8 +1,6 @@
 from redbot.core import commands
-#from discord.ext import commands
 import discord
 import os
-#from discord.ext import checks #Testing
 from redbot.core import checks #Not working...?
 from pathlib import Path
 import sqlite3
@@ -21,44 +19,131 @@ class Counter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.count = 0
+        self.counter = 0
+        self.g = 1
         #Should change this where table is created, and change name
-        db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT)")
+
+    def _check_guild_id(self, guild_name, guild_id):
+        #Terrible coding
+        ID = str(guild_id)
+
+        c.execute('SELECT ID FROM OptsOut')
+        checks = c.fetchall()
+        #print(checks)
+
+        for i in checks:
+
+            if ID in i:
+                return 'NoCount'
+
+        print(ID)
+
+    def _update_table(self, context, string):
+        ID = context.author.id
+
+        if "INSERT" in string:
+            pass
+            c.execute(string, (ID, self.counter, context.author.display_name))
+            db.commit()
+
+        elif "UPDATE" in string:
+            c.execute(string)
+            db.commit()
+
+    def _create_tables(self, context):
+        guild_id = context.guild.id
+        string = "CREATE TABLE IF NOT EXISTS MessageCounter{} (ID TEXT, Counter INTEGER, Name TEXT)".format(guild_id)
+        c.execute(string)
+        db.commit()
 
     async def listener(self, message):
+        #We don't want those pesky bots interfering with our counts
         if message.author.bot:
             print("Bot")
             pass
+        #If not bot, continue
         else:
+            #Grab needed information for DB creating
             ID = str(message.author.id)
             name = message.author.display_name
-            counter = 1
-            selector = 'Counter'
-            data = c.execute('SELECT * FROM MessageCounter')
-            c.execute('SELECT ID FROM MessageCounter')
-            IDs = c.fetchall()
-
-            if str(ID) in str(IDs):
-                print("Same ID")
-                #Need to better select the number, remove the "replace"
-                c.execute('SELECT {1} FROM MessageCounter WHERE ID={0}'.format(ID, selector))
-                counter2 = c.fetchall()
-                count = str(counter2[0])
-                count = count.replace(",", "")
-                #count = count.replace(".0", "")
-                count = count.replace("(", "")
-                count = count.replace(")", "")
-                count = int(count)
-                counter3 = count + 1
-                c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID ={}'.format(counter3, ID))
-                db.commit()
-
+            guild_name = message.guild
+            guild_id = message.guild.id
+            #Checks guild IDs if in OptsOut DB, if yes, ignore, if no, continue to else
+            var = Counter._check_guild_id(self, guild_name, guild_id)
+            #print(var)
+            if var == "NoCount":
+                print("No Count")
+                #self.count -= 1
+                pass
+            #If message not in Opted Out guild, if not able to put into db, create a table with guild id
             else:
-                print("New ID")
-                c.execute("INSERT INTO MessageCounter (ID, Counter, Name) VALUES (?, ?, ?)", (ID, counter, name))
+                counter = 1
+                selector = 'Counter'
+                try:
+                    c.execute('SELECT * FROM MessageCounter{}'.format(guild_id))
+                    c.execute('SELECT ID FROM MessageCounter{}'.format(guild_id))
+                except:
+                    Counter._create_tables(self, message)
+
+                IDs = c.fetchall()
+                #Find ALL IDs in DB, compare message author ID, if ID in IDs, update there message counter, if not, input them in
+                if str(ID) in str(IDs):
+                    print("Same ID")
+                    #Need to better select the number, remove the "replace"
+                    c.execute('SELECT {2} FROM MessageCounter{0} WHERE ID={1}'.format(guild_id, ID, selector))
+                    counter2 = c.fetchall()
+                    count = str(counter2[0])
+                    count = count.replace(",", "")
+                    #count = count.replace(".0", "")
+                    count = count.replace("(", "")
+                    count = count.replace(")", "")
+                    count = int(count)
+                    counter3 = count + 1
+
+                    string = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, counter3, ID)
+                    Counter._update_table(self, message, string)
+                    #Self counting total
+                    self.count += 1
+                    #c.execute('UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID))
+                    #db.commit()
+
+                else:
+                    #If new ID, create table. Then insert user into db, total counter tallied up
+                    print("New ID")
+                    try:
+                        Counter._create_tables(self, message)
+                    except:
+                        pass
+                    string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
+                    var = 1
+                    c.execute(string,(ID, var, name))
+                    #self.count = counter
+                    #Counter._create_tables(self, message)
+                    #Counter._update_table(self, message, string)
+                    self.count += 1
+
+    #Opt out of server counting
+    @commands.command(pass_context=True, name='nocount')
+    async def _opt_out(self, context):
+        guild_id = str(context.message.guild.id)
+        channel = context.channel
+        c.execute("CREATE TABLE IF NOT EXISTS OptsOut(ID TEXT)")
+        db.commit()
+        print("After table creation")
+        c.execute('SELECT ID FROM OptsOut')
+        IDs = c.fetchall()
+        for i in IDs:
+            if guild_id in i:
+                print("Same ID detected")
+                pass
+            else:
+                #asyncio.sleep(1)
+                c.execute("INSERT INTO OptsOut (ID) VALUES (?)", (guild_id,))
+                print("After inserting")
                 db.commit()
+                await channel.send("Successfully added you to the Opted out list")
 
-            self.count += 1
-
+    #Sorts current list from Count
     @commands.command(pass_context=True, name='sort')
     async def _calculate(self, context):
         """Sort message counts!"""
@@ -66,12 +151,13 @@ class Counter(commands.Cog):
             print(val)
             return val[1]
         member = context.message.id
+        guild_id = context.message.guild.id
         #data = c.execute('SELECT * FROM MessageCounter')
-        c.execute('SELECT * FROM MessageCounter')
-        #data2 = c.fetchall()
+
+        Counter._count_(self, context)
+
+        c.execute('SELECT * FROM MessageCounter{}'.format(guild_id))
         content = []
-        #content2 = []
-        #content3 = []
         for row in c.fetchall():
             content.append(row)
             #content2.append(row)
@@ -85,71 +171,68 @@ class Counter(commands.Cog):
         for i in content:
             var = var + "{}\n".format(i)
         await channel.send("Sorted list of messages: {}".format(var))
-        #print(data2)
+        with open(str(f), "rb") as q:
+            await context.send(file=discord.File(q))
 
+
+
+
+    #Reset specific users in db, TESTING
     @commands.command(pass_context=True, name='reset')
     async def _reset(self, context, member: discord.Member):
         member = member.id
         channel = context.channel
+        guild_id = context.message.guild.id
         print(member)
         #c.execute("SELECT ID FROM MessageCounter")
         count = 0
-        c.execute("SELECT Counter FROM MessageCounter WHERE ID={}".format(str(member)))
+        c.execute("SELECT Counter FROM MessageCounter{} WHERE ID={}".format(guild_id, str(member)))
         count = c.fetchone()
         total = 0
-         
-        c.execute("UPDATE MessageCounter SET Counter = 0 WHERE ID={}".format(str(member)))
-        c.execute("SELECT Counter FROM MessageCounter WHERE Name='Total'")
+
+        string = 'UPDATE MessageCounter{} SET Counter = 0 WHERE ID = {}'.format(guild_id, str(member))
+        Counter._update_table(self, context, string)
+
+        #c.execute("UPDATE MessageCounter{} SET Counter = 0 WHERE ID={}".format(guild_id, str(member)))
+        c.execute("SELECT Counter FROM MessageCounter{} WHERE Name='Total'".format(guild_id))
         total = c.fetchone()
         #print("Count: {}\nTotal: {}\n".format(count[0], total[0]))
         total = total[0] - count[0]
-        total += 1
+        #total += 1
         print(total)
         self.count = total
-        c.execute("UPDATE MessageCounter SET Counter = {} WHERE Name='Total'".format(total))
-        db.commit()
+        string = 'UPDATE MessageCounter{} SET Counter = {} WHERE Name = "Total"'.format(guild_id, total)
+        Counter._update_table(self, context, string)
+        #c.execute("UPDATE MessageCounter{} SET Counter = {} WHERE Name='Total'".format(guild_id, total))
+        #db.commit()
 
         await channel.send("Reset <@!{}> message count.".format(member))
 
-    @commands.command(pass_context=True, name='count')
-    async def _counter(self, context):
-        '''Get a copy of the Database or compare the data.'''
+    def _count_(self, context):
         name = "Total"
         ID = "Total"
         content = ""
         counter = self.count
-        c.execute("SELECT Counter FROM MessageCounter WHERE Name='Total'")
+        guild_id = context.message.guild.id
+        string = 'SELECT Counter FROM MessageCounter{} WHERE Name="Total"'.format(guild_id)
+        c.execute(string)
+        # c.execute("SELECT Counter FROM MessageCounter{} WHERE Name='Total'".format(guild_id))
         data = c.fetchall()
         print(str(data))
+        # Check to see if total is already tallied up, if yes, update it, if not, create one
         if data:
-            num2 = str(data[0])
-            num2 = num2.replace("(", "")
-            num2 = num2.replace(",", "")
-            num2 = num2.replace(")", "")
-            num2 = int(num2)
-            string = "Number 1: {}\nNumber 2: {}".format(int(self.count), num2)
-            print(string)
-            #await context.send("Debug: \n{}".format(string))
-            num3 = num2 + int(self.count)
-            #self.count = num3
-            print(str(num3))
-            c.execute("UPDATE MessageCounter SET Counter = {} WHERE ID='Total'".format(num3))
-            db.commit()
+            string = "UPDATE MessageCounter{} SET Counter = {} WHERE ID='Total'".format(guild_id, counter)
+            Counter._update_table(self, context, string)
+            # c.execute(string)
+            # c.execute("UPDATE MessageCounter{} SET Counter = {} WHERE ID='Total'".format(guild_id, num3))
+            # db.commit()
         else:
-            c.execute('INSERT INTO MessageCounter (ID, Counter, Name) VALUES (?,?, ?)', (ID, counter, name))
+            string = 'INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?,?, ?)'.format(guild_id)
+            # print(string, (ID, counter, name))
+            self.counter = counter
+            print("Counter: {}".format(self.count))
+            c.execute(string, (ID, self.count, name))
             db.commit()
-        c.execute('SELECT * FROM MessageCounter')
-        for row in c.fetchall():
-            content = content + '{}\n'.format(row)
-        await context.send(str(content))
-        channel = context.message.channel
-        with open(str(f), "rb") as q:
-            #await self.bot.send(file=(q))
-            #await self.bot.send_file(fp='open', filename=q)
-            #await channel.send_file(q)
-            #await self.bot.send_file(q, channel)
-            #await self.bot.say(file=discord.File(q))
-            await context.send(file=discord.File(q))
             
     #Should combine this with above, but in case if something happens...we would have the data still
     #@checks.admin_or_permissions(administrator=True)    
@@ -157,25 +240,28 @@ class Counter(commands.Cog):
     async def on_msg(self, message):
         '''Delete the database and start over!'''
         await asyncio.sleep(5)
-        sql = 'DELETE FROM MessageCounter'
+        guild_id = message.message.guild.id
+        #c.execute(("DROP TABLE MessageCounter"))
+        sql = 'DELETE FROM MessageCounter{}'.format(guild_id)
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
-        #self.bot.say("Purging the database!")
         channel = message.channel
         await channel.send("Purging the database!")
         
     #@checks.is_owner()
     @commands.command(pass_context=True, name="cpurge")
     async def _drop_table(self, message):
-        sql = 'DROP TABLE MessageCounter'
+        guild_id = message.message.guild.id
+        sql = 'DROP TABLE MessageCounter{}'.format(guild_id)
         db.execute(sql)
+        db.commit()
+        #db.execute('DROP TABLE OptsOut')
+        #db.commit()
         channel = message.channel
-        #await self.bot.say("Table successfully deleted. Please reload Cog.")
         await channel.send("Table successfully deleted. Please reload Cog.")
 
 def setup(bot):
     n = Counter(bot)
     bot.add_listener(n.listener, 'on_message')
     bot.add_cog(n)
-
