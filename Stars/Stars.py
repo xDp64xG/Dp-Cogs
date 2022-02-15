@@ -197,6 +197,7 @@ class Stars(commands.Cog):
         count3 = 0
         arg3 = 0
         count = 0
+        txt1 = ':star:'
 
         member = context.author.id
         author = context.author
@@ -251,7 +252,7 @@ class Stars(commands.Cog):
                       (member, mem, count3, txt1))
             c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
             db.commit()
-            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``-daily`` each day.".format(mem))
+            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
 
 
     @commands.command(pass_context=True, name="purge")
