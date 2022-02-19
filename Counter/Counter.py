@@ -377,7 +377,7 @@ class Counter(commands.Cog):
         db.execute(sql)
         db.commit()
         #Remember to change this
-        c.execute("DROP TABLE Claims")
+        c.execute("DROP TABLE Claims{}".format(guild_id))
         db.commit()
         #db.execute('DROP TABLE OptsOut')
         #db.commit()
