@@ -74,6 +74,8 @@ class Counter(commands.Cog):
         counter2 = c.fetchall()
         #Could I just do counter[0]?
         count = str(counter2[0])
+        #print("_get_count var count: {}".format(count))
+        #Better way to get rid of these?
         count = count.replace(",", "")
         count = count.replace("(", "")
         count = count.replace(")", "")
@@ -90,18 +92,19 @@ class Counter(commands.Cog):
             guild_id = message.guild.id
             #Compare Bot IDs...if Restream, continue. Look through claims of names
             if str(message.author.id) == restream:
-                c.execute('SELECT Name FROM Claims')
+                c.execute('SELECT Name FROM Claims{}'.format(guild_id))
                 claims = c.fetchall()
+                #claims = claims.lower()
                 content = str(message.content)
                 print('Claims: {}'.format(claims))
                 #Loop through claims, if message contains username claimed, count message and add to counter
                 for i in claims:
                     #If tuple = name, copy claim name
-                    if i[0] in content:
+                    if i[0].lower() in content.lower():
                         claim_name = str(i[0])
                 #If table not exist, ignore till claimed, then track
                 try:
-                    string = "SELECT ID FROM Claims WHERE Name='{}'".format(claim_name)
+                    string = "SELECT ID FROM Claims{} WHERE Name='{}'".format(guild_id, claim_name)
                     c.execute(string)
                     #c.execute('SELECT ID FROM Claims WHERE Name="{}"'.format(str(claim_name)))
                     ID = c.fetchone()
@@ -110,10 +113,13 @@ class Counter(commands.Cog):
                     pass
 
                 #Get user count, then update table
-                counter3 = Counter._get_count(self, guild_id, ID[0])
-                string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID[0])
-                Counter._update_table(self, message, string)
-                self.count += 1
+                try:
+                    counter3 = Counter._get_count(self, guild_id, ID[0])
+                    string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID[0])
+                    Counter._update_table(self, message, string)
+                    self.count += 1
+                except:
+                    print("Error...unable to execute code...ID is possibly NoneType")
             print("Bot")
             pass
         #If not bot, continue
@@ -140,7 +146,7 @@ class Counter(commands.Cog):
                     Counter._create_tables(self, message)
 
                 IDs = c.fetchall()
-                #Find ALL IDs in DB, compare message author ID, if ID in IDs, update there message counter, if not, input them in
+                #Find ALL IDs in DB, compare message author ID, if ID in IDs, update their message counter, if not, input them in
                 if str(ID) in str(IDs):
                     print("Same ID")
                     counter3 = Counter._get_count(self, guild_id, ID)
@@ -161,25 +167,88 @@ class Counter(commands.Cog):
                     string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
                     var = 1
                     c.execute(string,(ID, var, name))
+                    db.commit
                     self.count += 1
 
     #Claim an user from twitch or youtube, searches restream bot for your name, and does smart calculations to add to correct user
     @commands.command(pass_context=True, name='claim')
     async def _claim(self, context):
+        """Claim a username from twitch via [p]claim <username>"""
         message = str(context.message.content)
-        c.execute("CREATE TABLE IF NOT EXISTS Claims (Name TEXT, ID TEXT)")
-        claim_name = message[7:]
-        ID = context.message.author.id
-        db.commit()
-        string = "INSERT INTO Claims (Name, ID) VALUES (?, ?)"
-        c.execute(string, (claim_name, ID))
+        guild_id = context.message.guild.id
         channel = context.channel
-        await channel.send("Success. {} was added successfully".format(claim_name))
+        c.execute("CREATE TABLE IF NOT EXISTS Claims{} (Name TEXT, ID TEXT)".format(guild_id))
+        claim_name = message[7:]
+        #Make sure user inputs claim name, otherwise command won't work
+        if len(claim_name) < 2:
+            await channel.send("Error, please try the command again and don't forget your username!")
+        else:
+            ID = context.message.author.id
+            db.commit()
+            string = "INSERT INTO Claims{} (Name, ID) VALUES (?, ?)".format(guild_id)
+            c.execute(string, (claim_name, ID))
+
+            await channel.send("Success. {} was added successfully".format(claim_name))
         #print(message[7:])
+
+    #Claim for someone else, for testing purposes. Should lock for bot owner, claims should be saved via server id
+    @checks.admin_or_permissions(administrator=True)
+    @commands.command(pass_context=True, name='fclaim')
+    async def _fclaim(self, context, member: discord.Member):
+        """Force claim a user to claim a username. For testing purposes, and only used by admin+"""
+        #print(len(context.message.content))
+        #print(member)
+        message = context.message.content
+        guild_id = context.message.guild.id
+        ID = message[11:29]
+        print(ID)
+        message = message[31:]
+        channel = context.channel
+        claim_name = message
+        if len(claim_name) < 2:
+            await channel.send("Error, please try the command again with a username.")
+
+        else:
+            string = "INSERT INTO Claims{} (Name, ID) VALUES (?, ?)".format(guild_id)
+            c.execute(string, (claim_name, ID))
+            await channel.send("Success. {} has now claimed **{}**.".format(member.mention, claim_name ))
+
+    #Display current Claims...should be server seperate via ID
+    @commands.command(pass_context=True, name='list')
+    async def _claim_list(self, context):
+        """Get the current list of claims in the server"""
+        channel = context.channel
+        guild_id = context.message.guild.id
+        content = Counter._create_list(self, guild_id)
+        await channel.send(str(content))
+
+    #Create the list to display to Discord
+    def _create_list(self, guild_id):
+        c.execute('SELECT Name FROM Claims{}'.format(guild_id))
+        var = c.fetchall()
+        content = []
+        for i in range(len(var)):
+            content.append(var[i])
+        return content
+
+    #Remove from claims DB. Should be admin privs only
+    @checks.admin_or_permissions(administrator=True)
+    @commands.command(pass_context=True, name='dlist')
+    async def _delete_claim(self, context):
+        """Delete a claim via dlist <claim_name>."""
+        channel = context.channel
+        guild_id = context.message.guild.id
+        message = context.message.content
+        message = message[7:]
+        print(message)
+        #c.execute('SELECT Name FROM Claims WHERE Name={}'.format(message))
+        c.execute("DELETE FROM Claims{} WHERE Name='{}'".format(guild_id, message))
+        await channel.send("Success. {} is no longer claimed.".format(message))
 
     #Opt out of server counting
     @commands.command(pass_context=True, name='nocount')
     async def _opt_out(self, context):
+        """Opt out of server message counting"""
         guild_id = str(context.message.guild.id)
         channel = context.channel
         c.execute("CREATE TABLE IF NOT EXISTS OptsOut(ID TEXT)")
@@ -231,13 +300,14 @@ class Counter(commands.Cog):
 
 
     #Reset specific users in db, TESTING
+    @checks.admin_or_permissions(administrator=True)
     @commands.command(pass_context=True, name='reset')
     async def _reset(self, context, member: discord.Member):
+        """Reset specific users message counts"""
         member = member.id
         channel = context.channel
         guild_id = context.message.guild.id
         print(member)
-        #c.execute("SELECT ID FROM MessageCounter")
         count = 0
         c.execute("SELECT Counter FROM MessageCounter{} WHERE ID={}".format(guild_id, str(member)))
         count = c.fetchone()
@@ -246,7 +316,6 @@ class Counter(commands.Cog):
         string = 'UPDATE MessageCounter{} SET Counter = 0 WHERE ID = {}'.format(guild_id, str(member))
         Counter._update_table(self, context, string)
 
-        #c.execute("UPDATE MessageCounter{} SET Counter = 0 WHERE ID={}".format(guild_id, str(member)))
         c.execute("SELECT Counter FROM MessageCounter{} WHERE Name='Total'".format(guild_id))
         total = c.fetchone()
         #print("Count: {}\nTotal: {}\n".format(count[0], total[0]))
@@ -270,19 +339,15 @@ class Counter(commands.Cog):
         guild_id = context.message.guild.id
         string = 'SELECT Counter FROM MessageCounter{} WHERE Name="Total"'.format(guild_id)
         c.execute(string)
-        # c.execute("SELECT Counter FROM MessageCounter{} WHERE Name='Total'".format(guild_id))
         data = c.fetchall()
         print(str(data))
         # Check to see if total is already tallied up, if yes, update it, if not, create one
         if data:
             string = "UPDATE MessageCounter{} SET Counter = {} WHERE ID='Total'".format(guild_id, counter)
             Counter._update_table(self, context, string)
-            # c.execute(string)
-            # c.execute("UPDATE MessageCounter{} SET Counter = {} WHERE ID='Total'".format(guild_id, num3))
-            # db.commit()
+
         else:
             string = 'INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?,?, ?)'.format(guild_id)
-            # print(string, (ID, counter, name))
             self.counter = counter
             print("Counter: {}".format(self.count))
             c.execute(string, (ID, self.count, name))
@@ -292,7 +357,7 @@ class Counter(commands.Cog):
     #@checks.admin_or_permissions(administrator=True)    
     @commands.command(pass_context=True, name="delete")
     async def on_msg(self, message):
-        '''Delete the database and start over!'''
+        """Delete the database and start over!"""
         await asyncio.sleep(5)
         guild_id = message.message.guild.id
         #c.execute(("DROP TABLE MessageCounter"))
@@ -302,6 +367,7 @@ class Counter(commands.Cog):
         c.execute(sql)
         channel = message.channel
         await channel.send("Purging the database!")
+        #c.execute("DELETE FROM Claims")
         
     #@checks.is_owner()
     @commands.command(pass_context=True, name="cpurge")
@@ -309,6 +375,9 @@ class Counter(commands.Cog):
         guild_id = message.message.guild.id
         sql = 'DROP TABLE MessageCounter{}'.format(guild_id)
         db.execute(sql)
+        db.commit()
+        #Remember to change this
+        c.execute("DROP TABLE Claims")
         db.commit()
         #db.execute('DROP TABLE OptsOut')
         #db.commit()

@@ -91,16 +91,18 @@ class Members(commands.Cog):
                 if number == 1:
                     for roles in member.roles:
                         if str(roles) in message:
-                            msg = "**" + str(member.name) + "#" + str(member.discriminator) + "** - " + str(member.id) + "\n" + "\n"
+                            msg = "**{}#{}** - {} - Created on **{}**\n\n".format(str(member.name), str(member.discriminator), str(member.id), str(member.created_at.strftime("%b %d, %Y")))
+                            #msg = "**" + str(member.name) + "#" + str(member.discriminator) + "** - " + str(member.id) + str(member.created_at.strftime("%b %d, %Y")) + "\n" + "\n"
                             my_List.append(msg)
                 elif number == 2:
                     print(member.display_name)
                     memberName = str(member.display_name)
                     memberName = memberName.lower()
+                    join_date = member.created_at.strftime("%b, %d, %Y")
 
                     if temp in memberName:
                         #print("Blep")
-                        msg = "**{}#{}** - {}\n".format(member.name, member.discriminator, member.id)
+                        msg = "**{}#{}** - {} - Created on **{}**\n".format(member.name, member.discriminator, member.id, join_date)
                         my_List.append(msg)
                 elif number == 3:
 

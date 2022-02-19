@@ -5,6 +5,7 @@ import sqlite3
 import os
 import asyncio
 from datetime import date
+import random
 
 
 #dir  = "C:\Users\browp"
@@ -30,9 +31,10 @@ class Stars(commands.Cog):
         self.counter = 0
         self.msg = ""
         self.channel = ""
+        self.stars = 0
         #Should change this where table is created, and change name
         #db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT, Stars TEXT)")
-
+    #Adjust stars according to a certain count. If this amount, set star emoji to show progression
     def adjust_stars(arg3, member):
         txt1 = ':star:'
         txt2 = ':star2:'
@@ -57,6 +59,57 @@ class Stars(commands.Cog):
         c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
         db.commit()
 
+    @commands.command(pass_context=True, name='random')
+    async def _random_star(self, context):
+        c.execute("SELECT ID FROM MessageCounter")
+        IDs = []
+        IDs = c.fetchall()
+        #IDs = IDs.pop(0)
+        random_list = []
+        #count = 0
+        safecount = 0
+        c.execute(("SELECT Counter FROM MessageCounter"))
+        counts = c.fetchall()
+        #counts = counts.pop(0)
+        print(IDs)
+        print(counts)
+        #i = 0
+        for index2, i in enumerate(counts):
+            num = str(i)
+            num = num.replace("(", "")
+            num = num.replace(",", "")
+            num = num.replace(")", "")
+            num = int(num)
+            if num >= 420:
+                safecount = num
+                #print("Safe Count: {}".format(num))
+            for count in range(num):
+                if safecount >= 1:
+                    #print("Safecount decrease after: {}".format(safecount))
+                    safecount -= 1
+                    pass
+                else:
+                    random_list.append("{}".format(IDs[index2]))
+
+            """for index, ID in enumerate(IDs):
+
+                    #print("For I: {}\nFor ID: {}\nFor Count: {}".format(i, ID, count))
+                    random_list.append("{} - :star:".format(ID))"""
+            
+ 
+        #print(str(data))
+        print(str(random_list))
+        random.shuffle(random_list)
+        print("Shuffled List:\n{}".format(random_list))
+        winner = random.choice(random_list)
+        winner = winner.replace("(", "")
+        winner = winner.replace("'", "")
+        winner = winner.replace(",", "")
+        winner = winner.replace(")", "")
+        channel = context.channel
+        await channel.send("Here's the Star( :star: ) winner:\n<@!{}>".format(winner))
+        #print(random.choice(random_list))
+
     @commands.command(name='msg')#DisplayStar
     async def _begin(self, context, channel: discord.TextChannel):
         """After adding stars to people, use this to display them!"""
@@ -78,7 +131,8 @@ class Stars(commands.Cog):
             await Msg.edit(content=str(var))
         Count = Count + 1
         self.counter = Count
-
+        print(self.stars)
+    #Update existing star table
     @commands.command(name='update')
     async def _update(self, context, channel: discord.TextChannel):
         """Update the star table at a very specific message ID"""
@@ -114,6 +168,7 @@ class Stars(commands.Cog):
         await msg.edit(content=str(var4))
         Msg = self.msg
 
+    #Add / Remove Stars via user
     @commands.command(pass_context=True, name='star')
     @checks.admin_or_permissions(manage_roles=True)
     #@checks.mod_or_permissions(manage_messages=True)
@@ -123,6 +178,8 @@ class Stars(commands.Cog):
                 Use [p]com [user] [+ OR -] [stars]"""
         member = member.id or context.message.author
         txt1 = ':star:'
+        txt2 = ':star2:'
+        txt3 = ':dizzy:'
         ID = ""
 
         message = context.message.content
@@ -143,6 +200,7 @@ class Stars(commands.Cog):
         c.execute('SELECT ID FROM MessageCounter')
         IDs = c.fetchall()
         db.commit()
+        #If ID is in IDs, update stars, if not, insert new entry for user
         if str(ID) in str(IDs):
             print("Same ID")
             # Need to better select the number, remove the "replace"
@@ -181,14 +239,18 @@ class Stars(commands.Cog):
             db.commit()
         number = 0
         print(str(arg3))
+        #Operands
         if op == "+":
             number = arg4 + num
+            self.stars += num
             await channel.send("Success! {} has earned {} stars! They now have {} stars total!".format(userArg, num, number))
 
         elif op == "-":
+            self.stars -= num
             number = arg4 - num
             await channel.send("Oh no...{} has lost {} stars. They now have only {}.".format(userArg, num, number))
 
+    #Get daily stars,once a day
     @commands.command(pass_context=True, name='daily')
     async def _daily(self, context):
         """Get a daily star by using the command '[p]daily'"""
@@ -206,12 +268,13 @@ class Stars(commands.Cog):
         c.execute('SELECT ID FROM MessageCounter')
         IDs = c.fetchall()
         db.commit()
+        #Check if in DB already
         if str(member) in str(IDs):
             c.execute('SELECT Date FROM Daily WHERE ID = "{}"'.format(member))
             var = c.fetchall()
             print("Current time: {}\nTime for user: {}".format(time2, var))
             print("Len var: {}\n".format(len(var)))
-
+            #If Yes, insert into another table to log who used it on same day
             if len(var) == 0:
                 print("Var is equal to 0")
                 c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
@@ -241,10 +304,12 @@ class Stars(commands.Cog):
 
                     Stars.adjust_stars(arg3, member)
                     await context.send("You have earned another star {}".format(mem))
+                    self.stars += 1
 
 
-
+        #If new user, insert into table
         else:
+            self.stars += 1
             count3 = count3 + 1
             print("ID: {}\n\nName: {}\n\nCounter: {}\n\n".format(str(member), str(author), count))
             # author2 = "<@!" + str(author) + ">"
@@ -266,12 +331,14 @@ class Stars(commands.Cog):
 
     @commands.command(pass_context=True, name="dis")
     async def _display(self, context):
+        """Display current stars"""
         c.execute('SELECT * FROM MessageCounter')
         content = ""
         for row in c.fetchall():
             content = content + '{}\n'.format(row)
 
         with open(str(f), "rb") as q:
+            await context.send(str(content))
             await context.send(file=discord.File(q))
             db.commit()
 
@@ -289,6 +356,7 @@ class Stars(commands.Cog):
 
     @commands.command(pass_context=True, name="del2")
     async def on_msg2(self, message):
+        """Delete from Daily"""
         await asyncio.sleep(5)
         sql = 'DELETE FROM Daily'
         self.count = 0
