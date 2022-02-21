@@ -211,6 +211,7 @@ class Stars(commands.Cog):
         if str(ID) in str(IDs):
             print("Same ID")
             # Need to better select the number, remove the "replace"
+            sql = "SELECT Counter FROM {} WHERE ID= {}".format(table, member)
             c.execute('SELECT {1} FROM {2} WHERE ID={0}'.format(member, selector, guild_id))
             counter2 = c.fetchall()
             count = str(counter2[0])
