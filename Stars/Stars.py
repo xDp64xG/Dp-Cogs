@@ -6,6 +6,7 @@ import os
 import asyncio
 from datetime import date
 import random
+from discord.utils import get
 
 
 #dir  = "C:\Users\browp"
@@ -183,8 +184,11 @@ class Stars(commands.Cog):
         ID = ""
 
         message = context.message.content
+        print(message)
+
         channel = context.channel
         guild_id = context.guild.id
+        guild = context.guild
         db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
         db.commit()
         db.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
@@ -209,8 +213,10 @@ class Stars(commands.Cog):
         db.commit()
 
         try:
-            role = context.guild.get_role(943007374598344714)
-            member2.add_role(role)
+            r_name = 583756901699944471
+            role = context.guild.get_role(r_name)
+            print("Role: {}".format(role))
+            await member2.add_roles(role)
         except:
             await channel.send("Unable to give you Gold Star role...error.")
 
@@ -300,7 +306,9 @@ class Stars(commands.Cog):
         c.execute('SELECT ID FROM {}'.format(table))
         IDs = c.fetchall()
         db.commit()
-        if '945137871566827580' in str(context):
+        print(str(author.roles))
+        if '404454508228378634' in str(author.roles):
+            print("Multiplier x2")
             multiplier = 2
         #Check if in DB already
         if str(member) in str(IDs):
@@ -326,11 +334,12 @@ class Stars(commands.Cog):
                 print("Arg3: {}".format(arg3))
 
                 Stars.adjust_stars(self, arg3, member)
-                await context.send("You have earned another star {}".format(mem))
+                await context.send("You have earned another star {} x {}".format(mem, multiplier))
                 self.stars += (1 * multiplier)
                 try:
-                    role = context.guild.get_role(943007374598344714)
-                    author.add_role(role)
+                    r_name = 583756901699944471
+                    role = context.guild.get_role(r_name)
+                    await author.add_roles(role)
                 except:
                     await context.send("Unable to give you Gold Star role...error.")
 
@@ -354,11 +363,12 @@ class Stars(commands.Cog):
                     print("Arg3: {}".format(arg3))
 
                     Stars.adjust_stars(self, arg3, member)
-                    await context.send("You have earned another star {}".format(mem))
+                    await context.send("You have earned another star {} x {}".format(mem, multiplier))
                     self.stars += (1 * multiplier)
                     try:
-                        role = context.guild.get_role(943007374598344714)
-                        author.add_role(role)
+                        r_name = 583756901699944471
+                        role = context.guild.get_role(r_name)
+                        await author.add_roles(role)
                     except:
                         await context.send("Unable to give you Gold Star role...error.")
 
@@ -368,23 +378,23 @@ class Stars(commands.Cog):
             self.stars += 1
             count3 = count3 + (1 * multiplier)
             print("ID: {}\n\nName: {}\n\nCounter: {}\n\n".format(str(member), str(author), count))
-            # author2 = "<@!" + str(author) + ">"
             sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
             c.execute(sql, (member, mem, count3, txt1))
             db.commit()
             sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table2)
             c.execute(sql, (str(member), str(time2)))
             db.commit()
-            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
+            await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day. Enjoy your :star: x {}".format(mem, multiplier))
             try:
-                role = context.guild.get_role(943007374598344714)
-                author.add_role(role)
+                r_name = 583756901699944471
+                role = context.guild.get_role(r_name)
+                await author.add_roles(role)
             except:
                 await context.send("Unable to give you Gold Star role...error.")
 
     #Start Here
     @commands.command(pass_context=True, name="dis")
-    async def _display(self, context):
+    async def _display(self, context, member: discord.Member):
         """Display current stars"""
         guild_id = context.guild.id
         table = "Stars{}".format(guild_id)
