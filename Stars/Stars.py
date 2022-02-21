@@ -158,7 +158,7 @@ class Stars(commands.Cog):
 
         for i in var3:
             var4 = var4 + "{}\n".format(i)
-            var4 = Stars._remove_chars(self, var4)
+            var4 = Stars._remove_chars(var4)
             var4.replace(")", "")
 
         #await context.send("Var4:\n{}\n".format(var4))
