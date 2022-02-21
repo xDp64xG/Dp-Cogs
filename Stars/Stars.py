@@ -172,10 +172,10 @@ class Stars(commands.Cog):
     @checks.admin_or_permissions(manage_roles=True)
     #@checks.mod_or_permissions(manage_messages=True)
     #@checks.guildowner_or_permissions(administrator=True)
-    async def _star(self, context, member: discord.Member):
+    async def _star(self, context, member2: discord.Member):
         """Add stars to other people!
                 Use [p]com [user] [+ OR -] [stars]"""
-        member = member.id or context.message.author
+        member = member2.id or context.message.author
 
         txt1 = ':star:'
         txt2 = ':star2:'
@@ -207,6 +207,13 @@ class Stars(commands.Cog):
         c.execute('SELECT ID FROM {}'.format(table))
         IDs = c.fetchall()
         db.commit()
+
+        try:
+            role = context.guild.get_role(943007374598344714)
+            member2.add_role(role)
+        except:
+            await channel.send("Unable to give you Gold Star role...error.")
+
         #If ID is in IDs, update stars, if not, insert new entry for user
         if str(ID) in str(IDs):
             print("Same ID")
@@ -278,6 +285,7 @@ class Stars(commands.Cog):
         time = date.today()
         table = "Stars{}".format(guild_id)
         table2 = "Daily{}".format(guild_id)
+        multiplier = 1
         self.table = table
         time2 = time.day
         count3 = 0
@@ -292,6 +300,8 @@ class Stars(commands.Cog):
         c.execute('SELECT ID FROM {}'.format(table))
         IDs = c.fetchall()
         db.commit()
+        if '945137871566827580' in str(context):
+            multiplier = 2
         #Check if in DB already
         if str(member) in str(IDs):
             c.execute('SELECT Date FROM {} WHERE ID = "{}"'.format(table2, member))
@@ -306,19 +316,23 @@ class Stars(commands.Cog):
                 #c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID = {}'.format(member))
                 db.commit()
 
-                #Testing, have this ran in another function, replace, just like with Counter
                 c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, member))
                 counter2 = c.fetchall()
                 count = str(counter2[0])
                 count2 = Stars._remove_chars(count)
                 count = int(count2)
                 arg3 = count
-                arg3 = arg3 + 1
+                arg3 = arg3 + (1 * multiplier)
                 print("Arg3: {}".format(arg3))
 
                 Stars.adjust_stars(self, arg3, member)
                 await context.send("You have earned another star {}".format(mem))
-                self.stars += 1
+                self.stars += (1 * multiplier)
+                try:
+                    role = context.guild.get_role(943007374598344714)
+                    author.add_role(role)
+                except:
+                    await context.send("Unable to give you Gold Star role...error.")
 
             else:
                 print("Var: {}\nVar[0]: \nTime2: {}".format(var, var[0], time2))
@@ -336,17 +350,23 @@ class Stars(commands.Cog):
                     count2 = Stars._remove_chars(count)
                     count = int(count2)
                     arg3 = count
-                    arg3 = arg3 + 1
+                    arg3 = arg3 + (1 * multiplier)
                     print("Arg3: {}".format(arg3))
 
                     Stars.adjust_stars(self, arg3, member)
                     await context.send("You have earned another star {}".format(mem))
-                    self.stars += 1
+                    self.stars += (1 * multiplier)
+                    try:
+                        role = context.guild.get_role(943007374598344714)
+                        author.add_role(role)
+                    except:
+                        await context.send("Unable to give you Gold Star role...error.")
+
 
         #If new user, insert into table
         else:
             self.stars += 1
-            count3 = count3 + 1
+            count3 = count3 + (1 * multiplier)
             print("ID: {}\n\nName: {}\n\nCounter: {}\n\n".format(str(member), str(author), count))
             # author2 = "<@!" + str(author) + ">"
             sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
@@ -356,6 +376,11 @@ class Stars(commands.Cog):
             c.execute(sql, (str(member), str(time2)))
             db.commit()
             await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
+            try:
+                role = context.guild.get_role(943007374598344714)
+                author.add_role(role)
+            except:
+                await context.send("Unable to give you Gold Star role...error.")
 
     #Start Here
     @commands.command(pass_context=True, name="dis")
