@@ -369,7 +369,7 @@ class Stars(commands.Cog):
             db.commit()
 
     @commands.command(pass_context=True, name="del")
-    async def on_msg(self, message):
+    async def on_msg(self, context):
         """Delete the table without a restart"""
         await asyncio.sleep(5)
         guild_id = context.guild.id
@@ -378,12 +378,12 @@ class Stars(commands.Cog):
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
-        channel = message.channel
+        channel = context.channel
         await channel.send("Purging the database!")
         db.commit()
 
     @commands.command(pass_context=True, name="del2")
-    async def on_msg2(self, message):
+    async def on_msg2(self, context):
         """Delete from Daily"""
         await asyncio.sleep(5)
         guild_id = context.guild.id
@@ -392,17 +392,17 @@ class Stars(commands.Cog):
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
-        channel = message.channel
+        channel = context.channel
         await channel.send("Purging the database!")
         db.commit()
 
     @commands.command(pass_context=True, name="purge2")
-    async def _drop_table2(self, message):
+    async def _drop_table2(self, context):
         guild_id = context.guild.id
         table = "Daily{}".format(guild_id)
         sql = 'DROP TABLE Daily'
         db.execute(sql)
-        channel = message.channel
+        channel = context.channel
         await channel.send("Table successfully deleted. Please reload Cog by ``[p]reload Stars``.")
         db.commit()
 
