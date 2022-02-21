@@ -276,6 +276,7 @@ class Stars(commands.Cog):
         db.commit()
         time = date.today()
         table = "Stars{}".format(guild_id)
+        table2 = "Daily{}".format(guild_id)
         self.table = table
         time2 = time.day
         count3 = 0
@@ -292,14 +293,14 @@ class Stars(commands.Cog):
         db.commit()
         #Check if in DB already
         if str(member) in str(IDs):
-            c.execute('SELECT Date FROM {} WHERE ID = "{}"'.format(table, member))
+            c.execute('SELECT Date FROM {} WHERE ID = "{}"'.format(table2, member))
             var = c.fetchall()
             print("Current time: {}\nTime for user: {}".format(time2, var))
             print("Len var: {}\n".format(len(var)))
             #If Yes, insert into another table to log who used it on same day
             if len(var) == 0:
                 print("Var is equal to 0")
-                sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table)
+                sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table2)
                 c.execute(sql, (str(member), str(time2)))
                 #c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID = {}'.format(member))
                 db.commit()
@@ -326,7 +327,7 @@ class Stars(commands.Cog):
 
                 else:
                     print("Var has value")
-                    c.execute("UPDATE {} SET Date = '{}' WHERE ID = '{}'".format(table, str(time2), str(member)))
+                    c.execute("UPDATE {} SET Date = '{}' WHERE ID = '{}'".format(table2, str(time2), str(member)))
                     db.commit()
                     c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, member))
                     counter2 = c.fetchall()
@@ -350,7 +351,7 @@ class Stars(commands.Cog):
             sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
             c.execute(sql, (member, mem, count3, txt1))
             db.commit()
-            sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table)
+            sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table2)
             c.execute(sql, (str(member), str(time2)))
             db.commit()
             await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
