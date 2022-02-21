@@ -34,7 +34,7 @@ class Stars(commands.Cog):
         #Should change this where table is created, and change name
         #db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Counter INTEGER, Name TEXT, Stars TEXT)")
     #Adjust stars according to a certain count. If this amount, set star emoji to show progression
-    def adjust_stars(arg3, member):
+    def adjust_stars(self, arg3, member):
         txt1 = ':star:'
         txt2 = ':star2:'
         txt3 = ':dizzy:'
@@ -237,7 +237,7 @@ class Stars(commands.Cog):
                 c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
                 db.commit()
 
-            Stars.adjust_stars(arg3, member)
+            Stars.adjust_stars(self, arg3, member)
             db.commit()
 
         else:
@@ -315,7 +315,7 @@ class Stars(commands.Cog):
                 arg3 = arg3 + 1
                 print("Arg3: {}".format(arg3))
 
-                Stars.adjust_stars(arg3, member)
+                Stars.adjust_stars(self, arg3, member)
                 await context.send("You have earned another star {}".format(mem))
                 self.stars += 1
 
@@ -338,7 +338,7 @@ class Stars(commands.Cog):
                     arg3 = arg3 + 1
                     print("Arg3: {}".format(arg3))
 
-                    Stars.adjust_stars(arg3, member)
+                    Stars.adjust_stars(self, arg3, member)
                     await context.send("You have earned another star {}".format(mem))
                     self.stars += 1
 
