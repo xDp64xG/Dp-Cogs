@@ -186,7 +186,9 @@ class Stars(commands.Cog):
         channel = context.channel
         guild_id = context.guild.id
         db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
+        db.commit()
         db.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
+        db.commit()
         table = "Stars{}".format(guild_id)
         self.table = table
 
@@ -269,7 +271,9 @@ class Stars(commands.Cog):
         """Get a daily star by using the command '[p]daily'"""
         guild_id = context.guild.id
         db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
+        db.commit()
         db.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
+        db.commit()
         time = date.today()
         table = "Stars{}".format(guild_id)
         self.table = table
@@ -323,6 +327,7 @@ class Stars(commands.Cog):
                 else:
                     print("Var has value")
                     c.execute("UPDATE {} SET Date = '{}' WHERE ID = '{}'".format(table, str(time2), str(member)))
+                    db.commit()
                     c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, member))
                     counter2 = c.fetchall()
                     count = str(counter2[0])
@@ -344,6 +349,7 @@ class Stars(commands.Cog):
             # author2 = "<@!" + str(author) + ">"
             sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
             c.execute(sql, (member, mem, count3, txt1))
+            db.commit()
             sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table)
             c.execute(sql, (str(member), str(time2)))
             db.commit()
