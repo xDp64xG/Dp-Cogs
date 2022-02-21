@@ -344,7 +344,8 @@ class Stars(commands.Cog):
             # author2 = "<@!" + str(author) + ">"
             sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
             c.execute(sql, (member, mem, count3, txt1))
-            c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
+            sql = 'INSERT INTO {} (ID, Date) VALUES (?, ?)'.format(table)
+            c.execute(sql, (str(member), str(time2)))
             db.commit()
             await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
 
