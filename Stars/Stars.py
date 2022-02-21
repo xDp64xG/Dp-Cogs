@@ -21,8 +21,6 @@ print(f)
 #print(f)
 db = sqlite3.connect(str(f))
 c = db.cursor()
-db.execute("CREATE TABLE IF NOT EXISTS MessageCounter(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)")
-db.execute("CREATE TABLE IF NOT EXISTS Daily(ID TEXT, Date TEXT)")
 db.commit()
 class Stars(commands.Cog):
     def __init__(self, bot):
@@ -58,56 +56,53 @@ class Stars(commands.Cog):
 
         c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID = "{}"'.format(arg3, member))
         db.commit()
+    def _remove_chars(string):
+        string = string.strip("()")
+        string = string.replace(",", "")
+        string = string.replace(")", "")
+        string = string.replace("'", "")
+        return string
 
+    #Something Here
     @commands.command(pass_context=True, name='random')
     async def _random_star(self, context):
-        c.execute("SELECT ID FROM MessageCounter")
+        guild_id = context.guild.id
+        table = "Stars{}".format(guild_id)
+        c.execute("SELECT ID FROM {}".format(table))
         IDs = []
         IDs = c.fetchall()
         #IDs = IDs.pop(0)
         random_list = []
         #count = 0
         safecount = 0
-        c.execute(("SELECT Counter FROM MessageCounter"))
+        c.execute(("SELECT Counter FROM {}".format(table)))
         counts = c.fetchall()
         #counts = counts.pop(0)
         print(IDs)
         print(counts)
         #i = 0
         for index2, i in enumerate(counts):
-            num = str(i)
-            num = num.replace("(", "")
-            num = num.replace(",", "")
-            num = num.replace(")", "")
+            count = str(i)
+            num = Stars._remove_chars(count)
             num = int(num)
+            print("Num after _remove_chars\n{}".format(str(num)))
+
             if num >= 420:
-                safecount = num
-                #print("Safe Count: {}".format(num))
-            for count in range(num):
-                if safecount >= 1:
-                    #print("Safecount decrease after: {}".format(safecount))
-                    safecount -= 1
-                    pass
-                else:
+                pass
+            else:
+                for count in range(num):
                     random_list.append("{}".format(IDs[index2]))
-
-            """for index, ID in enumerate(IDs):
-
-                    #print("For I: {}\nFor ID: {}\nFor Count: {}".format(i, ID, count))
-                    random_list.append("{} - :star:".format(ID))"""
-            
  
         #print(str(data))
         print(str(random_list))
         random.shuffle(random_list)
         print("Shuffled List:\n{}".format(random_list))
+
         winner = random.choice(random_list)
-        winner = winner.replace("(", "")
-        winner = winner.replace("'", "")
-        winner = winner.replace(",", "")
-        winner = winner.replace(")", "")
+        winner2 = Stars._remove_chars(winner)
+
         channel = context.channel
-        await channel.send("Here's the Star( :star: ) winner:\n<@!{}>".format(winner))
+        await channel.send("Here's the Star( :star: ) winner:\n<@!{}>".format(winner2))
         #print(random.choice(random_list))
 
     @commands.command(name='msg')#DisplayStar
@@ -116,7 +111,7 @@ class Stars(commands.Cog):
         #Add a confirmation to where command was used
         Msg = ""
         Count = self.counter
-        c.execute('SELECT * FROM MessageCounter')
+        c.execute('SELECT * FROM {}'.format(table))
         var = ""
         var2 = ""
         for row in c.fetchall():
@@ -141,7 +136,9 @@ class Stars(commands.Cog):
             return val[1]
 
         print("Com being ran")
-        c.execute('SELECT * FROM MessageCounter')
+        guild_id = context.guild.id
+        table = "Stars{}".format(guild_id)
+        c.execute('SELECT * FROM {}'.format(table))
         content = ""
         ID = 941770958795059241
         #ID  =666316287273861132
@@ -159,13 +156,13 @@ class Stars(commands.Cog):
 
         for i in var3:
             var4 = var4 + "{}\n".format(i)
-            var4 = var4.replace("(", "")
-            var4 = var4.replace("'", "")
-            var4 = var4.replace(",", " |")
-            var4 = var4.replace(")", "")
+            var4 = Stars._remove_chars(self, var4)
+            var4.replace(")", "")
+
         #await context.send("Var4:\n{}\n".format(var4))
-        await context.send("Table succesfully updated.")
+        print(str(var4))
         await msg.edit(content=str(var4))
+        await context.send("Table succesfully updated.")
         Msg = self.msg
 
     #Add / Remove Stars via user
@@ -177,6 +174,7 @@ class Stars(commands.Cog):
         """Add stars to other people!
                 Use [p]com [user] [+ OR -] [stars]"""
         member = member.id or context.message.author
+
         txt1 = ':star:'
         txt2 = ':star2:'
         txt3 = ':dizzy:'
@@ -184,7 +182,11 @@ class Stars(commands.Cog):
 
         message = context.message.content
         channel = context.channel
-        guild = context.guild
+        guild_id = context.guild.id
+        db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
+        db.execute("CREATE TABLE IF NOT EXISTS Daily(ID TEXT, Date TEXT)")
+        table = "Stars{}".format(guild_id)
+
         arg = message.split()
         arg3 = 0
         arg4 = 0
@@ -196,31 +198,39 @@ class Stars(commands.Cog):
         name = arg[1]
         counter = 0
         selector = 'Counter'
-        data = c.execute('SELECT * FROM MessageCounter')
-        c.execute('SELECT ID FROM MessageCounter')
+        data = c.execute('SELECT * FROM {}'.format(table))
+        c.execute('SELECT ID FROM {}'.format(table))
         IDs = c.fetchall()
         db.commit()
         #If ID is in IDs, update stars, if not, insert new entry for user
         if str(ID) in str(IDs):
             print("Same ID")
             # Need to better select the number, remove the "replace"
-            c.execute('SELECT {1} FROM MessageCounter WHERE ID={0}'.format(member, selector))
+            c.execute('SELECT {1} FROM {2} WHERE ID={0}'.format(member, selector, guild_id))
             counter2 = c.fetchall()
             count = str(counter2[0])
-            count = count.replace(",", "")
-            count = count.replace("(", "")
-            count = count.replace(")", "")
-            count = int(count)
+            count2 = Stars._remove_chars(count)
+            count = int(count2)
             arg3 = count
             arg4 = count
             if op == '-':
                 arg3 = count - num
+                print(arg3)
+                if arg3 <= 0:
+                    #print('Arg <= 1')
+                    sql = 'DELETE FROM {} WHERE ID = {}'.format(table, member)
+                    c.execute(sql)
+                    db.commit()
+                else:
+                    c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
+                    db.commit()
+                self.stars -= num
 
             elif op == '+':
+                self.stars += num
                 arg3 = count + num
-
-            c.execute('UPDATE MessageCounter SET Counter = "{}" WHERE ID ="{}"'.format(arg3, str(ID)))
-            db.commit()
+                c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
+                db.commit()
 
             Stars.adjust_stars(arg3, member)
             db.commit()
@@ -235,7 +245,7 @@ class Stars(commands.Cog):
             else:
                 star = txt1
 
-            c.execute("INSERT INTO MessageCounter (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)", (ID, userArg, counter, star))
+            c.execute("INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)", (table, ID, userArg, counter, star))
             db.commit()
         number = 0
         print(str(arg3))
@@ -254,7 +264,11 @@ class Stars(commands.Cog):
     @commands.command(pass_context=True, name='daily')
     async def _daily(self, context):
         """Get a daily star by using the command '[p]daily'"""
+        guild_id = context.guild.id
+        db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
+        db.execute("CREATE TABLE IF NOT EXISTS Daily(ID TEXT, Date TEXT)")
         time = date.today()
+        table = "Stars{}".format(guild_id)
         time2 = time.day
         count3 = 0
         arg3 = 0
@@ -265,7 +279,7 @@ class Stars(commands.Cog):
         author = context.author
         mem = "<@!" + str(member) + ">"
         print(mem)
-        c.execute('SELECT ID FROM MessageCounter')
+        c.execute('SELECT ID FROM {}'.format(table))
         IDs = c.fetchall()
         db.commit()
         #Check if in DB already
@@ -281,11 +295,24 @@ class Stars(commands.Cog):
                 #c.execute('UPDATE MessageCounter SET Counter = {} WHERE ID = {}'.format(member))
                 db.commit()
 
+                #Testing, have this ran in another function, replace, just like with Counter
+                c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, member))
+                counter2 = c.fetchall()
+                count = str(counter2[0])
+                count2 = Stars._remove_chars(count)
+                count = int(count2)
+                arg3 = count
+                arg3 = arg3 + 1
+                print("Arg3: {}".format(arg3))
+
+                Stars.adjust_stars(arg3, member)
+                await context.send("You have earned another star {}".format(mem))
+                self.stars += 1
+
             else:
                 print("Var: {}\nVar[0]: \nTime2: {}".format(var, var[0], time2))
                 if str(time2) in str(var):
-                    await context.send(
-                        "You have already gotten your free star today. Try again tomorrow {}.".format(mem))
+                    await context.send("You have already gotten your free star today. Try again tomorrow {}.".format(mem))
                     db.commit()
 
                 else:
@@ -294,10 +321,8 @@ class Stars(commands.Cog):
                     c.execute('SELECT Counter FROM MessageCounter WHERE ID = "{}"'.format(member))
                     counter2 = c.fetchall()
                     count = str(counter2[0])
-                    count = count.replace(",", "")
-                    count = count.replace("(", "")
-                    count = count.replace(")", "")
-                    count = int(count)
+                    count2 = Stars._remove_chars(count)
+                    count = int(count2)
                     arg3 = count
                     arg3 = arg3 + 1
                     print("Arg3: {}".format(arg3))
@@ -306,32 +331,33 @@ class Stars(commands.Cog):
                     await context.send("You have earned another star {}".format(mem))
                     self.stars += 1
 
-
         #If new user, insert into table
         else:
             self.stars += 1
             count3 = count3 + 1
             print("ID: {}\n\nName: {}\n\nCounter: {}\n\n".format(str(member), str(author), count))
             # author2 = "<@!" + str(author) + ">"
-            c.execute("INSERT INTO MessageCounter (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)",
-                      (member, mem, count3, txt1))
+            c.execute("INSERT INTO MessageCounter (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)", (member, mem, count3, txt1))
             c.execute('INSERT INTO Daily (ID, Date) VALUES (?, ?)', (str(member), str(time2)))
             db.commit()
             await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day.".format(mem))
 
-
     @commands.command(pass_context=True, name="purge")
     async def _drop_table(self, message):
         """Purge the data table, requires restart"""
+        guild_id = context.guild.id
+        table = "Stars{}".format(guild_id)
         sql = 'DROP TABLE MessageCounter'
         db.execute(sql)
         channel = message.channel
         await channel.send("Table successfully deleted. Please reload Cog by ``[p]reload Stars``.")
         db.commit()
-
+    #Start Here
     @commands.command(pass_context=True, name="dis")
     async def _display(self, context):
         """Display current stars"""
+        guild_id = context.guild.id
+        table = "Stars{}".format(guild_id)
         c.execute('SELECT * FROM MessageCounter')
         content = ""
         for row in c.fetchall():
@@ -346,7 +372,9 @@ class Stars(commands.Cog):
     async def on_msg(self, message):
         """Delete the table without a restart"""
         await asyncio.sleep(5)
-        sql = 'DELETE FROM MessageCounter'
+        guild_id = context.guild.id
+        table = "Stars{}".format(guild_id)
+        sql = 'DROP TABLE MessageCounter'
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
@@ -358,6 +386,8 @@ class Stars(commands.Cog):
     async def on_msg2(self, message):
         """Delete from Daily"""
         await asyncio.sleep(5)
+        guild_id = context.guild.id
+        table = "Daily{}".format(guild_id)
         sql = 'DELETE FROM Daily'
         self.count = 0
         print("Performing deletion of database")
@@ -368,6 +398,8 @@ class Stars(commands.Cog):
 
     @commands.command(pass_context=True, name="purge2")
     async def _drop_table2(self, message):
+        guild_id = context.guild.id
+        table = "Daily{}".format(guild_id)
         sql = 'DROP TABLE Daily'
         db.execute(sql)
         channel = message.channel
