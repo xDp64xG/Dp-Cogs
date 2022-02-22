@@ -22,6 +22,7 @@ class Counter(commands.Cog):
         self.count = 0
         self.counter = 0
         self.g = 1
+        self.name = ""
 
     #Check OptsOut guild id and compares to message guild id. If user in OptedOut guild, no count
     def _check_guild_id(self, guild_name, guild_id):
@@ -67,18 +68,27 @@ class Counter(commands.Cog):
         db.commit()
 
     #Get user count or total count
-    def _get_count(self, guild_id, ID, ):
+    def _get_count(self, guild_id, ID ):
+
         string = 'SELECT Counter FROM MessageCounter{} WHERE ID={}'.format(guild_id, ID)
         c.execute(string)
         #c.execute('SELECT Counter FROM MessageCounter{} WHERE ID={}'.format(guild_id, ID))
         counter2 = c.fetchall()
         #Could I just do counter[0]?
-        count = str(counter2[0])
+        try:
+            count = str(counter2[0])
+            print("Counter2: {}".format(counter2))
+
+        except:
+            print("Error, counter2. {}".format(counter2))
+            count = str(counter2)
         #print("_get_count var count: {}".format(count))
         #Better way to get rid of these?
         count = count.replace(",", "")
         count = count.replace("(", "")
         count = count.replace(")", "")
+        count = count.replace("'", "")
+        print("Count: {}".format(count))
         count = int(count)
         counter3 = count + 1
         return counter3
@@ -108,18 +118,41 @@ class Counter(commands.Cog):
                     c.execute(string)
                     #c.execute('SELECT ID FROM Claims WHERE Name="{}"'.format(str(claim_name)))
                     ID = c.fetchone()
+                    print("ID in restream: {}".format(ID))
+                    ID = str(ID)
+                    ID = ID.replace(")", "")
+                    ID = ID.replace("(", "")
+                    ID = ID.replace(",", "")
+                    ID = ID.replace("'", "")
+                    print("ID after: {}".format(ID))
+                    ID = int(ID)
+
                 except:
                     print("Unable to get ID.\n{}".format(claim_name))
                     pass
 
                 #Get user count, then update table
+                self.name = message.guild.get_member(ID)
+                print("Self name: {}".format(self.name))
+                #self.name = await bot.get_user(ID)
                 try:
-                    counter3 = Counter._get_count(self, guild_id, ID[0])
-                    string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID[0])
-                    Counter._update_table(self, message, string)
-                    self.count += 1
+                    counter3 = Counter._get_count(self, guild_id, ID)
+                    bool = False
                 except:
-                    print("Error...unable to execute code...ID is possibly NoneType")
+                    counter3 = 1
+                    string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
+                    c.execute(string, (int(ID), counter3, str(self.name)))
+                    print("Could not get count, added to database. Break")
+                    bool = True
+
+                if bool == False:
+                    string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
+                    Counter._update_table(self, message, string)
+
+                self.count += 1
+
+                print("ID: {}\nCounter: {}".format(ID, counter3))
+                print("Same ID?")
             print("Bot")
             pass
         #If not bot, continue
