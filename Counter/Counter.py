@@ -145,6 +145,7 @@ class Counter(commands.Cog):
                     print("Could not get count, added to database. Break")
                     bool = True
 
+
                 if bool == False:
                     string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
                     Counter._update_table(self, message, string)
@@ -159,7 +160,8 @@ class Counter(commands.Cog):
         else:
             #Grab needed information for DB creating
             ID = str(message.author.id)
-            name = message.author.display_name
+            name = message.guild.get_member(ID)
+            #name = message.author.display_name
             guild_name = message.guild
             guild_id = message.guild.id
             #Checks guild IDs if in OptsOut DB, if yes, ignore, if no, continue to else
