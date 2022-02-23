@@ -129,31 +129,45 @@ class Counter(commands.Cog):
 
                 except:
                     print("Unable to get ID.\n{}".format(claim_name))
+                    ID = None
                     pass
 
                 #Get user count, then update table
-                self.name = message.guild.get_member(ID)
-                print("Self name: {}".format(self.name))
+                if ID == None:
+                    bool = True
+                else:
+                    self.name = message.guild.get_member(ID)
+                    print("Self name: {}".format(self.name))
                 #self.name = await bot.get_user(ID)
                 try:
-                    counter3 = Counter._get_count(self, guild_id, ID)
-                    bool = False
+                    if ID == None:
+                        pass
+                    else:
+                        counter3 = Counter._get_count(self, guild_id, ID)
+                        bool = False
+
                 except:
-                    counter3 = 1
-                    string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
-                    c.execute(string, (int(ID), counter3, str(self.name)))
-                    print("Could not get count, added to database. Break")
-                    bool = True
+                    if ID is None:
+                        print("No ID")
+                    else:
+                        counter3 = 1
+                        string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
+                        c.execute(string, (int(ID), counter3, str(self.name)))
+                        print("Could not get count, added to database. Break")
+                        bool = True
 
 
                 if bool == False:
                     string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
                     Counter._update_table(self, message, string)
+                elif ID is None:
+                    pass
+                else:
+                    self.count += 1
 
-                self.count += 1
+                    print("ID: {}\nCounter: {}".format(ID, counter3))
+                    print("Same ID?")
 
-                print("ID: {}\nCounter: {}".format(ID, counter3))
-                print("Same ID?")
             print("Bot")
             pass
         #If not bot, continue
