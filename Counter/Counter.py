@@ -174,7 +174,9 @@ class Counter(commands.Cog):
         else:
             #Grab needed information for DB creating
             ID = str(message.author.id)
-            name = message.guild.get_member(ID)
+            #username = message.guild.get_member(ID)
+            name = message.guild.get_member(int(ID))
+            print(name)
             #name = message.author.display_name
             guild_name = message.guild
             guild_id = message.guild.id
@@ -199,7 +201,7 @@ class Counter(commands.Cog):
                 if str(ID) in str(IDs):
                     print("Same ID")
                     counter3 = Counter._get_count(self, guild_id, ID)
-                    string = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, counter3, ID)
+                    string = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, counter3, int(ID))
                     Counter._update_table(self, message, string)
                     #Self counting total
                     self.count += 1
@@ -214,8 +216,8 @@ class Counter(commands.Cog):
                         pass
                     #Insert into new table
                     string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
-                    var = 1
-                    c.execute(string,(ID, var, name))
+                    var2 = 1
+                    c.execute(string,(str(ID), var2, str(name)))
                     db.commit
                     self.count += 1
 
