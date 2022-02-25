@@ -70,6 +70,7 @@ class Stars(commands.Cog):
     @commands.command(pass_context=True, name='random')
     async def _random_star(self, context):
         guild_id = context.guild.id
+        guild = context.guild
         table = "Stars{}".format(guild_id)
         c.execute("SELECT ID FROM {}".format(table))
         IDs = []
@@ -106,6 +107,18 @@ class Stars(commands.Cog):
 
         channel = context.channel
         await channel.send("Here's the Star( :star: ) winner:\n<@!{}>".format(winner2))
+
+        r_name = 946623434492895312
+        role = context.guild.get_role(r_name)
+        for members in guild.members:
+            for roles in members.roles:
+                if "Winner" in str(roles):
+                    print("Removed anyone with a Winner role")
+                    await members.remove_roles(roles)
+
+        name = context.guild.get_member(int(winner2))
+        await name.add_roles(role)
+
         #print(random.choice(random_list))
 
     @commands.command(name='msg')#DisplayStar
