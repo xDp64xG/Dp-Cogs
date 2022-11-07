@@ -100,18 +100,27 @@ class Counter(commands.Cog):
             count = str(counter2)
         #print("_get_count var count: {}".format(count))
         #Better way to get rid of these?
+        print("Count: {}".format(count))
         count = Counter._remove_chars(count)
+
         count = int(count)
         counter3 = count + 1
         return counter3
     #Bot hears all
     async def listener(self, message):
         claim_name = ""
-        #bot = False
+        guild_id = message.guild.id
+
+        # Add counter update for total
+        tot = 0
+        totalCount = Counter._get_count(self, guild_id, tot)
+        #totalCount = Counter._remove_chars(totalCount)
+
+
+        #select * from MessageCounter{} (guild_id)
         #We don't want those pesky bots interfering with our counts
         if message.author.bot:
             #Add where it can catch restream messages...
-            #self.bool = True
             restream = "491614535812120596"
             guild_id = message.guild.id
             #Compare Bot IDs...if Restream, continue. Look through claims of names
@@ -150,36 +159,33 @@ class Counter(commands.Cog):
                     if ID is None:
                         pass
                     else:
-                        #Add here for getting total count
+                        #If ID in db, get member count, and total count
                         counter3 = Counter._get_count(self, guild_id, ID)
-                        tot = 0
-                        totalCount = Counter._get_count(self, guild_id, tot)
-                        totalCount = Counter._remove_chars(totalCount)
-                        try:
-                            totalCount = int(totalCount)
-                        except:
-                            print("Unable to int total count: {}".format(totalCount))
+
                         bool = False
 
                 except:
+                    #If above fails, add into DB
+                    #If no ID, pass
                     if ID is None:
                         print("No ID")
+                    #IF not bot ID, add into DB
                     else:
                         counter3 = 1
                         string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
                         c.execute(string, (int(ID), counter3, str(self.name)))
                         db.commit()
+                        totalCount = totalCount + counter3
                         print("Could not get count, added to database. Break")
                         bool = True
 
                 if not bool:
                     string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
                     Counter._update_table(self, message, string)
+                    totalCount = totalCount + counter3
 
-                    #Add counter update for total
 
-
-                    string2 = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID = 0'.format(guild_id, )
+                    string2 = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID = 0'.format(guild_id, totalCount)
                     Counter._update_table(self, message, string2)
                 elif ID is None:
                     pass
@@ -217,15 +223,19 @@ class Counter(commands.Cog):
 
                 IDs = c.fetchall()
                 db.commit()
+                string2 = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, int(totalCount), tot)
+
                 #Find ALL IDs in DB, compare message author ID, if ID in IDs, update their message counter, if not, input them in
                 if str(ID) in str(IDs):
                     #self.bool = True
                     print("Same ID")
+                    #Plus 1 as we get count?
                     counter3 = Counter._get_count(self, guild_id, ID)
                     string = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, counter3, int(ID))
                     try:
                         Counter._update_table(self, message, string)
-                        self.count += 1
+                        Counter._update_table(self, message, string2)
+                        #self.count += 1
                     except:
                         print("No DB available.")
                     #Self counting total
@@ -256,12 +266,15 @@ class Counter(commands.Cog):
                             var2 = 1
                             c.execute(string, (str(ID), var2, str(name)))
                             db.commit
+
+                            Counter._update_table(self, message, string2)
                         #else:
                             #await channel.send("Sorry, the admin of the server must run [] command before I "
                                                #"can track the number of messages on the server.")
                             #self.content = message
                     except:
                         print("Except")
+
 
     #Claim an user from twitch or youtube, searches restream bot for your name, and does smart calculations to add to correct user
     @commands.command(pass_context=True, name='claim')
