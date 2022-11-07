@@ -3,6 +3,8 @@ import discord
 from redbot.core import commands
 from random import randint
 
+
+# noinspection SpellCheckingInspection,SpellCheckingInspection
 class Battleship(commands.Cog):
 
     def __init__(self, bot):

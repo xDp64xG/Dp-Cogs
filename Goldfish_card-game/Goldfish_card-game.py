@@ -213,7 +213,7 @@ class G_Card_Game:
 
 
     #Start the function of the game here?
-    while Boolean == False:
+    while not Boolean:
       print("Turns: ",turn)
     #print(Player1Cards)
     #print(Player2Cards)
