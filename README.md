@@ -76,7 +76,23 @@ Versions:
 		Very annoying messages, working on having edited messages(not a bug, but still should be here I guess).
 		The cards Jack, Queen, and King are not functioning properly, as there are no matches.
 		You shouldn't be able to ask for cards you don't have, will implement where the game doesn't crash.
-		
+
+# Message Counter (To be renamed)
+	1.0:
+		Count Messages sent in your server, just a little thing made up for keeping track of activity
+	1.5:
+		Expanding into keeping a total count, hope to add in caluclations from total message count, which should be included into setup
+		Added functionality of multiple guilds/servers being tracked
+
+	Bugs:
+		Must make sure Claims is properly being tracked and updated.
+
+# Stars (To be renamed)
+	1.0:
+		Add 'points' by mention. Just a way to publicly show points for participation in community events
+	2.0:
+		Added functionality of multiple servers/guilds. Added customization settings. Added random picker out of all points linked to per person
+
 # Ideas
 
 	If you got ideas, why not share them with me htpps://discord.me/dp-cogs or https://discord.gg/N6Dk5Ng or have problems, I'll be there.
