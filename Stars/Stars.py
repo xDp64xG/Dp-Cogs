@@ -51,7 +51,7 @@ class Stars(commands.Cog):
             c.execute('UPDATE {} SET Stars = "{}" WHERE ID = "{}"'.format(table, txt2, member))
 
         elif arg3 < 10:
-            c.execute('UPDATE {} SET Stars = "{}" WHERE ID ={}'.format(table, txt1, member))
+            c.execute('UPDATE {} SET Stars = "{}" WHERE ID ="{}"'.format(table, txt1, member))
 
         c.execute('UPDATE {} SET Counter = "{}" WHERE ID = "{}"'.format(table, arg3, member))
         db.commit()
@@ -385,6 +385,7 @@ class Stars(commands.Cog):
         c.execute('SELECT VIPRole FROM Settings WHERE ID = {}'.format(guild_id))
         viproleID = c.fetchone()
         db.commit()
+        #Check settings to proceed
         if viproleID:
             #Clean up the ID, remove specific characts to make it an integer to pass through a function
             viproleID = Stars._remove_chars3(str(viproleID))
@@ -413,7 +414,7 @@ class Stars(commands.Cog):
             role = Stars._remove_chars3(str(role))
             print(role)
             total = 0
-
+            #If member has vip role, add multiplier
             if str(role) in str(author.roles):
                 print("Multiplier x2")
                 multiplier = 2
@@ -482,7 +483,6 @@ class Stars(commands.Cog):
 
             #If new user, insert into table
             else:
-                #redundant
                 count3 = count3 + (1 * multiplier)
                 self.stars += count3
                 sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
@@ -491,7 +491,23 @@ class Stars(commands.Cog):
                 sql = 'INSERT INTO {} (ID, Day, Month, Year) VALUES (?, ?, ?, ?)'.format(table2)
                 c.execute(sql, (str(memID), str(day), str(month), str(year)))
                 db.commit()
-                Stars.adjust_stars(self, arg3, total)
+                try:
+                    Stars.adjust_stars(self, arg3, total)
+                
+                except:
+                    string3 = 'INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)'.format(table)
+                    c.execute('SELECT Counter FROM {} WHERE ID = 0'.format(table))
+                    totalCount = c.fetchall()
+                    print("Except: {}".format(totalCount))
+                    totalCount = str(totalCount[0])
+                    totalCount = Stars._remove_chars(totalCount)
+                    totalCount = Stars._remove_chars2(totalCount)
+                    totalCount = Stars._remove_chars3(totalCount)
+                    totalCount = int(totalCount)
+                    totalCount = totalCount + count3
+                    print("TOtal COunt: {}".format(totalCount))
+                    Stars.adjust_stars(self, totalCount, total)
+                    
                 c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                 arg4 = c.fetchall()
                 arg5 = str(arg4[0])
@@ -639,17 +655,17 @@ class Stars(commands.Cog):
                 return m.author == author and m.channel == channel
             #Edit saved settings, wait for name, channel, roles
             try:
-                resp = await self.bot.wait_for('message', check=check, timeout=20.0)
+                resp = await self.bot.wait_for('message', check=check, timeout=60.0)
 
                 if 'name' in str(resp.content).lower():
                     await channel.send("Enter in your new point system name")
-                    newName = await self.bot.wait_for('message', check=check, timeout=20.0)
+                    newName = await self.bot.wait_for('message', check=check, timeout=60.0)
                     SQLN = "UPDATE Settings SET Name = '{}' WHERE ID = {}".format(newName.content, gid)
                     fSQL = SQLN
 
                 elif 'channel' in str(resp.content).lower():
                     await channel.send("Where would you like Stars to be displayed at?")
-                    newChan = await self.bot.wait_for('message', check=check, timeout=20.0)
+                    newChan = await self.bot.wait_for('message', check=check, timeout=60.0)
                     newChan2 = newChan.content
                     FinChan = newChan2
                     FinChan = Stars._remove_chars2(str(FinChan))
@@ -676,19 +692,19 @@ class Stars(commands.Cog):
 
                 elif 'mrole' in str(resp.content).lower():
                     await channel.send("What role(s) would you like to set to be multiplied?")
-                    newMRole = await self.bot.wait_for('message', check=check, timeout=20.0)
+                    newMRole = await self.bot.wait_for('message', check=check, timeout=60.0)
                     SQLm = "UPDATE Settings SET Roles = '{}' WHERE ID = {}".format(newMRole.content, gid)
                     fSQL = SQLm
 
                 elif 'vrole' in str(resp.content).lower():
                     await channel.send("What role should be given when they participate with the point system")
-                    newVRole = await self.bot.wait_for('message', check=check, timeout=20.0)
+                    newVRole = await self.bot.wait_for('message', check=check, timeout=60.0)
                     SQLv = "UPDATE Settings SET VIPRole = '{}' WHERE ID = {}".format(newVRole.content, gid)
                     fSQL = SQLv
 
                 elif 'wrole' in str(resp.content).lower():
                     await channel.send("What role should be given when they win the point system")
-                    newWRole = await self.bot.wait_for('message', check=check, timeout=20.0)
+                    newWRole = await self.bot.wait_for('message', check=check, timeout=60.0)
                     SQLw = "UPDATE Settings SET winRole = '{}' WHERE ID = {}".format(newWRole.content, gid)
                     fSQL = SQLw
 
@@ -726,7 +742,7 @@ class Stars(commands.Cog):
 
 
     #@commands.command(pass_context=True, name="del")
-    @StarPriv.command(name='star')
+    @StarPriv.command(name='wipe')
     async def _delete_table(self, context):
         """Delete the table without a restart"""
         await asyncio.sleep(5)

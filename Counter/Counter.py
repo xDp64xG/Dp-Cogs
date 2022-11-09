@@ -165,11 +165,9 @@ class Counter(commands.Cog):
                         bool = False
 
                 except:
-                    #If above fails, add into DB
-                    #If no ID, pass
+                    #If name not in db, add into DB
                     if ID is None:
                         print("No ID")
-                    #IF not bot ID, add into DB
                     else:
                         counter3 = 1
                         string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
@@ -178,12 +176,11 @@ class Counter(commands.Cog):
                         totalCount = totalCount + counter3
                         print("Could not get count, added to database. Break")
                         bool = True
-
+                #If in DB, update total and member count
                 if not bool:
                     string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
                     Counter._update_table(self, message, string)
                     totalCount = totalCount + counter3
-
 
                     string2 = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID = 0'.format(guild_id, totalCount)
                     Counter._update_table(self, message, string2)
@@ -215,7 +212,6 @@ class Counter(commands.Cog):
             #If message not in Opted Out guild, if not able to put into db, create a table with guild id
             else:
                 try:
-                    #c.execute('SELECT * FROM MessageCounter{}'.format(guild_id))
                     c.execute('SELECT ID FROM MessageCounter{}'.format(guild_id))
                 except:
                     print("No DB Found.")
@@ -244,15 +240,6 @@ class Counter(commands.Cog):
                 else:
                     #If new ID, create table. Then insert user into db, total counter tallied up
                     print("New ID")
-                    #Try to create table
-                    """try:
-                        Counter._create_tables(self, message)
-                    except:
-                        pass"""
-
-                    #Start process for new servers here?
-                    channel = message.channel
-                    author = message.author
 
                     #Find some way to have aide help with bool status to prevent multiple self.aide 0s
                     #If new server, start process
