@@ -67,9 +67,9 @@ class Counter(commands.Cog):
 
         #Inserts needed information for new users
         if "INSERT" in string:
-            pass
-            c.execute(string, (ID, self.counter, context.author.display_name))
-            db.commit()
+            pass 
+            #c.execute(string, (ID, self.counter, str(context.guild.get_member(ID)), )) #context.author.display_name
+            #db.commit()
 
         #Updates Counter information
         elif "UPDATE" in string:
@@ -79,6 +79,7 @@ class Counter(commands.Cog):
     #Create MessageCounter table via guild ID
     def _create_tables(self, context):
         guild_id = context.guild.id
+        print("Guild ID: {}\n".format(guild_id))
         string = "CREATE TABLE IF NOT EXISTS MessageCounter{} (ID TEXT, Counter INTEGER, Name TEXT)".format(guild_id)
         c.execute(string)
         db.commit()
@@ -87,7 +88,7 @@ class Counter(commands.Cog):
     #Get user count or total count
     def _get_count(self, guild_id, ID ):
 
-        string = 'SELECT Counter FROM MessageCounter{} WHERE ID={}'.format(guild_id, ID)
+        string = "SELECT Counter FROM MessageCounter{} WHERE ID='{}'".format(guild_id, ID)
         c.execute(string)
         counter2 = c.fetchall()
 
@@ -110,158 +111,140 @@ class Counter(commands.Cog):
     async def listener(self, message):
         claim_name = ""
         guild_id = message.guild.id
+        author = message.author.name
+        aID = str(message.author.id)
+        mention = message.author.mention
+        var = Counter._check_guild_id(self, message.guild.name, guild_id)
+        restream = "491614535812120596" #Make this config
 
         # Add counter update for total
-        tot = 0
-        totalCount = Counter._get_count(self, guild_id, tot)
-        #totalCount = Counter._remove_chars(totalCount)
+        if var == "NoCount":
+            self.bool = False
+            print("No Count")
+            pass
+        else:
+            if message.author.bot:
+                if aID == restream:
+                    c.execute('SELECT Name FROM Claims{}'.format(guild_id))
+                    claims = c.fetchall()
+                    content = str(message.content)
+                    
+                    # Loop through claims, if message contains username claimed, count message and add to counter
+                    for claim in claims:
+                        # If claim name is found in the message content, proceed
+                        if claim[0].lower() in content.lower():
+                            claim_name = str(claim[0])
+                    
+                    # If table does not exist, ignore until claimed, then track
+                    try:
+                        string = "SELECT ID FROM Claims{} WHERE Name='{}'".format(guild_id, claim_name)
+                        c.execute(string)
+                        ID = c.fetchone()
+                        db.commit()
+                        ID = str(ID)
+                        ID = Counter._remove_chars(ID)
+                        ID = int(ID)
+                    except Exception as e:
+                        print("Unable to get ID.\n{}".format(claim_name))
+                        ID = None
 
-
-        #select * from MessageCounter{} (guild_id)
-        #We don't want those pesky bots interfering with our counts
-        if message.author.bot:
-            #Add where it can catch restream messages...
-            restream = "491614535812120596"
-            guild_id = message.guild.id
-            #Compare Bot IDs...if Restream, continue. Look through claims of names
-            if str(message.author.id) == restream:
-                c.execute('SELECT Name FROM Claims{}'.format(guild_id))
-                claims = c.fetchall()
-                content = str(message.content)
-                #Loop through claims, if message contains username claimed, count message and add to counter
-                for i in claims:
-                    #If tuple = name, copy claim name
-                    if i[0].lower() in content.lower():
-                        claim_name = str(i[0])
-                #If table not exist, ignore till claimed, then track
-                try:
-                    string = "SELECT ID FROM Claims{} WHERE Name='{}'".format(guild_id, claim_name)
-                    c.execute(string)
-                    #c.execute('SELECT ID FROM Claims WHERE Name="{}"'.format(str(claim_name)))
-                    ID = c.fetchone()
-                    db.commit()
-                    ID = str(ID)
-                    ID = Counter._remove_chars(ID)
-                    ID = int(ID)
-
-                except:
-                    print("Unable to get ID.\n{}".format(claim_name))
-                    ID = None
-                    pass
-
-                #Get user count, then update table
-                if ID is None:
-                    bool = True
-                else:
-                    self.name = message.guild.get_member(ID)
-
-                try:
+                    # Get user count, then update table
                     if ID is None:
+                        bool_value = True
+                    else:
+                        self.name = message.guild.get_member(ID)
+                        try:
+                            # If ID in database, get member count and total count
+                            counter3 = Counter._get_count(self, guild_id, ID)
+                            bool_value = False
+                        except Exception as e:
+                            # If name not in database, add it
+                            if ID is None:
+                                print("No ID")
+                            else:
+                                counter3 = 1
+                                mention = "<@!{}>".format(ID)
+                                string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
+                                c.execute(string, (int(ID), counter3, str(self.name)))
+                                db.commit()
+                                totalCount = totalCount + counter3
+                                print("Could not get count, added to database. Break")
+                                bool_value = True
+
+                    # If in DB, update total and member count
+                    if not bool_value:
+                        string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID =?'.format(guild_id, counter3, (ID), )
+                        Counter._update_table(self, message, string)
+                        totalCount = totalCount + counter3
+
+                        string2 = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID = 0'.format(guild_id, totalCount)
+                        Counter._update_table(self, message, string2)
+                    elif ID is None:
                         pass
                     else:
-                        #If ID in db, get member count, and total count
-                        counter3 = Counter._get_count(self, guild_id, ID)
+                        self.count += 1
 
-                        bool = False
+                        print("ID: {}\nCounter: {}".format(ID, counter3))
+                        print("Same ID?")
 
-                except:
-                    #If name not in db, add into DB
-                    if ID is None:
-                        print("No ID")
-                    else:
-                        counter3 = 1
-                        string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id)
-                        c.execute(string, (int(ID), counter3, str(self.name)))
-                        db.commit()
-                        totalCount = totalCount + counter3
-                        print("Could not get count, added to database. Break")
-                        bool = True
-                #If in DB, update total and member count
-                if not bool:
-                    string = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID ={}'.format(guild_id, counter3, ID)
-                    Counter._update_table(self, message, string)
-                    totalCount = totalCount + counter3
-
-                    string2 = 'UPDATE MessageCounter{} SET Counter = {} WHERE ID = 0'.format(guild_id, totalCount)
-                    Counter._update_table(self, message, string2)
-                elif ID is None:
-                    pass
-                else:
-                    self.count += 1
-
-                    print("ID: {}\nCounter: {}".format(ID, counter3))
-                    print("Same ID?")
-
-            print("Bot")
-            #self.bool = True
-            pass
-        #If not bot, continue
-        else:
-            #Grab needed information for DB creating
-            ID = str(message.author.id)
-            name = message.guild.get_member(int(ID))
-            guild_name = message.guild
-            guild_id = message.guild.id
-            #Checks guild IDs if in OptsOut DB, if yes, ignore, if no, continue to else
-            var = Counter._check_guild_id(self, guild_name, guild_id)
-
-            if var == "NoCount":
-                self.bool = False
-                print("No Count")
+                    print("Bot")
+                    #self.bool = True
                 pass
-            #If message not in Opted Out guild, if not able to put into db, create a table with guild id
+            #Regular message tracking
             else:
+                if message.author.bot:
+                    pass
                 try:
-                    c.execute('SELECT ID FROM MessageCounter{}'.format(guild_id))
+                    # Check if the message counter exists in the database for the guild
+                    c.execute("SELECT Counter FROM MessageCounter{} WHERE ID = ?".format(guild_id), (str(aID), ))
                 except:
                     print("No DB Found.")
-                    #Counter._create_tables(self, message)
-
-                IDs = c.fetchall()
-                db.commit()
-                string2 = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, int(totalCount), tot)
-
-                #Find ALL IDs in DB, compare message author ID, if ID in IDs, update their message counter, if not, input them in
-                if str(ID) in str(IDs):
-                    #self.bool = True
-                    print("Same ID")
-                    #Plus 1 as we get count?
-                    counter3 = Counter._get_count(self, guild_id, ID)
-                    string = 'UPDATE MessageCounter{} Set Counter = {} WHERE ID = {}'.format(guild_id, counter3, int(ID))
+                    # If the counter table doesn't exist, handle the exception
+                    # Counter._create_tables(self, message)
+                user_counter = c.fetchone()
+                try:
+                    print("User Counter: {}\n".format(user_counter[0]))
+                except:
+                    print("Error")
+                if user_counter:
+                    # If the user's counter exists, increment it
+                    user_counter = user_counter[0] + 1
                     try:
-                        Counter._update_table(self, message, string)
-                        Counter._update_table(self, message, string2)
-                        #self.count += 1
+                        c.execute("UPDATE MessageCounter{} SET Counter = ? WHERE ID = ?".format(guild_id) , (user_counter, str(aID), ))
+                        db.commit()
                     except:
-                        print("No DB available.")
-                    #Self counting total
-                    #self.count += 1
-
+                        print("Can't update user counter in the database")
                 else:
-                    #If new ID, create table. Then insert user into db, total counter tallied up
-                    print("New ID")
-
-                    #Find some way to have aide help with bool status to prevent multiple self.aide 0s
-                    #If new server, start process
+                    # If the user's counter does not exist, create a new entry
                     try:
-                        c.execute("SELECT * FROM MessageCounter{}".format(guild_id))
-                        var = c.fetchall()
-                        print("Var: {}".format(var))
-                        if var:
-                            string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(
-                                guild_id)
-                            var2 = 1
-                            c.execute(string, (str(ID), var2, str(name)))
-                            db.commit
-
-                            Counter._update_table(self, message, string2)
-                        #else:
-                            #await channel.send("Sorry, the admin of the server must run [] command before I "
-                                               #"can track the number of messages on the server.")
-                            #self.content = message
+                        c.execute("INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id), (str(aID), 1, mention))
+                        db.commit()
                     except:
-                        print("Except")
-
+                        print("Can't insert new user into the database")
+        
+                # Fetch the total message counter for the guild
+                c.execute("SELECT Counter FROM MessageCounter{} WHERE ID = '0'".format(guild_id))
+                total_counter = c.fetchone()
+                print("Total Count: {}\n".format(total_counter))
+        
+                if total_counter:
+                    # If the total counter exists, increment it
+                    total_counter = total_counter[0] + 1
+                    try:
+                        c.execute("UPDATE MessageCounter{} SET Counter = ? WHERE ID = '0'".format(guild_id), (total_counter, ))
+                        db.commit()
+                    except:
+                        print("Can't update Total Counter")
+                else:                   
+                    # If the total counter does not exist, create a new entry
+                    try:
+                        c.execute("INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(guild_id), (0, 1, 'Total'))
+                        db.commit()
+                    except:
+                        print("Can't insert Total into the database")
+        
+            # Commit the changes to the database
+            db.commit()
 
     #Claim an user from twitch or youtube, searches restream bot for your name, and does smart calculations to add to correct user
     @commands.command(pass_context=True, name='claim')
@@ -330,16 +313,8 @@ class Counter(commands.Cog):
         guild_id = context.guild.id
         channel = context.channel
         Counter._create_tables(self, context)
-        string = "INSERT INTO MessageCounter{} (ID, Counter, Name) VALUES (?, ?, ?)".format(
-            guild_id)
-        Counter._update_table(self, context, string)
-        zero = 0
-        tot = 'Total'
-        #Add total count here at 0
-        c.execute(string, (zero, zero, tot))
-
+        #Add channel and bot check 
         await channel.send("Success! Counts are now being tracked!")
-
 
     # Claim for someone else, for testing purposes. Should lock for bot owner, claims should be saved via server id
     @CountPriv.command(name="fclaim")
@@ -389,7 +364,9 @@ class Counter(commands.Cog):
         channel = context.channel
         guild_id = context.message.guild.id
         message = context.message.content
-        message = message[7:]
+        #print(message)
+        message = message[17:]
+        #print(message)
         c.execute("DELETE FROM Claims{} WHERE Name='{}'".format(guild_id, message))
         if c.rowcount == 1:
             await channel.send("Success. {} is no longer claimed.".format(message))
@@ -397,52 +374,64 @@ class Counter(commands.Cog):
             await channel.send("Failure. No claim [{}] matches the database.".format(message[10:]))
 
     #Opt out of server counting
-    #@CountPriv.command(name="nocount")
-    async def _opt_out(self, channel, guild_id):
+    @CountPriv.command(name="nc")
+    async def _opt_out(self, channel):
         """Opt out of server message counting"""
         #guild_id = str(context.message.guild.id)
         #channel = context.channel
+        print("NC ran")
+        guild_id = channel.guild.id
         c.execute("CREATE TABLE IF NOT EXISTS OptsOut(ID TEXT)")
         db.commit()
         c.execute('SELECT ID FROM OptsOut')
         IDs = c.fetchall()
-        for i in IDs:
-            if guild_id in i:
-                print("Same ID detected")
-                pass
-            else:
-                c.execute("INSERT INTO OptsOut (ID) VALUES (?)", (guild_id,))
-                db.commit()
-                await channel.send("Successfully added you to the Opted out list")
+        print(IDs)
+        if IDs:
+            for i in IDs:
+                if guild_id in i:
+                    print("Same ID detected")
+                    pass
+                else:
+                    print("Submit")
+                    c.execute("INSERT INTO OptsOut (ID) VALUES (?)", (guild_id,))
+                    db.commit()
+                    await channel.send("Successfully added you to the Opted out list")
+        else:
+            string = "INSERT INTO OptsOut (ID) VALUES (?)"
+            c.execute(string, (str(guild_id, ), ))
+            db.commit()
+            await channel.send("Successfully added {} to the Opted out list.".format(channel.guild.name))
     
     @CountPriv.command(name="ycount")
-    async def _opt_in(selfself, context):
+    async def _opt_in(self, context):
         """Opt in server message counting """
         guild_id = str(context.message.guild.id)
         channel = context.channel
         c.execute("DELETE FROM OptsOut WHERE ID={}".format(guild_id))
         await channel.send("Done.")
-    #Sorts current list from Count
+
     @CountPriv.command(name="sort")
-    async def _calculate(self, context):
-        """Sort message counts!"""
+    async def sort_and_reset(self, context):
+        """Sort message counts and reset total count!"""
         guild_id = context.message.guild.id
-        Counter._count_(self, context)
 
-        c.execute('SELECT * FROM MessageCounter{}'.format(guild_id))
-        content = []
-        for row in c.fetchall():
-            content.append(row)
-
-        content.sort(key = lambda x: x[1], reverse=False)
+        c.execute('SELECT Name, Counter FROM MessageCounter{}'.format(guild_id))
+        content = [row for row in c.fetchall()]
+        content.sort(key=lambda x: x[1], reverse=False)
 
         channel = context.message.channel
-        var = ""
-        for i in content:
-            var = var + "{}\n".format(i)
+        var = "\n".join(["{}".format(i) for i in content])
         await channel.send("Sorted list of messages: {}".format(var))
+
         with open(str(f), "rb") as q:
             await context.send(file=discord.File(q))
+
+        # Reset total count to 0
+        self.count = 0
+
+        c.execute('DELETE FROM MessageCounter{}'.format(guild_id))  # Remove all entries from the database
+        db.commit()
+        await context.send("Purging the database and resetting total count!")
 
     #Reset specific users in db, TESTING
     @CountPriv.command(name="reset")
@@ -458,7 +447,9 @@ class Counter(commands.Cog):
         total = 0
 
         string = 'UPDATE MessageCounter{} SET Counter = 0 WHERE ID = {}'.format(guild_id, str(member))
-        Counter._update_table(self, context, string)
+        c.execute(string)
+        db.commit()
+        #Counter._update_table(self, context, string)
 
         c.execute("SELECT Counter FROM MessageCounter{} WHERE Name='Total'".format(guild_id))
         total = c.fetchone()
@@ -492,22 +483,6 @@ class Counter(commands.Cog):
             print("Counter: {}".format(self.count))
             c.execute(string, (ID, self.count, name))
             db.commit()
-            
-    #Should combine this with above, but in case if something happens...we would have the data still
-    @CountPriv.command(name="delete")
-    async def on_msg(self, message):
-        """Delete the database and start over!"""
-        await asyncio.sleep(5)
-        guild_id = message.message.guild.id
-        sql = 'DELETE FROM MessageCounter{}'.format(guild_id)
-        self.count = 0
-        self.aide = 0
-        self.bool = True
-        print("Performing deletion of database")
-        c.execute(sql)
-        channel = message.channel
-        await channel.send("Purging the database!")
-
 
 def setup(bot):
     n = Counter(bot)

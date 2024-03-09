@@ -9,74 +9,56 @@ from datetime import date
 import random
 import re
 
-dir = os.getcwd()
-config_dir = Path(dir)
+dir_path = os.getcwd()
+config_dir = Path(dir_path)
 config_dir.mkdir(parents=True, exist_ok=True)
-g = config_dir / 'data/stars/stars.json'
-f = config_dir /'stars.db'
+db_file = config_dir / 'stars.db'
+conn = sqlite3.connect(db_file)
+c = conn.cursor()
 
-db = sqlite3.connect(str(f))
-c = db.cursor()
-db.commit()
 class Stars(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.count = 0
-        self.counter = 0
-        self.msg = ""
-        self.channel = ""
+        #self.table = "Stars"   Set the table name here
         self.stars = 0
-        self.table = ""
-        #Should change this where table is created, and change name
-    #Adjust stars according to a certain count. If this amount, set star emoji to show progression
 
+    def create_table(self, table):
+        c.execute('''CREATE TABLE IF NOT EXISTS {} (
+                     ID TEXT,
+                     Name TEXT,
+                     Counter INTEGER,
+                     Stars TEXT)'''.format(table))
+        conn.commit()
+        conn.close()
 
-    def adjust_stars(self, arg3, member):
-        txt1 = ':star:'
-        txt2 = ':star2:'
-        txt3 = ':dizzy:'
-        txt4 = ":sparkles:"
-        txt5 = ":eight_pointed_black_star:"
-        table = self.table
+    def adjust_stars(self, arg3, member, table):
+        star_emojis = [':star:', ':star2:', ':dizzy:', ':sparkles:', ':eight_pointed_black_star:']
+        stars_value = [10, 25, 50, 420, 1000]  # Define the thresholds for each star emoji
 
-        if arg3 >= 420:
-            c.execute("UPDATE {} SET Stars = '{}' WHERE ID = '{}'".format(table, txt5, member))
-        elif arg3 >= 50:
-            c.execute("UPDATE {} SET Stars = '{}' WHERE ID = '{}'".format(table, txt4, member))
+        conn = sqlite3.connect(db_file)
+        c = conn.cursor()
 
-        elif arg3 >= 25:
-            c.execute('UPDATE {} SET Stars = "{}" WHERE ID ="{}"'.format(table, txt3, member))
+        for i, threshold in enumerate(stars_value):
+            if arg3 >= threshold:
+                c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (star_emojis[i], member))
+                break  # Exit the loop once the star is set
 
-        elif arg3 >= 10:
-            c.execute('UPDATE {} SET Stars = "{}" WHERE ID = "{}"'.format(table, txt2, member))
+        c.execute('UPDATE {} SET Counter = ? WHERE ID = ?'.format(table), (arg3, member))
+        conn.commit()
+        conn.close()
 
-        elif arg3 < 10:
-            c.execute('UPDATE {} SET Stars = "{}" WHERE ID ="{}"'.format(table, txt1, member))
-
-        c.execute('UPDATE {} SET Counter = "{}" WHERE ID = "{}"'.format(table, arg3, member))
-        db.commit()
-    def _remove_chars(string):
-        string = string.strip("()")
-        string = string.replace(",", "")
-        string = string.replace(")", "")
-        string = string.replace("'", "")
-        string = string.replace("[", "")
-        string = string.replace("]", "")
-        string = string.replace("(", "")
-        string = string.replace("`", "")
+    def remove_characters(string):
+        chars_to_remove = ['()', '(', ')', ',', "'", '[', ']', '`', '>', '#', '<', '@', '&']
+        for char in chars_to_remove:
+            if char in string:
+                string = string.replace(char, "")
         return string
 
-    def _remove_chars2(string):
-        string = string.replace(">", "")
-        string = string.replace("#", "")
-        string = string.replace("<", "")
-        return string
-
-    def _remove_chars3(string):
-        string = string.replace(">", "")
-        string = string.replace("@", "")
-        string = string.replace("<", "")
-        string = string.replace("&", "")
+    def remove_characters2(string):
+        chars_to_remove = ['()','(',')',',',"`","'"]
+        for char in chars_to_remove:
+            if char in string:
+                string = string.replace(char, "")
         return string
 
     #Something Here
@@ -88,9 +70,7 @@ class Stars(commands.Cog):
 
         c.execute('SELECT winRole FROM Settings WHERE ID = {}'.format(guild_id))
         roleID = c.fetchone()
-        roleID2 = Stars._remove_chars3(str(roleID))
-        roleID2 = Stars._remove_chars2(str(roleID2))
-        roleID2 = Stars._remove_chars(str(roleID2))
+        roleID2 = Stars.remove_characters(str(roleID))
         print("RoleID2: {}".format(roleID2))
         table = "Stars{}".format(guild_id)
         c.execute("SELECT ID FROM {}".format(table))
@@ -104,7 +84,7 @@ class Stars(commands.Cog):
             #Iterate through counts, IDs [index2] saved into list i many times(i = count)
             for index2, i in enumerate(counts):
                 count = str(i)
-                num = Stars._remove_chars(count)
+                num = Stars.remove_characters(count)
                 num = int(num)
                 print("Num after _remove_chars\n{}".format(str(num)))
 
@@ -113,7 +93,7 @@ class Stars(commands.Cog):
                 else:
                     print("IDs: {}\nID2: {}".format(IDs, IDs[index2]))
                     var = str(IDs[index2])
-                    var = Stars._remove_chars(var)
+                    var = Stars.remove_characters(var)
 
                     if '0' in IDs[index2]:
                         pass
@@ -127,7 +107,7 @@ class Stars(commands.Cog):
             print("Shuffled List:\n{}".format(random_list))
 
             winner = random.choice(random_list)
-            winner2 = Stars._remove_chars(str(winner))
+            winner2 = Stars.remove_characters(str(winner))
 
             channel = context.channel
             await channel.send("Here's the Star ( :star: ) winner:\n<@!{}>".format(winner2))
@@ -138,6 +118,7 @@ class Stars(commands.Cog):
             for members in guild.members:
                 for roles in members.roles:
                     #if str(role) in str(roles):
+
                     if "Winner" in str(roles):
                         print("Removed anyone with a Winner role")
                         await members.remove_roles(roles)
@@ -156,8 +137,8 @@ class Stars(commands.Cog):
         guild_id = context.guild.id
         c.execute("SELECT Name FROM Settings WHERE ID = {}".format(guild_id))
         intro = c.fetchone()
-        intro2 = Stars._remove_chars(str(intro))
-        db.commit()
+        intro2 = Stars.remove_characters(str(intro))
+        conn.commit()
         print("Intro2: {}".format(intro2))
         content = ""
         var = ""
@@ -170,13 +151,13 @@ class Stars(commands.Cog):
         msgID = c.fetchone()
         if msgID:
 
-            newMsgID = Stars._remove_chars(msgID[0])
-            db.commit()
+            newMsgID = Stars.remove_characters(msgID[0])
+            conn.commit()
             c.execute(('SELECT Channel FROM Settings WHERE ID = {}'.format(guild_id)))
             channel = c.fetchone()
             string = channel[0]
             channelID = int(string)
-            db.commit()
+            conn.commit()
             channel2 = context.guild.get_channel(int(channelID))
             msg = await channel2.fetch_message(int(newMsgID))
             table = "Stars{}".format(guild_id)
@@ -185,34 +166,27 @@ class Stars(commands.Cog):
             SQL = "SELECT Counter From {} WHERE ID = 0".format(table)
             c.execute(SQL)
             counter = c.fetchone()
-            counter2 = Stars._remove_chars(str(counter))
-            counter2 = Stars._remove_chars2(counter2)
-            counter2 = Stars._remove_chars3(counter2)
-
+            counter2 = Stars.remove_characters(str(counter))
             c.execute('SELECT * FROM {}'.format(table))
             var4 = var4 + "{} Leaderboard:\n{} {} total\n".format(intro2, counter2, intro2)
             for row in c.fetchall():
                 print(row)
                 if 'Total' in str(row):
-                    #var2 = row[1:]
-                    #var = var +"\n{} {} has been given.\n".format(var2, str(intro2))
-
                     pass
                 else:
                     print(row)
                     var2 = row[1:]
-                    #var = var + '{}\n'.format(var2)
                     var3.append(var2)
 
             var3.sort(key=lambda x: x[1], reverse=True)
             print("I\n")
-            #var4 = Stars._remove_chars(str(var3))
+            #var4 = Stars.remove_characters(str(var3))
             for i in var3:
                 var4 = var4 + "{}\n".format(i)
                 #Use function?
-                var4 = Stars._remove_chars(str(var4))
+                var4 = Stars.remove_characters2(str(var4))
 
-            db.commit()
+            conn.commit()
             await asyncio.sleep(2)
             await msg.edit(content=str(var4))
             await context.send("Table succesfully updated.")
@@ -241,13 +215,11 @@ class Stars(commands.Cog):
         list = c.fetchone()
         #print(roleID)
         if list:
-            roleID = Stars._remove_chars3(str(list))
-            roleID = Stars._remove_chars2(str(roleID))
-            roleID = Stars._remove_chars(str(roleID))
-            db.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
-            db.commit()
-            db.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
-            db.commit()
+            roleID = Stars.remove_characters(str(list))
+            conn.execute("CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
+            conn.commit()
+            conn.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
+            conn.commit()
             table = "Stars{}".format(guild_id)
             arg = message.split()
             arg3 = 0
@@ -263,15 +235,15 @@ class Stars(commands.Cog):
                 counter = 0
                 c.execute('SELECT ID FROM {}'.format(table))
                 IDs = c.fetchall()
-                db.commit()
+                conn.commit()
 
                 #Give role to see who is participating, grab from DB
                 try:
                     role = context.guild.get_role(int(roleID))
+                    print("Role: {}\n{}".format(role, roleID))
                     await member2.add_roles(role)
                 except:
                     await channel.send("Unable to give you Gold Star role...error.")
-
                 #If ID is in IDs, update stars, if not, insert new entry for user
                 if str(ID) in str(IDs):
                     print("Same ID")
@@ -280,7 +252,7 @@ class Stars(commands.Cog):
                     c.execute(sql)
                     counter2 = c.fetchall()
                     count = str(counter2[0])
-                    count = Stars._remove_chars(count)
+                    count = Stars.remove_characters(count)
                     count = int(count)
                     arg3 = count
                     Truearg4 = count
@@ -290,17 +262,17 @@ class Stars(commands.Cog):
                             #print('Arg <= 1')
                             sql = 'DELETE FROM {} WHERE ID = {}'.format(table, member)
                             c.execute(sql)
-                            db.commit()
+                            conn.commit()
                         else:
                             c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
-                            db.commit()
+                            conn.commit()
                             c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                             arg5 = c.fetchall()
                             # arg5 = str(arg4[0])
                             total = 0
-                            arg5 = Stars._remove_chars(str(arg5))
+                            arg5 = Stars.remove_characters(str(arg5))
                             arg5 = int(arg5) - num
-                            db.commit()
+                            conn.commit()
                             Stars.adjust_stars(self, arg5, total)
 
                             try:
@@ -313,14 +285,14 @@ class Stars(commands.Cog):
                     elif op == '+':
                         arg3 = count + num
                         c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
-                        db.commit()
+                        conn.commit()
                         c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                         arg5 = c.fetchall()
                         # arg5 = str(arg4[0])
                         total = 0
-                        arg5 = Stars._remove_chars(str(arg5))
+                        arg5 = Stars.remove_characters(str(arg5))
                         arg5 = int(arg5) + num
-                        db.commit()
+                        conn.commit()
                         Stars.adjust_stars(self, arg5, total)
 
                         try:
@@ -331,7 +303,7 @@ class Stars(commands.Cog):
                             "Success! {} has earned {} stars! They now have {} stars total!".format(userArg, num, number))
 
                     Stars.adjust_stars(self, arg3, member)
-                    db.commit()
+                    conn.commit()
 
                 else:
                     print("New ID")
@@ -344,15 +316,15 @@ class Stars(commands.Cog):
                         star = txt1
                     sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
                     c.execute(sql, (ID, userArg, counter, star))
-                    db.commit()
+                    conn.commit()
                     c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                     arg5 = c.fetchall()
                     # arg5 = str(arg4[0])
                     total = 0
-                    arg5 = Stars._remove_chars(str(arg5))
+                    arg5 = Stars.remove_characters(str(arg5))
                     arg5 = int(arg5) + num
-                    db.commit()
-                    Stars.adjust_stars(self, arg5, total)
+                    conn.commit()
+                    #Stars.adjust_stars(self, arg5, total)
             else:
                 await channel.send("Error. Please run the command properly. Use ``help star`` to see how to use the command. ")
         else:
@@ -364,10 +336,10 @@ class Stars(commands.Cog):
     async def _daily(self, context):
         """Get a daily star by using the command '[p]daily'"""
         guild_id = context.guild.id
-        db.commit()
+        conn.commit()
         #DB is now ID, Day, Month, Year TEXT
-        db.execute('CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Day TEXT, Month TEXT, Year TEXT)'.format(guild_id))
-        db.commit()
+        conn.execute('CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Day TEXT, Month TEXT, Year TEXT)'.format(guild_id))
+        conn.commit()
         time = date.today()
         table = "Stars{}".format(guild_id)
         table2 = "Daily{}".format(guild_id)
@@ -384,12 +356,12 @@ class Stars(commands.Cog):
         #Grab role to give to user from Settings DB from Setup
         c.execute('SELECT VIPRole FROM Settings WHERE ID = {}'.format(guild_id))
         viproleID = c.fetchone()
-        db.commit()
+        conn.commit()
         #Check settings to proceed
         if viproleID:
             #Clean up the ID, remove specific characts to make it an integer to pass through a function
-            viproleID = Stars._remove_chars3(str(viproleID))
-            viproleID = Stars._remove_chars(str(viproleID))
+            viproleID = Stars.remove_characters(str(viproleID))
+            #viproleID = Stars.remove_characters(str(viproleID))
             vip = context.guild.get_role(int(viproleID))
 
             memID = context.author.id
@@ -403,15 +375,15 @@ class Stars(commands.Cog):
             print(mem)
             c.execute('SELECT ID FROM {}'.format(table))
             IDs = c.fetchall()
-            db.commit()
+            conn.commit()
             print(str(author.roles))
             #Pull from db, compare if multiplier role in author.roles
             c.execute('SELECT Roles FROM Settings WHERE ID = {}'.format(guild_id))
             myList = c.fetchone()
-            db.commit()
+            conn.commit()
             print("Mylist: {}\nvip: {}".format(myList, vip))
             role = myList[0]
-            role = Stars._remove_chars3(str(role))
+            role = Stars.remove_characters(str(role))
             print(role)
             total = 0
             #If member has vip role, add multiplier
@@ -427,25 +399,25 @@ class Stars(commands.Cog):
                     #Insert todays date into a DB linked to a discord ID, per discord server
                     sql = 'INSERT INTO {} (ID, Day, Month, Year) VALUES (?, ?, ?, ?)'.format(table2)
                     c.execute(sql, (str(memID), str(day), str(month), str(year)))
-                    db.commit()
+                    conn.commit()
                     #Select from counter to update it if new user
                     c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, memID))
                     counter2 = c.fetchall()
                     count = str(counter2[0])
-                    count2 = Stars._remove_chars(count)
+                    count2 = Stars.remove_characters(count)
                     count = int(count2)
                     arg3 = count
                     arg3 = arg3 + (1 * multiplier)
-                    Stars.adjust_stars(self, arg3, memID)
+                    #Stars.adjust_stars(self, arg3, memID)
 
 
                     c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                     arg4 = c.fetchall()
                     #arg5 = str(arg4[0])
-                    arg5 = Stars._remove_chars(str(arg4))
+                    arg5 = Stars.remove_characters(str(arg4))
                     arg5 = int(arg5) + arg3
-                    db.commit()
-                    Stars.adjust_stars(self, arg5, total)
+                    conn.commit()
+                    Stars.adjust_stars(self, arg5, total, table)
                     await context.send("You have earned another star {} x {}".format(mem, multiplier))
                     #Find another way to add total stars
                     self.stars += (1 * multiplier)
@@ -453,16 +425,16 @@ class Stars(commands.Cog):
                 else:
                     if (str(day) in str(var)) and (str(month) in str(var)) and (str(year) in str(var)):
                         await context.send("You have already gotten your free star today. Try again tomorrow {}.".format(mem))
-                        db.commit()
+                        conn.commit()
 
                     else:
                         #update all day, month, year
-                        c.execute("UPDATE {} SET Day = '{}', SET Month = {}, SET Year = {} WHERE ID = '{}'".format(table2, str(day), str(month), str(year), str(memID)))
-                        db.commit()
+                        c.execute("UPDATE {} SET Day = '{}',Month = {}, Year = {} WHERE ID = '{}'".format(table2, str(day), str(month), str(year), str(memID)))
+                        conn.commit()
                         c.execute('SELECT Counter FROM {} WHERE ID = "{}"'.format(table, memID))
                         counter2 = c.fetchall()
                         count = str(counter2[0])
-                        count2 = Stars._remove_chars(count)
+                        count2 = Stars.remove_characters(count)
                         count = int(count2)
                         arg3 = count
                         arg3 = arg3 + (1 * multiplier)
@@ -470,9 +442,9 @@ class Stars(commands.Cog):
                         c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                         arg4 = c.fetchall()
                         arg5 = str(arg4[0])
-                        arg5 = Stars._remove_chars(arg5)
+                        arg5 = Stars.remove_characters(arg5)
                         arg5 = int(arg5) + arg3
-                        db.commit()
+                        conn.commit()
                         Stars.adjust_stars(self, arg5, total)
                         await context.send("You have earned another star {} x {}".format(mem, multiplier))
                         self.stars += (1 * multiplier)
@@ -487,12 +459,12 @@ class Stars(commands.Cog):
                 self.stars += count3
                 sql = "INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(table)
                 c.execute(sql, (memID, mem, count3, txt1))
-                db.commit()
+                conn.commit()
                 sql = 'INSERT INTO {} (ID, Day, Month, Year) VALUES (?, ?, ?, ?)'.format(table2)
                 c.execute(sql, (str(memID), str(day), str(month), str(year)))
-                db.commit()
+                conn.commit()
                 try:
-                    Stars.adjust_stars(self, arg3, total)
+                    Stars.adjust_stars(self, arg3, total, table)
                 
                 except:
                     string3 = 'INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)'.format(table)
@@ -500,21 +472,22 @@ class Stars(commands.Cog):
                     totalCount = c.fetchall()
                     print("Except: {}".format(totalCount))
                     totalCount = str(totalCount[0])
-                    totalCount = Stars._remove_chars(totalCount)
-                    totalCount = Stars._remove_chars2(totalCount)
-                    totalCount = Stars._remove_chars3(totalCount)
+                    totalCount = Stars.remove_characters(totalCount)
+                    #totalCount = Stars.remove_characters(totalCount)
+                    #totalCount = Stars.remove_characters(totalCount)
                     totalCount = int(totalCount)
                     totalCount = totalCount + count3
                     print("TOtal COunt: {}".format(totalCount))
-                    Stars.adjust_stars(self, totalCount, total)
+                    #Stars.create_table(table)
+                    Stars.adjust_stars(self, totalCount, total, table)
                     
                 c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                 arg4 = c.fetchall()
                 arg5 = str(arg4[0])
-                arg5 = Stars._remove_chars(arg5)
+                arg5 = Stars.remove_characters(arg5)
                 arg5 = int(arg5) + count3
-                db.commit()
-                Stars.adjust_stars(self, arg5, total)
+                conn.commit()
+                Stars.adjust_stars(self, arg5, total, table)
                 await context.send("Congrats {}!\n You have enrolled into the daily star **AND** also can get a star each day by doing ``=daily`` each day. Enjoy your :star: x {}".format(mem, multiplier))
         else:
             await context.send("Error, please run ``[p]StarPriv setup`` to be able to use this feature.")
@@ -560,7 +533,7 @@ class Stars(commands.Cog):
             print("Awaiting channel name")
             #Need to send to correct channel
             post2 = str(post.content)
-            post3 = Stars._remove_chars2(post2)
+            post3 = Stars.remove_characters(post2)
             chan = guild.get_channel(int(post3))
             msg = await chan.send(string)
             mID = msg.id
@@ -595,11 +568,11 @@ class Stars(commands.Cog):
             print("Failure. Rolenam3")
 
         #Create table here
-        db.execute("CREATE TABLE IF NOT EXISTS Settings(Name TEXT, Channel INTEGER, Roles TEXT,"
+        conn.execute("CREATE TABLE IF NOT EXISTS Settings(Name TEXT, Channel INTEGER, Roles TEXT,"
                    " VIPRole TEXT, ID INTEGER, Message TEXT, winRole TEXT)")
-        db.commit()
+        conn.commit()
 
-        db.execute(
+        conn.execute(
             "CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
 
         #User confirms, then save into DB
@@ -614,7 +587,7 @@ class Stars(commands.Cog):
                 sql = "INSERT INTO Settings (Name, Channel, Roles, VIPRole, ID, Message, winRole) VALUES (?, ?, ?, ?, ?, ?, ?)".format(guild_id)
                 c.execute(sql, (name.content, int(post3), role.content, role2.content, guild_id, mID, role3.content))
                 #c.execute(sql, (name.content, post.channel.id, roleid[3:20], roleid2[3:20], guild_id, mID))
-                db.commit()
+                conn.commit()
                 await channel.send("Success! Settings saved.")
 
 
@@ -622,7 +595,7 @@ class Stars(commands.Cog):
                 Tot = 0
                 sql = "INSERT INTO Stars{} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)".format(guild_id)
                 c.execute(sql, (Tot, TotName, Tot, txt1))
-                db.commit()
+                conn.commit()
 
                 #print("Execute sql")
             elif 'n' in str(response.content).lower():
@@ -668,15 +641,15 @@ class Stars(commands.Cog):
                     newChan = await self.bot.wait_for('message', check=check, timeout=60.0)
                     newChan2 = newChan.content
                     FinChan = newChan2
-                    FinChan = Stars._remove_chars2(str(FinChan))
+                    FinChan = Stars.remove_characters(str(FinChan))
                     c.execute("SELECT Channel FROM Settings WHERE ID = {}".format(gid))
                     chanID = c.fetchone()
-                    chanID = Stars._remove_chars(str(chanID))
-                    db.commit()
+                    chanID = Stars.remove_characters(str(chanID))
+                    conn.commit()
                     c.execute(("SELECT Message FROM Settings WHERE ID = {}".format(gid)))
                     MsgID = c.fetchone()
-                    db.commit()
-                    MsgID = Stars._remove_chars(str(MsgID))
+                    conn.commit()
+                    MsgID = Stars.remove_characters(str(MsgID))
                     oldChan = ctx.guild.get_channel(int(chanID))
                     msg = await oldChan.fetch_message(int(MsgID))
                     await msg.delete()
@@ -713,7 +686,7 @@ class Stars(commands.Cog):
                     SQL = 'SELECT * FROM Settings WHERE ID = {}'.format(gid)
                     c.execute(SQL)
                     toPrint = c.fetchall()
-                    db.commit()
+                    conn.commit()
                     newList2 = ""
                     for i in toPrint:
                         newList2 = newList2 + "\n" + str(i)
@@ -726,11 +699,11 @@ class Stars(commands.Cog):
             if len(fSQL) > 0:
                 print("FSQL")
                 c.execute(fSQL)
-                db.commit()
+                conn.commit()
                 SQL = 'SELECT * FROM Settings WHERE ID = {}'.format(gid)
                 c.execute(SQL)
                 toPrint = c.fetchall()
-                db.commit()
+                conn.commit()
                 newList = ""
                 for i in toPrint:
                     newList = newList + "\n" + str(i)
@@ -755,9 +728,9 @@ class Stars(commands.Cog):
         c.execute(sql)
         channel = context.channel
         await channel.send("Purging the database!")
-        db.commit()
+        conn.commit()
         c.execute("DELETE FROM Settings WHERE ID = {}".format(guild_id))
-        db.commit()
+        conn.commit()
 
     @StarPriv.command(name='daily')
     async def _delete_daily(self, context):
@@ -771,7 +744,7 @@ class Stars(commands.Cog):
         c.execute(sql)
         channel = context.channel
         await channel.send("Purging the database!")
-        db.commit()
+        conn.commit()
 
-    db.commit()
+    conn.commit()
     pass

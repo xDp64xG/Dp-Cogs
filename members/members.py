@@ -13,6 +13,8 @@ class Members(commands.Cog):
         """Get members via names, count, etc."""
         prefix = ctx.prefix
         msg = ctx.message.content
+
+        #There is an easier way of doing sub commands
         print(msg)
         msg = msg[7:]
         print(msg)

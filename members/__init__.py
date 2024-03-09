@@ -1,5 +1,5 @@
 from .members import Members
 
-def setup(bot):
+async def setup(bot):
     print("Loading")
-    bot.add_cog(Members(bot))
+    await bot.add_cog(Members(bot))
