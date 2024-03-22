@@ -1,4 +1,4 @@
-from .MyCog import Mycog
+from .Hangman import Hangman
 
 async def setup(bot):
-    await bot.add_cog(Mycog(bot))
+    await bot.add_cog(Hangman(bot))

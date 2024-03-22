@@ -4,7 +4,7 @@ import asyncio
 from redbot.core import commands
 import random
 
-class Mycog(commands.Cog):
+class Hangman(commands.Cog):
     """My custom cog that does stuff!"""
 
     def __init__(self, bot):
@@ -90,6 +90,7 @@ class Mycog(commands.Cog):
         #                     "\n3: Hard"
         #                     "\n4: Hardest\n")
         # Debug Selector
+        #selector = random.randint(0,1)
         selector = 1
 
         answer_list = []

@@ -5,9 +5,14 @@ from pathlib import Path
 import sqlite3
 import os
 import asyncio
+import time
+import logging
 from datetime import date
 import random
 import re
+import json
+
+logging.basicConfig(filename='error.log', level=logging.ERROR)
 
 dir_path = os.getcwd()
 config_dir = Path(dir_path)
@@ -21,6 +26,12 @@ class Stars(commands.Cog):
         self.bot = bot
         #self.table = "Stars"   Set the table name here
         self.stars = 0
+        self.result = ""
+        self.ctx =""
+        self.author = ""
+        self.emote_list = []
+        self.threshold_list = []
+        self.thresh_emote = []
 
     def create_table(self, table):
         c.execute('''CREATE TABLE IF NOT EXISTS {} (
@@ -31,21 +42,154 @@ class Stars(commands.Cog):
         conn.commit()
         conn.close()
 
+    
+    def fix_surrogate(string):
+        # Using regular expression to match surrogate characters
+        surrogate_regex = re.compile(r'[\ud800-\udbff][\udc00-\udfff]')
+        # Replace surrogate pairs with the Unicode character they represent
+        return surrogate_regex.sub(lambda x: x.group(0).encode('utf-16', 'surrogatepass').decode('utf-16'), string)
+
+        
     def adjust_stars(self, arg3, member, table):
-        star_emojis = [':star:', ':star2:', ':dizzy:', ':sparkles:', ':eight_pointed_black_star:']
-        stars_value = [10, 25, 50, 420, 1000]  # Define the thresholds for each star emoji
+
+        #try:
+            # Update the counter for the specified user in the database
+            #pass  # Implement the logic to update user counter in the database
+
+        #except Exception as e:
+            #logging.error(f"{time.ctime()} - Error occurred while updating user counter in the database: {str(e)}")
+            #raise  # Re-raise the exception for the calling code to handle
+        try:
+            star_emojis = self.emote_list
+            stars_value = self.threshold_list
+            thresh_emote_tuple = self.thresh_emote
+
+            print("Emoji: {}\nValues: {}\n".format(star_emojis, stars_value))
+        except:
+
+            #edit both values
+            star_emojis = [':star:', ':star2:', ':dizzy:', ':sparkles:', ':zap:', ':eight_pointed_black_star:', ':boom:', ':fire:' ]
+            stars_value = [5, 10, 25, 50, 100, 420, 500, 1000]  # Define the thresholds for each star emoji
+            logging.error("Default stars being used : {}".format(time.ctime()))
+        bool_prop = False
+        try:
+            int(arg3)
+            bool_prop = True
+        except:
+            pass
+            logging.error("Could not int arg3: {}".format(arg3))
 
         conn = sqlite3.connect(db_file)
         c = conn.cursor()
+        print(arg3)
+        if bool_prop:
+            total_counter = 0
+            try:
+                c.execute("SELECT ID, Counter FROM {}".format(table))
+                print("Star Val: {}".format(stars_value))
+                data = c.fetchall()
+                star_data = {}
+                for id, count in data:
+                    count2 = int(count)  # Convert count to integer
+                    if id == 0:  # Skip the total with ID = 0
+                        print("Total count: {}".format(count2))
+                        continue
+                    else:
+                        print("ID: {}, Count: {}".format(id, count2))
+                        
+                        #found_threshold = False  # Flag to track if a threshold is found
+                        print("stars_values: {}".format(stars_value))
+                        emote_data = star_emojis
+                        emotes = ""
+                        print("Type for emote_date: {}\nEmotes: {}\n".format(type(emote_data), emote_data))
 
-        for i, threshold in enumerate(stars_value):
-            if arg3 >= threshold:
-                c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (star_emojis[i], member))
-                break  # Exit the loop once the star is set
 
-        c.execute('UPDATE {} SET Counter = ? WHERE ID = ?'.format(table), (arg3, member))
-        conn.commit()
-        conn.close()
+                        emotes = emote_data[0]
+                        emote_list = emotes
+                        try:
+                            #emote_list = emotes.split(", ")
+                            star_emojis = emote_list
+                            print("Emote[0]: {}\nType: {}\nEmote_List: {}".format(emotes, type(emotes), emote_list))
+                            emotes_str = ', '.join(str(emotes))
+                            print("Emotes: {}\nSTR: {}\n".format(emotes, emotes_str))
+                            star_data = thresh_emote_tuple
+                            #star_data = [(stars_value[i], emote_list[i]) for i in range(min(len(stars_value), len(emote_list)))]
+                                
+                            #star_data = {stars_value[i]: emote_data[i] for i in range(min(len(stars_value), len(emote_data)))}
+                            print("Star data table: {}\nEmotes: {}".format(star_data, emote_data))
+                        except Exception as e:
+                            logging.error("Error in creating Star table...Emote data: {1}\nEmotes: {0}\nException: {2}".format(emotes, emote_data, e))
+
+                        for threshold, emote in star_data:
+                            print("Thresh: {}\nEmote: {}".format(threshold, emote))
+                            # Assuming you have the `c` cursor and `conn` connection established
+                            #print("Threshold: {}\nEmote: {}\nFor loop w/ Star Data: {}".format((threshold, emote, star_data)))
+                            try:
+                                c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (emote, id))
+                                conn.commit()
+                            except Exception as e:
+                                print("Error1 updating Stars: {}".format(e))
+                                emote_data = [Stars.fix_surrogate(sequence) for sequence in star_emojis]
+                                print("Emotes in Exception: {}\nException: {}".format(emote_data, e))
+                            try:
+                                i = len(star_data)
+                                print(len(star_data))
+                                #threshold, emote = star_data
+                                #for thresh in threshold:
+                                print("I: {}".format(threshold))
+                                print("Length of stars: {}\n threshold: {}".format(i, threshold))
+                                print("Stars value: {}\n Stars_value [i]: {}".format(star_data, star_data[(len(star_data) - 1)]))
+
+                                index = next((i for i, (t, _) in enumerate(star_data) if t == int(threshold)), len(star_data))
+
+                                # Check if count2 is within the range of the current and next threshold
+                                if count2 >= int(threshold) and (index < len(star_data) - 1 and count2 < star_data[index + 1][0]):
+                                #if count2 >= int(threshold) and (i == len(star_data) - 1 or (i > 0 and count2 < star_data[i - 1][0])):
+                                    #for idx, value in star_data:
+                                    print("i: {}\nThreshold: {}\nidx: {}\nvalue: {}\nValue[1] star_emoji: {}\nstar_value: {}".format(i, threshold, threshold, emote, threshold, star_emojis, stars_value))
+                                    #print("Count {} >= {}, emoji: {}".format(count2, threshold, star_data[i]))
+                                    print("Star data")
+                                    c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (emote, id))
+                                    conn.commit()
+                                    break
+                            except Exception as e:
+                                logging.error("Error2: {} - {}\nTrying backup".format(e, time.ctime()))
+                                #Edit this later
+                                #if count2 >= threshold and (i == len(stars_value) - 1 or count2 < stars_value[i + 1]):
+                                index = next((i for i, (t, _) in enumerate(star_data) if t == int(threshold)), len(star_data))
+
+                                # Check if count2 is within the range of the current and next threshold
+                                if count2 >= int(threshold) and (index < len(star_data) - 1 and count2 < star_data[index + 1][0]):
+
+                                    print("After exception, meets threshold w/ new data.")
+                                    c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (emote, id))
+                                    logging.error("Success in backup.")
+
+                                print("Get star_data")
+
+                user_counters = [int(count) for id, count in data if id != 0]  # Extract user counters
+                user_counters.pop(0)
+                total_counter = sum(user_counters)
+                c.execute("UPDATE {} SET Counter = {} WHERE ID = 0".format(table, total_counter))
+                conn.commit()
+                #found_threshold = True  # Set the flag to true
+                #total_counter += int(count2)  # Increment total_counter
+                print("Total Count After IF: {}".format(total_counter))
+
+            except Exception as e:
+                print("Error3, couldn't update all Stars. {}".format(e))
+                logging.error("Error3: {} - {}\nBig error.".format(e, time.ctime()))
+        else:
+            for i in range(len(stars_value)):
+                if arg3 < stars_value[i]:
+                    c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (star_emojis[i-1], member if i > 0 else 1))
+                    break  # Exit the loop once the star is set
+            else:
+                c.execute("UPDATE {} SET Stars = ? WHERE ID = ?".format(table), (star_emojis[-1], member))
+
+            c.execute('UPDATE {} SET Counter = ? WHERE ID = ?'.format(table), (arg3, member))
+            conn.commit()
+            conn.close()
 
     def remove_characters(string):
         chars_to_remove = ['()', '(', ')', ',', "'", '[', ']', '`', '>', '#', '<', '@', '&']
@@ -132,8 +276,8 @@ class Stars(commands.Cog):
     @commands.command(name='update')
     async def _update(self, context):
         """Update the star table at a very specific message ID"""
-
-        print("Com being ran")
+        #Get emote and threshold list try
+        print("Com being ran\n\nSelf.emoji: {}\nSelf.star_value: {}".format(self.emote_list, self.threshold_list))
         guild_id = context.guild.id
         c.execute("SELECT Name FROM Settings WHERE ID = {}".format(guild_id))
         intro = c.fetchone()
@@ -146,6 +290,8 @@ class Stars(commands.Cog):
         var3 = []
         var4 = ""
         #Need above?
+
+        #Get emote and thresh list, and save them to access in Adjust_Stars
 
         c.execute('SELECT Message FROM Settings WHERE ID = {}'.format(guild_id))
         msgID = c.fetchone()
@@ -162,11 +308,79 @@ class Stars(commands.Cog):
             msg = await channel2.fetch_message(int(newMsgID))
             table = "Stars{}".format(guild_id)
             await msg.edit(content="Testing")
+            c.execute("SELECT emote FROM Settings WHERE ID = {}".format(guild_id))
+
+            # Fetch the data from the database
+            emotes = c.fetchall()
+            print("Emotes after fetch: {}".format(emotes))
+
+            # Assuming 'emotes' is a list of tuples, and 'emote' is the first (or only) element in each tuple
+            emote_list = []  # Initialize an empty list to store individual emote strings
+
+            for emote in emotes:
+                print("Emote: {}".format(emote))
+                data_str = emote[0].decode('utf-8')
+                print(data_str)
+                emote_list.append(list(data_str.split(', ')))
+                #print("Emote: {}".format(emote))
+
+            print("Emote_List: {}\n".format(emote_list))
+
+            # Debug correct emote list
+            for emoji in emote_list:
+                await context.channel.send(emoji)
+
+
+            c.execute("SELECT thresh FROM Settings WHERE ID = {}".format(guild_id))
+            threshold = c.fetchall()
+            decoded_threshold_data = []
+            for thresh in threshold:
+                print("Thresh: {}".format(thresh))
+                data_str2 = thresh[0].decode('utf-8')
+                print(data_str2)
+                decoded_threshold_data.append(data_str2.strip('"').split(', '))
+            sorted_list_str = ""
+            
+
+            # Print the decoded list
+            print("Decoded: {}\n".format(decoded_threshold_data))
+            flat_threshold_data = [item for sublist in decoded_threshold_data for item in sublist]
+            flat_emote_list = [item.strip('" ') for sublist in emote_list for item in sublist]
+            threshold_emote_tuples = [(int(threshold), emote) for threshold, emote in zip(flat_threshold_data, flat_emote_list)]
+
+            print(threshold_emote_tuples)
+
+            emote_str = ""
+
+            sorted_list_str = list(zip(decoded_threshold_data[0], emote_list))
+
+            print("Sorted: {}\n".format(sorted_list_str))
+
+            print("Decoded List: {}\nSorted List: {}\nStars List: {}\n".format(emote_list, decoded_threshold_data, threshold_emote_tuples))
+
+
+            sql = 'SELECT Counter, ID From {}'.format(table)
+            counter_id_tuples = c.execute(sql).fetchall()
+            print("Counter_ID_Tuples: {}".format(counter_id_tuples))
+            for thresh, emote in threshold_emote_tuples:
+                print("Thresh: {}\nEmote: {}\n".format(thresh, emote))
+                for num in counter_id_tuples:
+                    print("Num: {}".format(num))
+
+
+            self.threshold_list = decoded_threshold_data
+            self.thresh_emote = threshold_emote_tuples
+
+            self.emote_list = emote_list
+            print(self.emote_list)
+
+            Stars.adjust_stars(self, arg3='123', member='DEFAULT', table="Stars{}".format(guild_id))
 
             SQL = "SELECT Counter From {} WHERE ID = 0".format(table)
             c.execute(SQL)
             counter = c.fetchone()
             counter2 = Stars.remove_characters(str(counter))
+
             c.execute('SELECT * FROM {}'.format(table))
             var4 = var4 + "{} Leaderboard:\n{} {} total\n".format(intro2, counter2, intro2)
             for row in c.fetchall():
@@ -202,15 +416,35 @@ class Stars(commands.Cog):
     async def _star(self, context, member2: discord.Member):
         """Add stars to other people!
                 Use [p]com [user] [+ OR -] [stars]"""
-        member = member2.id or context.message.author
+        newPass = False
+        print("Context: {}".format(context))
+        if context == 'Pass':
+            newPass = True
+            result = self.result
+            print("Command worked.")
+        else:
+            member = member2.id or context.message.author
         txt1 = ':star:'
         txt2 = ':star2:'
         txt3 = ':dizzy:'
         ID = ""
         bool = True
-        message = context.message.content
-        channel = context.channel
-        guild_id = context.guild.id
+        
+        if newPass:
+            context = self.ctx
+            print(context)
+            try:
+                guild_id = context.guild.id
+                #print(guild_id)
+                guild = context.message.guild
+                channel = context.channel
+            except:
+                print("Error, couldn't get guild id\n{}".format(context))
+            pass
+        else:
+            message = context.message.content
+            channel = context.channel
+            guild_id = context.guild.id
         c.execute('SELECT VIPRole FROM Settings WHERE ID = {}'.format(guild_id))
         list = c.fetchone()
         #print(roleID)
@@ -221,41 +455,100 @@ class Stars(commands.Cog):
             conn.execute("CREATE TABLE IF NOT EXISTS Daily{}(ID TEXT, Date TEXT)".format(guild_id))
             conn.commit()
             table = "Stars{}".format(guild_id)
-            arg = message.split()
-            arg3 = 0
-            arg4 = 0
-            try:
-                userArg = arg[1]
-                op = arg[2]
-                num = int(arg[3])
-            except:
-                bool = False
+            if newPass:
+                #arg = "{} + {}".format(member2, self.result)
+                if member2 == '0':
+                    userArg = 'total'
+                    op = '='
+                    member = 0
+                    num = result
+                    pass
+                else:
+                    userArg = "<@!{}>".format(member2)
+                    op = '+'
+                    num = result
+                    member = context.message.guild.get_member(self.author)
+                    print("Member: {}\nUserarg: {}".format(member, userArg))
+            else:
+                arg = message.split()
+                arg3 = 0
+                arg4 = 0
+                try:
+                    userArg = arg[1]
+                    op = arg[2]
+                    num = int(arg[3])
+                    print("User: {}\nOp: {}\nNum: {}".format(userArg, op, num))
+                except:
+                    bool = False
             if bool:
-                ID = str(member)
+                if newPass:
+                    ID = str(member2)
+                else:
+                    ID = str(member)
                 counter = 0
                 c.execute('SELECT ID FROM {}'.format(table))
                 IDs = c.fetchall()
                 conn.commit()
-
+                
                 #Give role to see who is participating, grab from DB
                 try:
-                    role = context.guild.get_role(int(roleID))
+                    role = context.message.guild.get_role(int(roleID))  # Get the role object
                     print("Role: {}\n{}".format(role, roleID))
-                    await member2.add_roles(role)
-                except:
-                    await channel.send("Unable to give you Gold Star role...error.")
+
+                    # Attempt to add the role to the specified member
+                    member3 = context.message.guild.get_member(member2)
+                    if member3:
+                        await member3.add_roles(role)  # Add the role to member3
+                    else:
+                        author = self.author
+                        if self.author:
+                            await author.add_roles(role)  # Add the role to self.author
+
+                except Exception as e:
+                    print(f"Error adding role: {e}")
+
+                    # Handle the error or notify the user accordingly
+                    try:
+                        if member3:
+                            print("Error adding role to member3")
+                        else:
+                            print("Error adding role to self.author")
+                        await channel.send("Unable to assign the specified role.")
+                    except:
+                        print("Exception: {}\n".format(e))
+                        #print({member, self.author, member3, ID})
+
                 #If ID is in IDs, update stars, if not, insert new entry for user
                 if str(ID) in str(IDs):
                     print("Same ID")
                     # Need to better select the number, remove the "replace"
-                    sql = "SELECT Counter FROM {} WHERE ID= {}".format(table, member)
-                    c.execute(sql)
+                    print("ID: {}".format(ID))
+                    try:
+
+                        sql = "SELECT Counter FROM {} WHERE ID= {}".format(table, member2)
+                        c.execute(sql)
+                    except Exception as e:
+                        sql = "SELECT Counter FROM {} WHERE ID = {}".format(table, member)
+                        c.execute(sql)
                     counter2 = c.fetchall()
-                    count = str(counter2[0])
-                    count = Stars.remove_characters(count)
-                    count = int(count)
-                    arg3 = count
-                    Truearg4 = count
+                    print(counter2)
+                    try:
+                        count = str(counter2[0])
+                        count = Stars.remove_characters(count)
+                        count = int(count)
+                        arg3 = count
+                        Truearg4 = count
+                    except Exception as e:
+                        c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
+                        counter2 = c.fetchall()
+                        print("Counter2: {}".format(counter2))
+                        count = str(counter2[1])
+                        count = Stars.remove_characters(count)
+                        arg3 = count
+                        print("Arg3: {}".format(arg3))
+                        Truearg4 = count
+                        print(e)
+                        op = '='
                     if op == '-':
                         arg3 = count - num
                         if arg3 <= 0:
@@ -273,7 +566,7 @@ class Stars(commands.Cog):
                             arg5 = Stars.remove_characters(str(arg5))
                             arg5 = int(arg5) - num
                             conn.commit()
-                            Stars.adjust_stars(self, arg5, total)
+                            Stars.adjust_stars(self, arg5, total, table)
 
                             try:
                                 number = Truearg4 - num
@@ -283,6 +576,9 @@ class Stars(commands.Cog):
                                 "Oh no...{} has lost {} stars. They now have only {}.".format(userArg, num, number))
 
                     elif op == '+':
+                        #if newPass:
+                            #arg3 = arg3 + self.result
+                        #else:
                         arg3 = count + num
                         c.execute('UPDATE {} SET Counter = "{}" WHERE ID ="{}"'.format(table, arg3, str(ID)))
                         conn.commit()
@@ -293,7 +589,7 @@ class Stars(commands.Cog):
                         arg5 = Stars.remove_characters(str(arg5))
                         arg5 = int(arg5) + num
                         conn.commit()
-                        Stars.adjust_stars(self, arg5, total)
+                        Stars.adjust_stars(self, arg5, total, table)
 
                         try:
                             number = Truearg4 + num
@@ -301,9 +597,14 @@ class Stars(commands.Cog):
                             number = num
                         await channel.send(
                             "Success! {} has earned {} stars! They now have {} stars total!".format(userArg, num, number))
-
-                    Stars.adjust_stars(self, arg3, member)
+                    elif op == '=':
+                        print("Must do something here")
+                        arg3 = arg3 + num
+                        Stars.adjust_stars(self, arg3, member=0, table=table)
+                        conn.commit()
+                    Stars.adjust_stars(self, arg3, member, table)
                     conn.commit()
+                    
 
                 else:
                     print("New ID")
@@ -323,12 +624,14 @@ class Stars(commands.Cog):
                     total = 0
                     arg5 = Stars.remove_characters(str(arg5))
                     arg5 = int(arg5) + num
+                    #c.execute('UPDATE {} SET Counter = {} WHERE ID = 0'.format(table, arg5))
                     conn.commit()
-                    #Stars.adjust_stars(self, arg5, total)
+                    Stars.adjust_stars(self, arg5, total, table)
             else:
                 await channel.send("Error. Please run the command properly. Use ``help star`` to see how to use the command. ")
         else:
             await channel.send("Error. Please run ``[p]StarPriv setup`` to use this feature")
+        newPass = False
 
 
     #Get daily stars,once a day
@@ -381,6 +684,7 @@ class Stars(commands.Cog):
             c.execute('SELECT Roles FROM Settings WHERE ID = {}'.format(guild_id))
             myList = c.fetchone()
             conn.commit()
+
             print("Mylist: {}\nvip: {}".format(myList, vip))
             role = myList[0]
             role = Stars.remove_characters(str(role))
@@ -438,14 +742,14 @@ class Stars(commands.Cog):
                         count = int(count2)
                         arg3 = count
                         arg3 = arg3 + (1 * multiplier)
-                        Stars.adjust_stars(self, arg3, memID)
+                        Stars.adjust_stars(self, arg3, memID, table)
                         c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                         arg4 = c.fetchall()
                         arg5 = str(arg4[0])
                         arg5 = Stars.remove_characters(arg5)
                         arg5 = int(arg5) + arg3
                         conn.commit()
-                        Stars.adjust_stars(self, arg5, total)
+                        Stars.adjust_stars(self, arg5, total, table)
                         await context.send("You have earned another star {} x {}".format(mem, multiplier))
                         self.stars += (1 * multiplier)
 
@@ -465,7 +769,7 @@ class Stars(commands.Cog):
                 conn.commit()
                 try:
                     Stars.adjust_stars(self, arg3, total, table)
-                
+                    
                 except:
                     string3 = 'INSERT INTO {} (ID, Name, Counter, Stars) VALUES (?, ?, ?, ?)'.format(table)
                     c.execute('SELECT Counter FROM {} WHERE ID = 0'.format(table))
@@ -480,7 +784,7 @@ class Stars(commands.Cog):
                     print("TOtal COunt: {}".format(totalCount))
                     #Stars.create_table(table)
                     Stars.adjust_stars(self, totalCount, total, table)
-                    
+                        
                 c.execute("SELECT Counter FROM {} WHERE ID = 0".format(table))
                 arg4 = c.fetchall()
                 arg5 = str(arg4[0])
@@ -500,6 +804,7 @@ class Stars(commands.Cog):
 
 
     #If ID = has value, run StarPriv star
+
     @StarPriv.command(name='setup')
     async def _setup(self, ctx):
         #Display help, channel, role, currency name
@@ -511,7 +816,10 @@ class Stars(commands.Cog):
         author = ctx.author
         channel = ctx.channel
         await channel.send("This setup requires a name for your points, a channel to post to with "
-                           "edit permissions, and any 'vip' roles to gain more points(does not stack).")
+                           "edit permissions, and any 'vip' roles to gain more points(does not stack)."
+                           " Please also define your emotes, and each emote having a number to reach[expand]"
+                           "please use the same amount of emotes as thresholds as well, example:"
+                           ":star: , :dizzy: , :fire: | And then: 1, 10, 25")
         await asyncio.sleep(3)
         await channel.send("What would you like your currency name?")
 
@@ -566,11 +874,61 @@ class Stars(commands.Cog):
             role3 = await self.bot.wait_for('message', check=check, timeout=20.0)
         except:
             print("Failure. Rolenam3")
+        #Get Emotes to be used
+        await channel.send("Give me a list of emotes seperated by commas, and make sure its the same amount as the next setting, threshold")
+        try:
+            emote = await self.bot.wait_for('message', check=check, timeout=60.0)
+            emote_list = emote.content
+            emote_json = json.dumps(emote_list, ensure_ascii=False).encode('utf-8')
+            newListLen = len(emote_list)
+            pass
+        except:
+            print("Failure, default emotes will be used")
+            #Default stars here
+
+            pass
+        #Get Thresholds for each emote for your points
+        await channel.send("What are the threshold for each emote? For example the first emote can be between 1 to 4, and"
+                           " the second emote being between 5 to 10, and so on by typing ``1, 5, 11, [etc]`` ")
+        try:
+            newThreshold = await self.bot.wait_for('message', check=check, timeout=60.0)
+            
+            threshold_list = newThreshold.content
+            thresh_json = json.dumps(threshold_list, ensure_ascii=False).encode('utf-8')
+            newListLen2 = len(threshold_list)
+            pass
+        except:
+            print("Failure, default threshold will be used.")
+            pass
+
+        #Make sure both add up to same length of list for proper indexing later
+        try:
+            if newListLen == newListLen2:
+                #Continue
+                pass
+        except:
+            print("Length is mismatch")
 
         #Create table here
-        conn.execute("CREATE TABLE IF NOT EXISTS Settings(Name TEXT, Channel INTEGER, Roles TEXT,"
-                   " VIPRole TEXT, ID INTEGER, Message TEXT, winRole TEXT)")
+        c.execute("CREATE TABLE IF NOT EXISTS Settings(Name TEXT, Channel INTEGER, Roles TEXT, VIPRole TEXT, ID INTEGER, Message TEXT, winRole TEXT, emote TEXT, thresh TEXT)")
         conn.commit()
+        c.execute("PRAGMA table_info(Settings)")
+        columns_info = c.fetchall()
+
+        # Print the column names and their data types
+        print("Column Name | Data Type")
+        print("-----------------------")
+        for column in columns_info:
+            print(f"{column[1]} | {column[2]}")
+
+        # Retrieve and print the rows from the table
+        c.execute("SELECT * FROM Settings")
+        rows = c.fetchall()
+
+        # Print the table data
+        print("\nTable Data:")
+        for row in rows:
+            print(row)
 
         conn.execute(
             "CREATE TABLE IF NOT EXISTS Stars{}(ID TEXT, Name TEXT, Counter INTEGER, Stars TEXT)".format(guild_id))
@@ -578,14 +936,18 @@ class Stars(commands.Cog):
         #User confirms, then save into DB
         await channel.send("Point name: {}\nChannel to post to: {}\nRoles that add a multiplier: {}\nRole"
                            "that is given when obtaining a star: "
-                           "{}\nWin Role: {}\nMessageID: {}\nConfirm these settings with "
+                           "{}\nWin Role: {}\nMessageID: {}\nEmote List: {}\nThreshold: {}\n"
+                           "Confirm these settings with "
                            "Yes or No".format(name.content, post.content,
-                                                                              role.content, role2.content, role3.content, mID))
+                            role.content, role2.content, role3.content, mID, emote_json, threshold_list))
         try:
             response = await self.bot.wait_for('message', check=check, timeout=20.0)
             if 'y' in str(response.content).lower():
-                sql = "INSERT INTO Settings (Name, Channel, Roles, VIPRole, ID, Message, winRole) VALUES (?, ?, ?, ?, ?, ?, ?)".format(guild_id)
-                c.execute(sql, (name.content, int(post3), role.content, role2.content, guild_id, mID, role3.content))
+                c.execute("CREATE TABLE IF NOT EXISTS Settings(Name TEXT, Channel INTEGER, Roles TEXT, VIPRole TEXT, ID INTEGER, Message TEXT, winRole TEXT, emote TEXT, thresh TEXT)")
+                conn.commit()
+                print("Emote: {}\nThresh: {}".format(type(emote_json), type(thresh_json)))
+                sql = "INSERT INTO Settings (Name, Channel, Roles, VIPRole, ID, Message, winRole, emote, thresh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)".format(guild_id)
+                c.execute(sql, (name.content, int(post3), role.content, role2.content, guild_id, mID, role3.content, emote_json, thresh_json))
                 #c.execute(sql, (name.content, post.channel.id, roleid[3:20], roleid2[3:20], guild_id, mID))
                 conn.commit()
                 await channel.send("Success! Settings saved.")
@@ -622,7 +984,7 @@ class Stars(commands.Cog):
         checks = c.fetchall()
         if checks:
 
-            await channel.send("What setting would you like to edit? Choose from \n1) Name\n2)Channel\n3)mRole\n4)VRole")
+            await channel.send("What setting would you like to edit? Choose from \n1) Name\n2)Channel\n3)mRole\n4)VRole\n5)Emotes\n6)Threshold")
 
             def check(m):
                 return m.author == author and m.channel == channel
@@ -680,6 +1042,49 @@ class Stars(commands.Cog):
                     newWRole = await self.bot.wait_for('message', check=check, timeout=60.0)
                     SQLw = "UPDATE Settings SET winRole = '{}' WHERE ID = {}".format(newWRole.content, gid)
                     fSQL = SQLw
+                #emote and threshold list edit
+                elif 'emote' in str(resp.content).lower() or 'threshold' in str(resp.content).lower():
+                    #Do emote first, then Threshold
+                    await channel.send("Starting with emotes, give me a list of emotes seperated by commas. And remember,"
+                                       "it must be the same length as the threshold limit")
+                    newEmotes = await self.bot.wait_for('message', check=check, timeout=60.0)
+                    new_emotes = newEmotes.content
+                    await channel.send("And the new threshold?")
+                    new_Threshold = await self.bot.wait_for('message', check=check, timeout=60.0)
+                    new_Threshold_list = new_Threshold.content
+                    print("newEmote: {}\nnewThresh: {}".format(new_emotes, new_Threshold_list))
+                    emote_json = json.dumps(new_emotes, ensure_ascii=False).encode('utf-8')
+                    thresh_json = json.dumps(new_Threshold_list, ensure_ascii=False).encode('utf-8')
+                    print("New Emotes: {}\nNew Thresh: {}\nEmote json: {}\n".format(new_emotes, new_Threshold_list, emote_json))
+                    emote_List = []
+                    thresh_List = []
+                    for emote in new_emotes.split(','):
+                        emote_List.append(emote.strip())
+                    for thresh in new_Threshold_list.split(','):
+                        thresh_List.append(thresh.strip())
+                    print("Emote List: {}\nThresh List: {}".format(emote_List, thresh_List))
+
+                    emote_len = len(emote_List)
+                    threshold_len = len(thresh_List)
+                    print("Length of Emote: {}\nLength of Thresh: {}".format(emote_len,threshold_len))
+                    if emote_len == threshold_len:
+                        flat_threshold_data = [item for sublist in thresh_List for item in sublist]
+                        flat_emote_list = [item.strip('" ') for sublist in emote_List for item in sublist]
+                        threshold_emote_tuples = [(int(threshold), emote) for threshold, emote in zip(flat_threshold_data, flat_emote_list)]
+                        self.thresh_emote = threshold_emote_tuples
+                        self.threshold_list = thresh_List
+                        self.emote_list = emote_List
+                        #print("Both JSONS:\n{}\n{}".format(emote_json, thresh_json))
+                        c.execute("UPDATE Settings SET emote = ?, thresh = ? WHERE ID = ?", (emote_json, thresh_json, gid))
+                        conn.commit()
+                        await channel.send("Success. Emote: {} and Thresholds: {}  have been set up".format(new_emotes, new_Threshold_list))
+                    else:
+                        print("Error, aborting")
+                        await channel.send("Sorry, unable to save these settings:\nEmotes: {}\nThresholds: {}".format(new_emotes, new_Threshold_list))
+                        pass
+
+                    pass
+
 
                 elif 'dis' in str(resp.content).lower():
                     #Have function?
@@ -723,6 +1128,25 @@ class Stars(commands.Cog):
         table = "Stars{}".format(guild_id)
         table2 = 'Settings'
         sql = 'DELETE FROM {}'.format(table)
+
+        try:
+            c.execute('SELECT Message FROM Settings WHERE ID = {}'.format(guild_id))
+            msgID = c.fetchone()
+            newMsgID = Stars.remove_characters(msgID[0])
+
+            c.execute('SELECT Channel FROM Settings WHERE ID = {}'.format(guild_id))
+            chanID = c.fetchone()
+            newChanID = Stars.remove_characters(str(chanID[0]))
+            print("{}\n{}".format(chanID, newChanID))
+
+            
+            #chan = await context.guild.get_channel(int(newChanID))
+            chan = self.bot.get_channel(int(newChanID))
+            print(chan)
+            msg = await chan.fetch_message(int(newMsgID))    
+            await msg.delete()
+        except:
+            await context.channel.send("Error, couldn't delete the [Stars] message.")
         self.count = 0
         print("Performing deletion of database")
         c.execute(sql)
@@ -730,7 +1154,10 @@ class Stars(commands.Cog):
         await channel.send("Purging the database!")
         conn.commit()
         c.execute("DELETE FROM Settings WHERE ID = {}".format(guild_id))
+        #c.execute('DELETE FROM Settings')
         conn.commit()
+
+        
 
     @StarPriv.command(name='daily')
     async def _delete_daily(self, context):
