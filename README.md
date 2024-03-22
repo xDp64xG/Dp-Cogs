@@ -83,6 +83,9 @@ Versions:
 	1.5:
 		Expanding into keeping a total count, hope to add in caluclations from total message count, which should be included into setup
 		Added functionality of multiple guilds/servers being tracked
+	2.0:
+		Added functionality of config files to better customize to a server's needs. (Add specific channels to listen from, and remove channels to not listen from COMING SOON!)
+		Planned to fine tune how to count each message with parameters. Message length? Need ideas
 
 	Bugs:
 		Must make sure Claims is properly being tracked and updated.
@@ -92,6 +95,9 @@ Versions:
 		Add 'points' by mention. Just a way to publicly show points for participation in community events
 	2.0:
 		Added functionality of multiple servers/guilds. Added customization settings. Added random picker out of all points linked to per person
+	3.0:
+		Added config files to better customize to each server's needs.
+		Added functionality of configuring certain settings and update the db.
 
 # Ideas
 
