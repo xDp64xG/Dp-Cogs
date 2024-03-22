@@ -101,5 +101,5 @@ Versions:
 
 # Ideas
 
-	If you got ideas, why not share them with me htpps://discord.me/dp-cogs or https://discord.gg/N6Dk5Ng or have problems, I'll be there.
+	If you got ideas, why not share them with me https://discord.gg/KGCUuXuvHZ, I'll be there.
 		
